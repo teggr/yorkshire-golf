@@ -11,6 +11,9 @@ import org.springframework.web.servlet.view.AbstractTemplateView;
 
 import java.util.Map;
 
+import static golf.ChartJsCreator.*;
+import static golf.ChartJsCreator.chartJsChart;
+import static golf.htmx.HtmxAttributes.hxBoost;
 import static j2html.TagCreator.*;
 
 @Component
@@ -41,21 +44,29 @@ class HomePage extends AbstractTemplateView {
                                         .withHref("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css")
                                         .attr("rel", "stylesheet")
                                         .attr("integrity", "sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH")
-                                        .attr("crossorigin", "anonymous")
+                                        .attr("crossorigin", "anonymous"),
+                                chartJs()
+
                         ),
                         body()
-                                .attr(HtmxAttributes.hxBoost())
+                                .attr(hxBoost())
                                 .with(
-                                h1("Hello, world!"),
-                                script()
-                                        .attr("src", "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js")
-                                        .attr("integrity", "sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r")
-                                        .attr("crossorigin", "anonymous"),
-                                script()
-                                        .attr("src", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js")
-                                        .attr("integrity", "sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy")
-                                        .attr("crossorigin", "anonymous")
-                        )
+                                        h1("Hello, world!"),
+                                        div(
+                                                canvas().withId("myChart")
+                                        ),
+                                        chartJsChart("myChart", Options.builder()
+                                                .text( "10% complete" )
+                                                .build()), // TODO: data + options
+                                        script()
+                                                .attr("src", "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js")
+                                                .attr("integrity", "sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r")
+                                                .attr("crossorigin", "anonymous"),
+                                        script()
+                                                .attr("src", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js")
+                                                .attr("integrity", "sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy")
+                                                .attr("crossorigin", "anonymous")
+                                )
                 );
 
         // write the document to the output stream
