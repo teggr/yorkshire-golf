@@ -1,4 +1,4 @@
-package golf.htmx;
+package golf.utils.htmx;
 
 import j2html.attributes.Attribute;
 

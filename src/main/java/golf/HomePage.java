@@ -1,6 +1,5 @@
 package golf;
 
-import golf.htmx.HtmxAttributes;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,11 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static golf.ChartJsCreator.*;
-import static golf.ChartJsCreator.chartJsChart;
-import static golf.htmx.HtmxAttributes.hxBoost;
+import static golf.utils.chartjs.ChartJsCreator.*;
+import static golf.utils.htmx.HtmxAttributes.hxBoost;
 import static j2html.TagCreator.*;
 
 @Component
@@ -30,6 +30,35 @@ class HomePage extends AbstractTemplateView {
 
         log.info("View called");
 
+        CourseTracker tracker = (CourseTracker) model.get("tracker");
+
+        Map<String, Object> chartData = new HashMap<>();
+        chartData.put("overall_percentage",
+                tracker.totalCoursesPlayed() * 100 / tracker.totalCourseCount()
+        );
+        chartData.put("overall_progress", List.of(
+                tracker.totalCoursesPlayed(),
+                tracker.totalCoursesToBePlayed()
+        ));
+        chartData.put("total_played", List.of(
+                tracker.totalCoursesPlayed()
+        ));
+        chartData.put("total_course_count", List.of(
+                tracker.totalCourseCount()
+        ));
+        chartData.put("region_played", List.of(
+                tracker.totalCoursesPlayed(new Region("NORTH_YORKSHIRE")),
+                tracker.totalCoursesPlayed(new Region("EAST_YORKSHIRE")),
+                tracker.totalCoursesPlayed(new Region("SOUTH_YORKSHIRE")),
+                tracker.totalCoursesPlayed(new Region("WEST_YORKSHIRE"))
+        ));
+        chartData.put("region_course_count", List.of(
+                tracker.totalCourseCount(new Region("NORTH_YORKSHIRE")),
+                tracker.totalCourseCount(new Region("EAST_YORKSHIRE")),
+                tracker.totalCourseCount(new Region("SOUTH_YORKSHIRE")),
+                tracker.totalCourseCount(new Region("WEST_YORKSHIRE"))
+        ));
+
         DomContent html = html()
                 .attr("lang", "en")
                 .with(
@@ -45,19 +74,21 @@ class HomePage extends AbstractTemplateView {
                                         .attr("rel", "stylesheet")
                                         .attr("integrity", "sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH")
                                         .attr("crossorigin", "anonymous"),
-                                chartJs()
+                                chartJsLibScript(),
+                                chartJsPluginDataLabelsLibScript(),
+                                chartJsPluginDoughnutLabelLibScript()
 
                         ),
                         body()
                                 .attr(hxBoost())
                                 .with(
-                                        h1("Hello, world!"),
-                                        div(
-                                                canvas().withId("myChart")
-                                        ),
-                                        chartJsChart("myChart", Options.builder()
-                                                .text( "10% complete" )
-                                                .build()), // TODO: data + options
+                                        h1("#yorkshiregolfchallenge"),
+                                        div()
+                                                .withStyle("max-width: 640px")
+                                                .with(
+                                                        canvas().withId("myChart")
+                                                ),
+                                        chartJsConfigScript("myChart", chartData),
                                         script()
                                                 .attr("src", "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js")
                                                 .attr("integrity", "sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r")
