@@ -1,4 +1,4 @@
-package golf;
+package golf.tracker;
 
 import org.springframework.stereotype.Service;
 

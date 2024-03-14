@@ -1,5 +1,7 @@
-package golf;
+package golf.web;
 
+import golf.tracker.CourseTracker;
+import golf.tracker.Region;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
 import jakarta.servlet.http.HttpServletRequest;

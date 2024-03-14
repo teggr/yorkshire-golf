@@ -1,4 +1,4 @@
-package golf;
+package golf.tracker;
 
 public record Region(String name) {
 }

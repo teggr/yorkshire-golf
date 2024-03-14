@@ -1,34 +1,34 @@
-package golf;
+package golf.tracker;
 
 import java.util.List;
 
 public record CourseTracker(
-        java.util.Map<golf.Region, Integer> courseCountByRegion,
+        java.util.Map<Region, Integer> courseCountByRegion,
         List<CourseRecord> courses
 ) {
 
-    int totalCourseCount() {
+    public int totalCourseCount() {
         return courseCountByRegion.values().stream()
                 .reduce(0, Integer::sum);
     }
 
-    int totalCoursesPlayed() {
+    public int totalCoursesPlayed() {
         return courses().size();
     }
 
-    int totalCoursesToBePlayed() {
+    public int totalCoursesToBePlayed() {
         return totalCourseCount() - totalCoursesPlayed();
     }
 
-    int totalCourseCount(Region region) {
+    public int totalCourseCount(Region region) {
         return courseCountByRegion.get(region);
     }
 
-    int totalCoursesPlayed(Region region) {
+    public int totalCoursesPlayed(Region region) {
         return (int) courses().stream().filter(cr -> cr.course().region().equals(region)).count();
     }
 
-    int totalCoursesToBePlayed(Region region) {
+    public int totalCoursesToBePlayed(Region region) {
         return totalCourseCount(region) - totalCoursesPlayed(region);
     }
 
