@@ -1,42 +1,51 @@
 package golf.tracker;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class YorkshireChallenge {
 
-    private static final List<CourseRecord> courseRecords = new ArrayList<>();
-    private static final Map<Region, Integer> courseCountByRegion = new HashMap<>();
+    public final Courses courses;
+    private final List<CourseRecord> courseRecords = new ArrayList<>();
 
-    static {
+    @PostConstruct
+    public void onLoad() throws IOException {
 
-        courseRecords.add(new CourseRecord(new Course("Moortown Golf Club", new Region("WEST_YORKSHIRE")), LocalDate.of(2023, 4, 9)));
-        courseRecords.add(new CourseRecord(new Course("Rudding Park Golf Club", new Region("NORTH_YORKSHIRE")), LocalDate.of(2023, 5, 13)));
-        courseRecords.add(new CourseRecord(new Course("Scarcroft Golf Club", new Region("WEST_YORKSHIRE")), LocalDate.of(2023, 7, 6)));
-        courseRecords.add(new CourseRecord(new Course("De Vere Oulton Hall Golf Club", new Region("WEST_YORKSHIRE")), LocalDate.of(2023, 7, 29)));
-        courseRecords.add(new CourseRecord(new Course("Spofforth Golf Course", new Region("NORTH_YORKSHIRE")), LocalDate.of(2023, 9, 5)));
-        courseRecords.add(new CourseRecord(new Course("Ganton Golf Club", new Region("NORTH_YORKSHIRE")), LocalDate.of(2023, 9, 6)));
-        courseRecords.add(new CourseRecord(new Course("Leeds Golf Club", new Region("WEST_YORKSHIRE")), LocalDate.of(2023, 9, 8)));
-        courseRecords.add(new CourseRecord(new Course("Calverley Golf Club", new Region("WEST_YORKSHIRE")), LocalDate.of(2023, 9, 22)));
-        courseRecords.add(new CourseRecord(new Course("Headingly Golf Club", new Region("WEST_YORKSHIRE")), LocalDate.of(2023, 9, 25)));
-        courseRecords.add(new CourseRecord(new Course("Leeds Golf Centre", new Region("WEST_YORKSHIRE")), LocalDate.of(2024, 1, 27)));
-        courseRecords.add(new CourseRecord(new Course("Tadcaster Golf Club", new Region("NORTH_YORKSHIRE")), LocalDate.of(2024, 2, 25)));
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ClassPathResource("tracker.csv").getInputStream(), StandardCharsets.UTF_8.newDecoder()))) {
+            boolean ignoreNextLine = true;
+            for (; ; ) {
+                String line = bufferedReader.readLine();
+                if (line == null)
+                    break;
+                if (ignoreNextLine) {
+                    ignoreNextLine = false;
+                    continue;
+                }
+                String[] split = line.split(",");
 
-        courseCountByRegion.put(new Region("WEST_YORKSHIRE"), 88);
-        courseCountByRegion.put(new Region("NORTH_YORKSHIRE"), 58);
-        courseCountByRegion.put(new Region("SOUTH_YORKSHIRE"), 43);
-        courseCountByRegion.put(new Region("EAST_YORKSHIRE"), 19);
+                Course course = courses.getCourseByName(split[0]);
+
+                courseRecords.add(new CourseRecord(course, LocalDate.parse(split[1])));
+
+            }
+        }
 
     }
 
     public CourseTracker getTracker() {
-        return new CourseTracker( courseCountByRegion, courseRecords);
+        return new CourseTracker(courses.getAllCoursesByRegion(), courseRecords);
     }
 
 }
