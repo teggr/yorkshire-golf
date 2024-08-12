@@ -2,7 +2,7 @@ package golf.tracker;
 
 import java.util.List;
 
-public record CourseTracker(
+public record RegionChallengeTracker(
         java.util.Map<Region, Long> courseCountByRegion,
         List<CourseRecord> courses
 ) {

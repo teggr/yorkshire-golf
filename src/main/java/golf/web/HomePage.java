@@ -1,13 +1,10 @@
 package golf.web;
 
-import golf.tracker.CourseTracker;
+import golf.tracker.RegionChallengeTracker;
 import golf.tracker.Regions;
-import golf.utils.j2html.J2HtmlTemplateView;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,20 +12,18 @@ import java.util.Map;
 import static golf.utils.chartjs.ChartJsCreator.*;
 import static j2html.TagCreator.*;
 
-@Component
 @Slf4j
-class HomePage extends J2HtmlTemplateView {
+public class HomePage {
 
-    @Override
-    protected void renderMergedTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String getOutput(Map<String, Object> model) throws Exception {
 
         log.info("View called");
 
-        CourseTracker tracker = (CourseTracker) model.get("tracker");
+        RegionChallengeTracker tracker = (RegionChallengeTracker) model.get("tracker");
 
         Map<String, Object> chartData = new HashMap<>();
         chartData.put("overall_percentage",
-                tracker.totalCoursesPlayed() * 100 / tracker.totalCourseCount()
+                tracker.overallProgress()
         );
         chartData.put("overall_progress", List.of(
                 tracker.totalCoursesPlayed(),
@@ -70,9 +65,13 @@ class HomePage extends J2HtmlTemplateView {
                         chartJsConfigScript("myChart", chartData)
                 );
 
-        pageTemplate.render(response.getWriter());
+        StringWriter writer =new StringWriter();
+
+        pageTemplate.render(writer);
 
         log.info("View finished");
+
+        return writer.toString();
 
     }
 
