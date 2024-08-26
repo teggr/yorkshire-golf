@@ -34,3 +34,6 @@ build/
 
 ### AWS SAM ###
 .aws-sam/
+
+### Local Env Files ###
+.env/
