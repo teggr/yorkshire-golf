@@ -1,10 +1,10 @@
 package golf.utils.chartjs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import j2html.tags.InlineStaticResource;
 import j2html.tags.UnescapedText;
 import j2html.tags.specialized.ScriptTag;
 import lombok.SneakyThrows;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ import static j2html.TagCreator.script;
 
 public class ChartJsCreator {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static ScriptTag chartJsLibScript() {
         return script()

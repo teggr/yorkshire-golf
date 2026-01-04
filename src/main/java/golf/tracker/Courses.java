@@ -1,7 +1,10 @@
 package golf.tracker;
 
+import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -10,13 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class Courses {
 
     private final List<Course> courses = new ArrayList<>();
 
+    @PostConstruct
     public void onLoad() throws IOException {
 
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("courses.csv"), StandardCharsets.UTF_8.newDecoder()))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ClassPathResource("courses.csv").getInputStream(), StandardCharsets.UTF_8.newDecoder()))) {
             boolean ignoreNextLine = true;
             for (; ; ) {
                 String line = bufferedReader.readLine();

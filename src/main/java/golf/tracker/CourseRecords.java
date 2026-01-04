@@ -1,9 +1,11 @@
 package golf.tracker;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -13,16 +15,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component
 @RequiredArgsConstructor
 public class CourseRecords {
 
     public final Courses courses;
     private final List<CourseRecord> courseRecords = new ArrayList<>();
 
+    @PostConstruct
     public void onLoad() throws IOException {
 
         try (BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream("course-records.csv"), StandardCharsets.UTF_8.newDecoder())
+                    new InputStreamReader(new ClassPathResource("course-records.csv").getInputStream(), StandardCharsets.UTF_8.newDecoder())
                 )) {
             boolean ignoreNextLine = true;
             for (; ; ) {

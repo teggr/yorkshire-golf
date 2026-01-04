@@ -15,16 +15,15 @@ Requires:
 
 * Java 21
 * Maven
-* SAM CLI
 
 ```shell
-sam build
+./mvnw clean package
 ```
 
 # Deploy
 
 ```shell
-sam deploy --guided
+?
 ```
 
 # Usage
