@@ -22,8 +22,16 @@ Requires:
 
 # Deploy
 
+Build the Docker image:
+
 ```shell
-?
+./mvnw clean package
+```
+
+Push to Docker Hub (ensure you are logged in with `docker login`):
+
+```shell
+./mvnw docker:push
 ```
 
 # Usage
