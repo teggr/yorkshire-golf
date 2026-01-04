@@ -31,7 +31,7 @@ Build the Docker image:
 Push to Docker Hub (ensure you are logged in with `docker login`):
 
 ```shell
-docker push teggr/yorkshire-golf
+./mvnw docker:push
 ```
 
 # Usage
