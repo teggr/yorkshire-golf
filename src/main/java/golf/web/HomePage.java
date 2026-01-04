@@ -1,12 +1,14 @@
 package golf.web;
 
-import golf.tracker.CourseTracker;
+import golf.tracker.RegionChallengeTracker;
 import golf.tracker.Regions;
-import golf.utils.j2html.J2HtmlTemplateView;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.View;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,63 +19,66 @@ import static j2html.TagCreator.*;
 
 @Component
 @Slf4j
-class HomePage extends J2HtmlTemplateView {
+public class HomePage implements View {
 
-    @Override
-    protected void renderMergedTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  @Override
+  public @Nullable String getContentType() {
+    return MediaType.TEXT_HTML_VALUE;
+  }
 
-        log.info("View called");
+  @Override
+  public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        CourseTracker tracker = (CourseTracker) model.get("tracker");
+    RegionChallengeTracker tracker = (RegionChallengeTracker) model.get("tracker");
 
-        Map<String, Object> chartData = new HashMap<>();
-        chartData.put("overall_percentage",
-                tracker.totalCoursesPlayed() * 100 / tracker.totalCourseCount()
-        );
-        chartData.put("overall_progress", List.of(
-                tracker.totalCoursesPlayed(),
-                tracker.totalCoursesToBePlayed()
-        ));
-        chartData.put("total_played", List.of(
-                tracker.totalCoursesPlayed()
-        ));
-        chartData.put("total_course_count", List.of(
-                tracker.totalCourseCount()
-        ));
-        chartData.put("region_played", List.of(
-                tracker.totalCoursesPlayed(Regions.NorthYorkshire),
-                tracker.totalCoursesPlayed(Regions.EastYorkshire),
-                tracker.totalCoursesPlayed(Regions.SouthYorkshire),
-                tracker.totalCoursesPlayed(Regions.WestYorkshire)
-        ));
-        chartData.put("region_course_count", List.of(
-                tracker.totalCourseCount(Regions.NorthYorkshire),
-                tracker.totalCourseCount(Regions.EastYorkshire),
-                tracker.totalCourseCount(Regions.SouthYorkshire),
-                tracker.totalCourseCount(Regions.WestYorkshire)
-        ));
+    Map<String, Object> chartData = new HashMap<>();
+    chartData.put("overall_percentage",
+      tracker.overallProgress()
+    );
+    chartData.put("overall_progress", List.of(
+      tracker.totalCoursesPlayed(),
+      tracker.totalCoursesToBePlayed()
+    ));
+    chartData.put("total_played", List.of(
+      tracker.totalCoursesPlayed()
+    ));
+    chartData.put("total_course_count", List.of(
+      tracker.totalCourseCount()
+    ));
+    chartData.put("region_played", List.of(
+      tracker.totalCoursesPlayed(Regions.NorthYorkshire),
+      tracker.totalCoursesPlayed(Regions.EastYorkshire),
+      tracker.totalCoursesPlayed(Regions.SouthYorkshire),
+      tracker.totalCoursesPlayed(Regions.WestYorkshire)
+    ));
+    chartData.put("region_course_count", List.of(
+      tracker.totalCourseCount(Regions.NorthYorkshire),
+      tracker.totalCourseCount(Regions.EastYorkshire),
+      tracker.totalCourseCount(Regions.SouthYorkshire),
+      tracker.totalCourseCount(Regions.WestYorkshire)
+    ));
 
-        YorkshireGolfPageTemplate pageTemplate = new YorkshireGolfPageTemplate()
-                .withTitle("Yorkshire Challenge Tracker")
-                .withPageScripts(
-                        chartJsLibScript(),
-                        chartJsPluginDataLabelsLibScript(),
-                        chartJsPluginDoughnutLabelLibScript()
-                )
-                .withBody(
-                        h1("#yorkshiregolfchallenge"),
-                        div()
-                                .withStyle("max-width: 640px")
-                                .with(
-                                        canvas().withId("myChart")
-                                ),
-                        chartJsConfigScript("myChart", chartData)
-                );
+    YorkshireGolfPageTemplate pageTemplate = new YorkshireGolfPageTemplate()
+      .withTitle("Yorkshire Challenge Tracker")
+      .withPageScripts(
+        chartJsLibScript(),
+        chartJsPluginDataLabelsLibScript(),
+        chartJsPluginDoughnutLabelLibScript()
+      )
+      .withBody(
+        h1("#yorkshiregolfchallenge"),
+        div()
+          .withStyle("max-width: 640px")
+          .with(
+            canvas().withId("myChart")
+          ),
+        chartJsConfigScript("myChart", chartData)
+      );
 
-        pageTemplate.render(response.getWriter());
+    pageTemplate.render(response.getWriter());
 
-        log.info("View finished");
+    log.info("View finished");
 
-    }
+  }
 
 }

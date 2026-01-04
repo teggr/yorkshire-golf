@@ -1,18 +1,37 @@
 # yorkshire-golf
+
 Web based tracker for Yorkshire Golf
 
-# Locations
+# Data Store
 
-7 / 88 played in West Yorkshire
-3 / 58 played in North Yorkshire
-0 / 43 played in South Yorkshire
-0 / 19 played in East Yorkshire4
+Managed as resouces:
 
-Overall 11 / 208 Courses played in Yorkshire - 5%
+* `courses.csv` contains the list of yorkshire courses
+* `course-records.csv` contains the list of played courses. fk into the courses list
+
+# Build
+
+Requires:
+
+* Java 21
+* Maven
+
+```shell
+./mvnw clean package
+```
+
+# Deploy
+
+```shell
+?
+```
+
+# Usage
+
+Go to https://www.yorkshiregolf.life
+
+
+# Useful References
 
 https://www.chartjs.org/docs/latest/samples/other-charts/multi-series-pie.html
 https://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js
-
-Data held in `courses.csv`.Run `DownloadCourseData` to update
-
-
