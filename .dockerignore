@@ -1,5 +1,4 @@
 .git/
-target/
 .mvn/
 mvnw
 mvnw.cmd
@@ -9,3 +8,4 @@ mvnw.cmd
 .settings/
 .project
 .classpath
+src/
