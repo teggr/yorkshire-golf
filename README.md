@@ -22,6 +22,19 @@ Requires:
 
 # Deploy
 
+## Automated Deployment (Recommended)
+
+Use GitHub Actions workflows for automated release and deployment:
+
+1. Go to the **Actions** tab in GitHub
+2. Select **"Maven Release & Deploy via deploy4j"** workflow
+3. Click **"Run workflow"**
+4. Enter the release version and deployment target (staging/prod)
+
+See [GitHub Actions Workflows Documentation](.github/workflows/README.md) for detailed setup instructions.
+
+## Manual Deployment
+
 Build the Docker image:
 
 ```shell
