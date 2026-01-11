@@ -80,7 +80,7 @@ jobs:
 
     # deploy application using deploy4j
     - name: Deploy application with deploy4j via jbangDeploy application
-      run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5
+      run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5 test --version ${{ steps.set_release_version.outputs.release_version }}
 
     # tag release
     - name: Tag release
