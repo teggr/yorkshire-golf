@@ -1,0 +1,83 @@
+name: Release and deploy
+
+on:
+  push:
+    branches: [ "github-actions" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Grants permission to push tags and commits
+
+    steps:
+
+    # checkout the repository
+    - uses: actions/checkout@v4
+
+    # set up JDK 21 and cache Maven dependencies
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    # cache Maven packages
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.m2/repository
+        key: maven-${{ runner.os }}-deps
+        restore-keys: |
+          maven-${{ runner.os }}-
+
+    # get current version from pom.xml
+    - name: Get current Maven version
+      id: get_version
+      run: |
+       CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)
+       echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+       echo "Current version: $CURRENT_VERSION"
+
+    # remove -SNAPSHOT for release
+    - name: Set release version
+      run: |
+        mvn versions:set -DremoveSnapshot
+        RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)
+        echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+        echo "Release version: $RELEASE_VERSION"
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git commit -am "Set release version $RELEASE_VERSION"
+      shell: bash
+
+    # build with Maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    # tag release
+    - name: Tag release
+      run: |
+        git tag -a "v${RELEASE_VERSION}" -m "Release $RELEASE_VERSION"
+        git push origin "v${RELEASE_VERSION}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # move to next -SNAPSHOT
+    - name: Set next SNAPSHOT version
+      run: |
+        mvn versions:set -DnextSnapshot
+        NEXT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)
+        echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+        echo "Next snapshot version: $NEXT_VERSION"
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git commit -am "Set snapshot version $NEXT_VERSION"
+      shell: bash
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
