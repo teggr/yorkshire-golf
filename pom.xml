@@ -12,7 +12,7 @@
 
 	<groupId>life.yorkshiregolf</groupId>
 	<artifactId>golf-tracker</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>golf-tracker</name>
 	<description>Tracker for Yorkshire Golf</description>
 
@@ -85,7 +85,7 @@
 				<configuration>
 					<images>
 						<image>
-							<name>teggr/yorkshire-golf</name>
+							<name>teggr/yorkshire-golf:${project.version}</name>
 							<build>
 								<dockerFile>${project.basedir}/Dockerfile</dockerFile>
 								<contextDir>${project.basedir}</contextDir>

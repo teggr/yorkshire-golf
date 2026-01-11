@@ -37,3 +37,4 @@ build/
 
 ### Local Env Files ###
 .env/
+.deploy4j/secrets*
