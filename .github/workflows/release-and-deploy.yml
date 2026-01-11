@@ -91,7 +91,7 @@ jobs:
     - name: Deploy application with deploy4j via jbangDeploy application
       uses: jbangdev/jbang-action@v0.135.1
       with:
-        script: "dev.deploy4j:deploy-cli:0.0.5"
+        script: "dev.deploy4j:deploy4j-cli:0.0.5"
         scriptargs: "version"
       env:
         JBANG_REPO: /root/.jbang/repository
