@@ -2,24 +2,16 @@
 
 This directory contains GitHub Actions workflows for releasing and deploying the yorkshire-golf application using deploy4j.
 
-## Available Workflows
+## Workflow
 
-### 1. release-and-deploy.yml (JBang Approach - Recommended)
+### release-and-deploy.yml
 This workflow uses JBang to run deploy4j directly from the command line.
 
-**Advantages:**
+**Features:**
 - No pom.xml modifications needed
 - Simpler setup
-- Direct execution of deploy4j
+- Direct execution of deploy4j via JBang
 - Easy to test locally with JBang
-
-### 2. release-and-deploy-maven.yml (Maven Plugin Approach)
-This workflow uses the deploy4j Maven plugin for deployment.
-
-**Advantages:**
-- Integrated with Maven build lifecycle
-- Can be configured in pom.xml
-- Good for teams already using Maven plugins
 
 ## Prerequisites
 
@@ -69,9 +61,7 @@ jbang deploy4j@deploy4j.dev deploy \
 3. **Set release version**: Updates pom.xml with the release version and commits
 4. **Build project**: Compiles and packages the application (runs tests)
 5. **Tag release**: Creates a Git tag for the release and pushes it
-6. **Deploy with deploy4j**: 
-   - JBang approach: Uses JBang to run deploy4j
-   - Maven approach: Uses deploy4j Maven plugin
+6. **Deploy with deploy4j**: Uses JBang to run deploy4j
 7. **Bump snapshot version**: Updates pom.xml to the next development version
 
 ## Workflow Configuration
@@ -80,28 +70,12 @@ jbang deploy4j@deploy4j.dev deploy \
 
 Edit the deploy4j command in the workflow file to match your deployment configuration:
 
-**For JBang approach** (release-and-deploy.yml):
 ```yaml
 jbang deploy4j@deploy4j.dev deploy \
   --artifact=$ARTIFACT \
   --target=$DEPLOY_TARGET \
   --app-name=yorkshire-golf \
   --additional-params=value  # Add any additional deploy4j parameters
-```
-
-**For Maven plugin approach** (release-and-deploy-maven.yml):
-You may need to add the deploy4j Maven plugin to your `pom.xml`:
-
-```xml
-<plugin>
-    <groupId>dev.deploy4j</groupId>
-    <artifactId>deploy4j-maven-plugin</artifactId>
-    <version>1.0.0</version>
-    <configuration>
-        <appName>yorkshire-golf</appName>
-        <token>${env.DEPLOY4J_TOKEN}</token>
-    </configuration>
-</plugin>
 ```
 
 ## Troubleshooting
