@@ -28,18 +28,7 @@ You need to configure the following secrets in your GitHub repository:
 
 ### Local Testing with JBang
 
-You can test deploy4j locally using JBang:
-
-```bash
-# Install JBang (if not already installed)
-curl -Ls https://sh.jbang.dev | bash -s - app setup
-
-# Run deploy4j
-jbang deploy4j@deploy4j.dev deploy \
-  --artifact=target/golf-tracker-0.0.1.jar \
-  --target=staging \
-  --app-name=yorkshire-golf
-```
+See the README.md in the root of the repository for instructions on building the project locally.
 
 ## Using the Workflows
 
@@ -48,7 +37,7 @@ jbang deploy4j@deploy4j.dev deploy \
 1. Go to your repository on GitHub
 2. Click on "Actions" tab
 3. Select "Maven Release & Deploy via deploy4j" workflow
-4. Click "Run workflow"
+4. Click "Run workflow"[release-and-deploy.yml](release-and-deploy.yml)
 5. Fill in the required inputs:
    - **release_version**: The version number to release (e.g., `1.0.0`, without `-SNAPSHOT`)
    - **deploy_to**: Choose `staging` or `prod`

@@ -7,9 +7,9 @@ on:
         description: 'Version to release (omit -SNAPSHOT)'
         required: true
       deploy_to:
-        description: 'Deployment target (staging/prod)'
+        description: 'Deployment target (omit for production)'
         required: true
-        default: 'staging'
+        default: ''
 
 jobs:
   release:
@@ -51,46 +51,53 @@ jobs:
       - name: Build project
         run: ./mvnw clean install -DskipTests=false -DprocessAllModules=true
 
-      # 5. Tag release
-      - name: Tag release
-        run: |
-          git tag -a "v${{ steps.set_version.outputs.release_version }}" -m "Release ${{ steps.set_version.outputs.release_version }}"
-          git push origin "v${{ steps.set_version.outputs.release_version }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # 6. Set up JBang for deploy4j
-      - name: Set up JBang
-        uses: jbangdev/setup-jbang@v1
-
-      # 7. Deploy artifact using deploy4j
-      - name: Deploy artifact with deploy4j
-        run: |
-          ARTIFACT="target/golf-tracker-${{ steps.set_version.outputs.release_version }}.jar"
-          if [ "${{ github.event.inputs.deploy_to }}" == "staging" ]; then
-            DEPLOY_TARGET="staging"
-          else
-            DEPLOY_TARGET="prod"
-          fi
-          
-          # Run deploy4j using JBang
-          # deploy4j expects the artifact path and deployment configuration
-          jbang deploy4j@deploy4j.dev deploy \
-            --artifact=$ARTIFACT \
-            --target=$DEPLOY_TARGET \
-            --app-name=yorkshire-golf
-        env:
-          DEPLOY4J_TOKEN: ${{ secrets.DEPLOY4J_TOKEN }}
-
-      # 8. Bump next snapshot version
-      - name: Bump next snapshot version
-        run: |
-          IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.set_version.outputs.release_version }}"
-          NEXT_PATCH=$((PATCH+1))
-          NEXT_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-SNAPSHOT"
-          echo "Next snapshot version: $NEXT_VERSION"
-          ./mvnw versions:set -DnewVersion=$NEXT_VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
-          git commit -am "Bump version to $NEXT_VERSION"
-          git push origin ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      # 5. Tag release
+#      - name: Tag release
+#        run: |
+#          git tag -a "v${{ steps.set_version.outputs.release_version }}" -m "Release ${{ steps.set_version.outputs.release_version }}"
+#          git push origin "v${{ steps.set_version.outputs.release_version }}"
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      # 6. Set up JBang for deploy4j
+#      - name: Set up JBang
+#        uses: jbangdev/setup-jbang@v1
+#
+#      # 7. Deploy via SSH
+#      - name: Set up SSH
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+#          chmod 600 ~/.ssh/id_ed25519
+#          ssh-keyscan -H your.server.com >> ~/.ssh/known_hosts
+#        env:
+#          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#
+#      # 7. Deploy artifact using deploy4j
+#      - name: Deploy artifact with deploy4j
+#        run: |
+#          ARTIFACT="target/golf-tracker-${{ steps.set_version.outputs.release_version }}.jar"
+#          if [ "${{ github.event.inputs.deploy_to }}" == "staging" ]; then
+#            DEPLOY_TARGET="staging"
+#          else
+#            DEPLOY_TARGET="prod"
+#          fi
+#
+#          # Run deploy4j using JBang
+#          # deploy4j expects the artifact path and deployment configuration
+#          jbang dev.deploy4j:deploy4j-cli:0.0.5 --version "${{ steps.set_version.outputs.release_version }}"
+#        env:
+#          DEPLOY4J_TOKEN: ${{ secrets.DEPLOY4J_TOKEN }}
+#
+#      # 8. Bump next snapshot version
+#      - name: Bump next snapshot version
+#        run: |
+#          IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.set_version.outputs.release_version }}"
+#          NEXT_PATCH=$((PATCH+1))
+#          NEXT_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-SNAPSHOT"
+#          echo "Next snapshot version: $NEXT_VERSION"
+#          ./mvnw versions:set -DnewVersion=$NEXT_VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+#          git commit -am "Bump version to $NEXT_VERSION"
+#          git push origin ${{ github.ref_name }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
