@@ -86,15 +86,24 @@ jobs:
           # Create SSH directory and write the private key
           mkdir -p ~/.ssh && echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
+    # create deploy4j secrets file
+    - name: Create deploy4j secrets file
+      run: |
+        mkdir -p .deploy4j
+        cat > .deploy4j/secrets << EOF
+        DOCKER_USERNAME=$DOCKER_USERNAME
+        DOCKER_PASSWORD=$DOCKER_PASSWORD
+        PRIVATE_KEY_PASSPHRASE=$PRIVATE_KEY_PASSPHRASE
+        PRIVATE_KEY=~/.ssh/id_rsa
+        EOF
+
     # deploy application using deploy4j
     - name: Deploy application with deploy4j via jbang
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
-        PRIVATE_KEY: "~/.ssh/id_rsa"
-        TEST_KEY: ${{ secrets.TEST_KEY }}
-      run: echo "${TEST_KEY}" && jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5 test --version ${{ steps.set_release_version.outputs.release_version }}
+      run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5 test --version ${{ steps.set_release_version.outputs.release_version }}
 
     # tag release
     - name: Tag release
