@@ -44,6 +44,7 @@ jobs:
 
     # remove -SNAPSHOT for release
     - name: Set release version
+      id: set_release_version
       run: |
         mvn versions:set -DremoveSnapshot
         RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)
@@ -61,8 +62,8 @@ jobs:
     # tag release
     - name: Tag release
       run: |
-        git tag -a "v${RELEASE_VERSION}" -m "Release $RELEASE_VERSION"
-        git push origin "v${RELEASE_VERSION}"
+        git tag -a "v${{ steps.set_release_version.outputs.release_version }}" -m "Release ${{ steps.set_release_version.outputs.release_version }}"
+        git push origin "v${{ steps.set_release_version.outputs.release_version }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -77,6 +78,8 @@ jobs:
         git config user.email "actions@github.com"
         git commit -am "Set snapshot version $NEXT_VERSION"
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
