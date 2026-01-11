@@ -94,7 +94,7 @@ jobs:
         PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
         PRIVATE_KEY: "~/.ssh/id_rsa"
         TEST_KEY: ${{ secrets.TEST_KEY }}
-      run: echo $TEST_KEY && jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5 test --version ${{ steps.set_release_version.outputs.release_version }}
+      run: echo "${TEST_KEY}" && jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5 test --version ${{ steps.set_release_version.outputs.release_version }}
 
     # tag release
     - name: Tag release
