@@ -78,8 +78,21 @@ jobs:
     - name: Configure java
       run: jbang jdk install 21 ${{env.JAVA_HOME_21_X64}}
 
+    # setup SSH for deploy4j
+    - name: Write private key to file
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      run: |
+          # Create SSH directory and write the private key
+          mkdir -p ~/.ssh && echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+
     # deploy application using deploy4j
-    - name: Deploy application with deploy4j via jbangDeploy application
+    - name: Deploy application with deploy4j via jbang
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
+        PRIVATE_KEY: "~/.ssh/id_rsa"
       run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5 test --version ${{ steps.set_release_version.outputs.release_version }}
 
     # tag release
