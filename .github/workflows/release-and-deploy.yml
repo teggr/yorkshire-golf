@@ -34,15 +34,6 @@ jobs:
         restore-keys: |
           maven-${{ runner.os }}-
 
-    # cache JBang
-    - name: Cache JBang
-      uses: actions/cache@v4
-      with:
-        path: /root/.jbang
-        key: ${{ runner.os }}-jbang-deps
-        restore-keys: |
-          ${{ runner.os }}-jbang-
-
     # get current version from pom.xml
     - name: Get current Maven version
       id: get_version
@@ -79,6 +70,18 @@ jobs:
     - name: Push Docker image
       run: mvn -B docker:push --file pom.xml
 
+    # setup JBang
+    - name: Setup JBang
+      uses: jbangdev/setup-jbang@main
+
+    # configure java versions for jbang
+    - name: Configure java
+      run: jbang jdk install 21 ${{env.JAVA_HOME_21_X64}}
+
+    # deploy application using deploy4j
+    - name: Deploy application with deploy4j via jbangDeploy application
+      run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.5
+
     # tag release
     - name: Tag release
       run: |
@@ -86,15 +89,6 @@ jobs:
         git push origin "v${{ steps.set_release_version.outputs.release_version }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # deploy application using deploy4j
-    - name: Deploy application with deploy4j via jbangDeploy application
-      uses: jbangdev/jbang-action@v0.135.1
-      with:
-        script: "dev.deploy4j:deploy4j-cli:0.0.5"
-        scriptargs: "version"
-      env:
-        JBANG_REPO: /root/.jbang/repository
 
     # move to next -SNAPSHOT
     - name: Set next SNAPSHOT version
