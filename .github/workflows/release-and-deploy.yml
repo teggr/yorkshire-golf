@@ -90,7 +90,7 @@ jobs:
     - name: Create deploy4j secrets file
       run: |
         mkdir -p .deploy4j
-        cat > .deploy4j/secrets << EOF
+        cat > .deploy4j/secrets << "EOF"
         DOCKER_USERNAME=$DOCKER_USERNAME
         DOCKER_PASSWORD=$DOCKER_PASSWORD
         PRIVATE_KEY_PASSPHRASE=$PRIVATE_KEY_PASSPHRASE
