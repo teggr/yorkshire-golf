@@ -1,0 +1,133 @@
+name: Release and deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Grants permission to push tags and commits
+
+    steps:
+
+    # checkout the repository
+    - uses: actions/checkout@v4
+
+    # set up JDK 21 and cache Maven dependencies
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    # cache Maven packages
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.jbang
+          ~/.m2/repository
+        key: maven-${{ runner.os }}-deps
+        restore-keys: |
+          maven-${{ runner.os }}-
+
+    # get current version from pom.xml
+    - name: Get current Maven version
+      id: get_version
+      run: |
+       CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)
+       echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+       echo "Current version: $CURRENT_VERSION"
+
+    # remove -SNAPSHOT for release
+    - name: Set release version
+      id: set_release_version
+      run: |
+        mvn versions:set -DremoveSnapshot
+        RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)
+        echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+        echo "Release version: $RELEASE_VERSION"
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git commit -am "Set release version $RELEASE_VERSION"
+      shell: bash
+
+    # build with Maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    # deploy to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3.1.0
+      with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # build and push Docker image
+    - name: Push Docker image
+      run: mvn -B docker:push --file pom.xml
+
+    # setup JBang
+    - name: Setup JBang
+      uses: jbangdev/setup-jbang@main
+
+    # configure java versions for jbang
+    - name: Configure java
+      run: jbang jdk install 21 ${{env.JAVA_HOME_21_X64}}
+
+    # setup SSH for deploy4j
+    - name: Write private key to file
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      run: |
+          # Create SSH directory and write the private key
+          mkdir -p ~/.ssh && echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+
+    # create deploy4j secrets file
+    - name: Create deploy4j secrets file
+      run: |
+        mkdir -p .deploy4j
+        cat > .deploy4j/secrets << "EOF"
+        DOCKER_USERNAME=$DOCKER_USERNAME
+        DOCKER_PASSWORD=$DOCKER_PASSWORD
+        PRIVATE_KEY_PASSPHRASE=$PRIVATE_KEY_PASSPHRASE
+        PRIVATE_KEY=~/.ssh/id_rsa
+        EOF
+
+    # deploy application using deploy4j
+    - name: Deploy application with deploy4j via jbang
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
+      run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.6 deploy --version ${{ steps.set_release_version.outputs.release_version }}
+
+    # tag release
+    - name: Tag release
+      run: |
+        git tag -a "v${{ steps.set_release_version.outputs.release_version }}" -m "Release ${{ steps.set_release_version.outputs.release_version }}"
+        git push origin "v${{ steps.set_release_version.outputs.release_version }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # move to next -SNAPSHOT
+    - name: Set next SNAPSHOT version
+      run: |
+        mvn versions:set -DnextSnapshot
+        NEXT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)
+        echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+        echo "Next snapshot version: $NEXT_VERSION"
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git commit -am "Set snapshot version $NEXT_VERSION"
+        git push origin $GITHUB_REF_NAME
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
