@@ -1,8 +1,6 @@
 name: Release and deploy
 
 on:
-  push:
-    branches: [ "github-actions" ]
   workflow_dispatch:
 
 jobs:
