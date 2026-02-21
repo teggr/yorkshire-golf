@@ -38,3 +38,7 @@ build/
 ### Local Env Files ###
 .env/
 .deploy4j/secrets*
+
+### Scripts - generated/sensitive files ###
+jcef-bundle/
+credentials.json
