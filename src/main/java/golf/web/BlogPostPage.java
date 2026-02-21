@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
 
+import java.util.List;
 import java.util.Map;
 
 import static j2html.TagCreator.*;
@@ -45,11 +46,7 @@ public class BlogPostPage implements View {
                                                                           )
                                                                         : span("")
                                                         ),
-                                                        post.imageUrl() != null && !post.imageUrl().isBlank()
-                                                                ? img().withSrc(post.imageUrl())
-                                                                        .withAlt(post.title())
-                                                                        .withClass("img-fluid rounded mb-4 w-100")
-                                                                : div(),
+                                                        imagesSection(post.imageUrls(), post.title()),
                                                         div().withClass("fs-5 lh-lg").with(
                                                                 p(post.content())
                                                         )
@@ -61,6 +58,26 @@ public class BlogPostPage implements View {
                 .render(response.getWriter());
 
         log.info("BlogPostPage rendered for post: {}", post.id());
+    }
+
+    private j2html.tags.DomContent imagesSection(List<String> imageUrls, String alt) {
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return div();
+        }
+        if (imageUrls.size() == 1) {
+            return img().withSrc(imageUrls.get(0))
+                    .withAlt(alt)
+                    .withClass("img-fluid rounded mb-4 w-100");
+        }
+        return div().withClass("row g-2 mb-4").with(
+                imageUrls.stream()
+                        .map(url -> div().withClass("col-6").with(
+                                img().withSrc(url)
+                                        .withAlt(alt)
+                                        .withClass("img-fluid rounded w-100 h-100 object-fit-cover")
+                        ))
+                        .toArray(j2html.tags.DomContent[]::new)
+        );
     }
 
 }
