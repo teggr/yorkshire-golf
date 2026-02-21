@@ -1,6 +1,6 @@
 package golf.web;
 
-import golf.blog.BlogPost;
+import golf.round.Round;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import static j2html.TagCreator.*;
 
 @Component
 @Slf4j
-public class BlogPage implements View {
+public class RoundsPage implements View {
 
     @Override
     public @Nullable String getContentType() {
@@ -27,33 +27,33 @@ public class BlogPage implements View {
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         @SuppressWarnings("unchecked")
-        List<BlogPost> posts = (List<BlogPost>) model.get("posts");
+        List<Round> rounds = (List<Round>) model.get("rounds");
 
         new YorkshireGolfPageTemplate()
-                .withTitle("Yorkshire Golf Life - Blog")
+                .withTitle("Yorkshire Golf Life - Rounds")
                 .withBody(
                         div().withClass("container py-4").with(
-                                h1("Golf Life Blog").withClass("display-6 mb-2"),
+                                h1("Rounds").withClass("display-6 mb-2"),
                                 p("Progress, rounds and reflections on the Yorkshire Golf Challenge.").withClass("lead mb-5"),
                                 div().withClass("row row-cols-1 row-cols-md-2 g-4").with(
-                                        posts.stream().map(post ->
+                                        rounds.stream().map(round ->
                                                 div().withClass("col").with(
                                                         div().withClass("card h-100").with(
                                                                 div().withClass("card-body").with(
-                                                                        h5(post.title()).withClass("card-title"),
+                                                                        h5(round.title()).withClass("card-title"),
                                                                         p().withClass("card-text text-muted small mb-2").with(
-                                                                                span(post.date()),
-                                                                                post.courseName() != null && !post.courseName().isBlank()
-                                                                                        ? span(" · " + post.courseName())
+                                                                                span(round.date()),
+                                                                                round.courseName() != null && !round.courseName().isBlank()
+                                                                                        ? span(" · " + round.courseName())
                                                                                         : span("")
                                                                         ),
-                                                                        p(post.content().length() > 160
-                                                                                ? post.content().substring(0, 160) + "…"
-                                                                                : post.content()
+                                                                        p(round.content().length() > 160
+                                                                                ? round.content().substring(0, 160) + "…"
+                                                                                : round.content()
                                                                         ).withClass("card-text"),
                                                                         a("Read more →")
                                                                                 .withClass("btn btn-sm btn-outline-dark mt-2")
-                                                                                .withHref("/blog/" + post.id())
+                                                                                .withHref("/rounds/" + round.id())
                                                                 )
                                                         )
                                                 )
@@ -63,7 +63,7 @@ public class BlogPage implements View {
                 )
                 .render(response.getWriter());
 
-        log.info("BlogPage rendered");
+        log.info("RoundsPage rendered");
     }
 
 }

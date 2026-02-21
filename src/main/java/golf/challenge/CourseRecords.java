@@ -1,5 +1,8 @@
-package golf.tracker;
+package golf.challenge;
 
+import golf.course.Course;
+import golf.course.Courses;
+import golf.course.Region;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;

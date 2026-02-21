@@ -1,4 +1,4 @@
-package golf.tracker;
+package golf.course;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

@@ -1,4 +1,6 @@
-package golf.tracker;
+package golf.challenge;
+
+import golf.course.Course;
 
 import java.time.LocalDate;
 

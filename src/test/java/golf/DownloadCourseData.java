@@ -1,6 +1,6 @@
 package golf;
 
-import golf.tracker.Region;
+import golf.course.Region;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

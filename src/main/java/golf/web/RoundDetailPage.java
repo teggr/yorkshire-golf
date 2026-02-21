@@ -1,6 +1,6 @@
 package golf.web;
 
-import golf.blog.BlogPost;
+import golf.round.Round;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import static j2html.TagCreator.*;
 
 @Component
 @Slf4j
-public class BlogPostPage implements View {
+public class RoundDetailPage implements View {
 
     @Override
     public @Nullable String getContentType() {
@@ -26,29 +26,29 @@ public class BlogPostPage implements View {
     @Override
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        BlogPost post = (BlogPost) model.get("post");
+        Round round = (Round) model.get("round");
 
         new YorkshireGolfPageTemplate()
-                .withTitle(post.title() + " - Yorkshire Golf Life")
+                .withTitle(round.title() + " - Yorkshire Golf Life")
                 .withBody(
                         div().withClass("container py-4").with(
-                                a("← Back to blog").withHref("/blog").withClass("text-decoration-none text-muted mb-4 d-inline-block"),
+                                a("← Back to rounds").withHref("/rounds").withClass("text-decoration-none text-muted mb-4 d-inline-block"),
                                 div().withClass("row justify-content-center").with(
                                         div().withClass("col-lg-8").with(
                                                 article().with(
-                                                        h1(post.title()).withClass("display-6 mb-1"),
+                                                        h1(round.title()).withClass("display-6 mb-1"),
                                                         p().withClass("text-muted mb-3").with(
-                                                                span(post.date()),
-                                                                post.courseName() != null && !post.courseName().isBlank()
+                                                                span(round.date()),
+                                                                round.courseName() != null && !round.courseName().isBlank()
                                                                         ? span().with(
                                                                                 text(" · "),
-                                                                                span(post.courseName()).withClass("badge bg-dark fw-normal")
+                                                                                span(round.courseName()).withClass("badge bg-dark fw-normal")
                                                                           )
                                                                         : span("")
                                                         ),
-                                                        imagesSection(post.imageUrls(), post.title()),
+                                                        imagesSection(round.imageUrls(), round.title()),
                                                         div().withClass("fs-5 lh-lg").with(
-                                                                p(post.content())
+                                                                p(round.content())
                                                         )
                                                 )
                                         )
@@ -57,7 +57,7 @@ public class BlogPostPage implements View {
                 )
                 .render(response.getWriter());
 
-        log.info("BlogPostPage rendered for post: {}", post.id());
+        log.info("RoundDetailPage rendered for round: {}", round.id());
     }
 
     private j2html.tags.DomContent imagesSection(List<String> imageUrls, String alt) {

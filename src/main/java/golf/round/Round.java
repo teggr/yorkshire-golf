@@ -1,8 +1,8 @@
-package golf.blog;
+package golf.round;
 
 import java.util.List;
 
-public record BlogPost(
+public record Round(
         String id,
         String title,
         String date,

@@ -42,7 +42,7 @@ public class YorkshireGolfPageTemplate {
                                 div().withClass("navbar-nav flex-row gap-3").with(
                                         a("Tracker").withClass("nav-link").withHref("/"),
                                         a("Courses").withClass("nav-link").withHref("/courses"),
-                                        a("Blog").withClass("nav-link").withHref("/blog")
+                                        a("Rounds").withClass("nav-link").withHref("/rounds")
                                 )
                         )
                 );
