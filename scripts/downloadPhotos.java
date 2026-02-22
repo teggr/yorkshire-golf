@@ -4,10 +4,12 @@
 //DEPS me.friwi:jcefmaven:143.0.14
 //DEPS org.slf4j:slf4j-simple:2.0.9
 //DEPS com.fasterxml.jackson.core:jackson-databind:2.18.3
+//DEPS com.j2html:j2html:1.6.0
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
+import j2html.tags.DomContent;
 import me.friwi.jcefmaven.CefAppBuilder;
 import me.friwi.jcefmaven.impl.progress.ConsoleProgressHandler;
 import org.cef.CefApp;
@@ -27,6 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
+
+import static j2html.TagCreator.*;
 
 /**
  * Google Photos Downloader - jbang script
@@ -113,19 +117,19 @@ public class downloadPhotos {
         app.get("/callback", ctx -> {
             String error = ctx.queryParam("error");
             if (error != null) {
-                ctx.status(400).html("<h1>Authorization denied: " + escHtml(error) + "</h1>");
+                ctx.status(400).html(h1("Authorization denied: " + error).render());
                 return;
             }
             String code = ctx.queryParam("code");
             if (code == null) {
-                ctx.status(400).html("<h1>Missing authorization code</h1>");
+                ctx.status(400).html(h1("Missing authorization code").render());
                 return;
             }
             try {
                 accessToken = exchangeCode(code);
                 ctx.redirect("/photos");
             } catch (Exception e) {
-                ctx.status(500).html("<h1>Authentication failed: " + escHtml(e.getMessage()) + "</h1>");
+                ctx.status(500).html(h1("Authentication failed: " + e.getMessage()).render());
             }
         });
 
@@ -138,7 +142,7 @@ public class downloadPhotos {
                 Map<String, Object> data = fetchPhotos(null);
                 ctx.html(photoPickerPage(data));
             } catch (Exception e) {
-                ctx.status(500).html("<h1>Error loading photos: " + escHtml(e.getMessage()) + "</h1>");
+                ctx.status(500).html(h1("Error loading photos: " + e.getMessage()).render());
             }
         });
 
@@ -264,36 +268,11 @@ public class downloadPhotos {
     static String photoPickerPage(Map<String, Object> data) throws Exception {
         List<Map<String, String>> items = (List<Map<String, String>>) data.get("items");
         String nextPageToken = (String) data.get("nextPageToken");
-        String escapedNextToken = nextPageToken != null ? escHtml(nextPageToken) : "";
         boolean hasMore = nextPageToken != null;
         String defaultDir = "photos-" + LocalDate.now();
+        String nextTokenJs = hasMore ? MAPPER.writeValueAsString(nextPageToken) : "null";
 
-        StringBuilder thumbsHtml = new StringBuilder();
-        for (Map<String, String> item : items) {
-            String id = escHtml(item.get("id"));
-            String baseUrl = escHtml(item.get("baseUrl"));
-            String filename = escHtml(item.get("filename"));
-            thumbsHtml.append(String.format(
-                "<div class=\"photo-item\" data-id=\"%s\" data-url=\"%s\" data-filename=\"%s\">" +
-                "<div class=\"photo-wrapper\">" +
-                "<img src=\"%s=w200-h200-c\" alt=\"%s\" loading=\"lazy\"/>" +
-                "<div class=\"check-overlay\"><span class=\"checkmark\">&#10003;</span></div>" +
-                "</div>" +
-                "<span class=\"photo-name\" title=\"%s\">%s</span>" +
-                "</div>",
-                id, baseUrl, filename, baseUrl, filename, filename, filename));
-        }
-
-        String loadMoreAttr = hasMore ? "" : "style=\"display:none\"";
-        String nextTokenJs = hasMore ? "\"" + escapedNextToken + "\"" : "null";
-        String emptyMsg = items.isEmpty() ? "<div class=\"empty\">No photos found in your library.</div>" : "";
-
-        return "<!DOCTYPE html>" +
-            "<html lang=\"en\">" +
-            "<head>" +
-            "<meta charset=\"UTF-8\">" +
-            "<title>Google Photos - Select Photos</title>" +
-            "<style>" +
+        String css =
             "* { box-sizing: border-box; margin: 0; padding: 0; }" +
             "body { font-family: Arial, sans-serif; background: #f0f2f5; }" +
             ".header { background: white; padding: 14px 20px; display: flex; align-items: center;" +
@@ -341,24 +320,9 @@ public class downloadPhotos {
             "  transform: translateX(-50%); background: #333; color: white;" +
             "  padding: 12px 24px; border-radius: 8px; font-size: 14px;" +
             "  display: none; z-index: 999; max-width: 80%; text-align: center;" +
-            "  box-shadow: 0 4px 12px rgba(0,0,0,.3); }" +
-            "</style></head>" +
-            "<body>" +
-            "<div class=\"header\">" +
-            "<h1>&#128248; Google Photos</h1>" +
-            "<div class=\"controls\">" +
-            "<span class=\"count-badge\" id=\"count\">0 selected</span>" +
-            "<button class=\"btn btn-secondary\" onclick=\"selectAll()\">Select All</button>" +
-            "<button class=\"btn btn-secondary\" onclick=\"clearSelection()\">Clear</button>" +
-            "<input type=\"text\" class=\"dir-input\" id=\"dirName\" placeholder=\"Folder name\" value=\"" + defaultDir + "\"/>" +
-            "<button class=\"btn btn-primary\" onclick=\"downloadSelected()\">&#11015; Download</button>" +
-            "</div></div>" +
-            "<div class=\"grid\" id=\"grid\">" + thumbsHtml + emptyMsg + "</div>" +
-            "<div class=\"load-more-wrap\">" +
-            "<button class=\"load-more\" id=\"loadMoreBtn\" " + loadMoreAttr + " onclick=\"loadMore()\">Load More Photos</button>" +
-            "</div>" +
-            "<div id=\"toast\"></div>" +
-            "<script>" +
+            "  box-shadow: 0 4px 12px rgba(0,0,0,.3); }";
+
+        String js =
             "var selectedItems = new Map();" +
             "var nextPageToken = " + nextTokenJs + ";" +
             "function attachHandlers(item) {" +
@@ -446,17 +410,66 @@ public class downloadPhotos {
             "  var t = document.getElementById('toast');" +
             "  t.textContent = msg; t.style.display = 'block';" +
             "  if (dur > 0) setTimeout(function() { t.style.display = 'none'; }, dur);" +
-            "}" +
-            "</script></body></html>";
+            "}";
+
+        return join(
+            document(),
+            html().attr("lang", "en").with(
+                head().with(
+                    meta().withCharset("UTF-8"),
+                    title("Google Photos - Select Photos"),
+                    style(rawHtml(css))
+                ),
+                body().with(
+                    div().withClass("header").with(
+                        h1(rawHtml("&#128248; Google Photos")),
+                        div().withClass("controls").with(
+                            span("0 selected").withClass("count-badge").withId("count"),
+                            button("Select All").withClass("btn btn-secondary").attr("onclick", "selectAll()"),
+                            button("Clear").withClass("btn btn-secondary").attr("onclick", "clearSelection()"),
+                            input().withType("text").withClass("dir-input").withId("dirName")
+                                .withPlaceholder("Folder name").withValue(defaultDir),
+                            button(rawHtml("&#11015; Download")).withClass("btn btn-primary")
+                                .attr("onclick", "downloadSelected()")
+                        )
+                    ),
+                    div().withClass("grid").withId("grid").with(
+                        each(items, item -> photoItemTag(item)),
+                        iff(items.isEmpty(), div("No photos found in your library.").withClass("empty"))
+                    ),
+                    div().withClass("load-more-wrap").with(
+                        button("Load More Photos").withClass("load-more").withId("loadMoreBtn")
+                            .attr("onclick", "loadMore()")
+                            .condAttr(!hasMore, "style", "display:none")
+                    ),
+                    div().withId("toast"),
+                    script(rawHtml(js))
+                )
+            )
+        ).render();
+    }
+
+    static DomContent photoItemTag(Map<String, String> item) {
+        String id = item.get("id");
+        String baseUrl = item.get("baseUrl");
+        String filename = item.get("filename");
+        return div().withClass("photo-item")
+            .attr("data-id", id)
+            .attr("data-url", baseUrl)
+            .attr("data-filename", filename)
+            .with(
+                div().withClass("photo-wrapper").with(
+                    img().withSrc(baseUrl + "=w200-h200-c").withAlt(filename).attr("loading", "lazy"),
+                    div().withClass("check-overlay").with(
+                        span(rawHtml("&#10003;")).withClass("checkmark")
+                    )
+                ),
+                span(filename).withClass("photo-name").withTitle(filename)
+            );
     }
 
     static String loginPage() {
-        return "<!DOCTYPE html>" +
-            "<html lang=\"en\">" +
-            "<head>" +
-            "<meta charset=\"UTF-8\">" +
-            "<title>Google Photos Downloader</title>" +
-            "<style>" +
+        String css =
             "body { font-family: Arial, sans-serif; display: flex; justify-content: center;" +
             "  align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }" +
             ".card { background: white; padding: 40px; border-radius: 12px;" +
@@ -466,13 +479,25 @@ public class downloadPhotos {
             ".btn { display: inline-block; padding: 12px 28px; background: #4285f4;" +
             "  color: white; text-decoration: none; border-radius: 6px;" +
             "  font-size: 16px; font-weight: 500; }" +
-            ".btn:hover { background: #3367d6; }" +
-            "</style></head>" +
-            "<body><div class=\"card\">" +
-            "<h1>&#128248; Google Photos Downloader</h1>" +
-            "<p>Sign in with Google to browse and download your photos.</p>" +
-            "<a href=\"/auth\" class=\"btn\">Sign in with Google</a>" +
-            "</div></body></html>";
+            ".btn:hover { background: #3367d6; }";
+
+        return join(
+            document(),
+            html().attr("lang", "en").with(
+                head().with(
+                    meta().withCharset("UTF-8"),
+                    title("Google Photos Downloader"),
+                    style(rawHtml(css))
+                ),
+                body().with(
+                    div().withClass("card").with(
+                        h1(rawHtml("&#128248; Google Photos Downloader")),
+                        p("Sign in with Google to browse and download your photos."),
+                        a("Sign in with Google").withHref("/auth").withClass("btn")
+                    )
+                )
+            )
+        ).render();
     }
 
     static String sanitizeFilename(String filename) {
@@ -481,14 +506,5 @@ public class downloadPhotos {
 
     static String encode(String s) {
         return URLEncoder.encode(s, StandardCharsets.UTF_8);
-    }
-
-    static String escHtml(String s) {
-        if (s == null) return "";
-        return s.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&#x27;");
     }
 }
