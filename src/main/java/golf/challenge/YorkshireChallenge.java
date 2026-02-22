@@ -1,5 +1,7 @@
-package golf.tracker;
+package golf.challenge;
 
+import golf.course.Courses;
+import golf.course.Regions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

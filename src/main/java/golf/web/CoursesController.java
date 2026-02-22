@@ -1,6 +1,6 @@
 package golf.web;
 
-import golf.challenge.YorkshireChallenge;
+import golf.course.Courses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/courses")
 @RequiredArgsConstructor
-public class HomeController {
+public class CoursesController {
 
-  private final YorkshireChallenge yorkshireChallenge;
+    private final Courses courses;
 
-  @GetMapping
-  public String home(Model model) {
-    model.addAttribute("tracker", yorkshireChallenge.getTracker());
-    return "homePage";
-  }
+    @GetMapping
+    public String courses(Model model) {
+        model.addAttribute("courses", courses.getAllCourses());
+        return "coursesPage";
+    }
 
 }

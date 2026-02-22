@@ -1,4 +1,4 @@
-package golf.tracker;
+package golf.course;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.core.io.ClassPathResource;

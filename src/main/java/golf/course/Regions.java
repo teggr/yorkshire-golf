@@ -1,4 +1,4 @@
-package golf.tracker;
+package golf.course;
 
 public class Regions {
 
