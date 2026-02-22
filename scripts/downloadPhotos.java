@@ -17,7 +17,8 @@ import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.io.File;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -28,7 +29,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static j2html.TagCreator.*;
 
@@ -68,6 +72,7 @@ public class downloadPhotos {
         builder.setProgressHandler(new ConsoleProgressHandler());
         builder.addJcefArgs("--disable-gpu",
             "--disable-dev-shm-usage",
+            "--disable-background-networking",
             // --no-sandbox is required when running as root or in restricted container environments.
             // Remove the next line for normal desktop use to keep Chromium's sandbox active.
             "--no-sandbox");
@@ -79,9 +84,13 @@ public class downloadPhotos {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Google Photos Downloader");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(cefBrowser.getUIComponent(), BorderLayout.CENTER);
+            Component browserUI = cefBrowser.getUIComponent();
+            frame.add(browserUI, BorderLayout.CENTER);
             frame.setSize(1280, 900);
             frame.setVisible(true);
+            frame.toFront();
+            frame.requestFocus();
+            browserUI.requestFocusInWindow();
         });
     }
 
