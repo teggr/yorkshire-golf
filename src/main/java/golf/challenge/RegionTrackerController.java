@@ -16,7 +16,7 @@ public class RegionTrackerController {
   @GetMapping
   public String home(Model model) {
     model.addAttribute("tracker", yorkshireChallenge.getTracker());
-    return "homePage";
+    return "regionTrackerPage";
   }
 
 }
