@@ -15,10 +15,13 @@ import me.friwi.jcefmaven.impl.progress.ConsoleProgressHandler;
 import org.cef.CefApp;
 import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
+import org.cef.handler.CefAppHandlerAdapter;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -67,12 +70,25 @@ public class downloadPhotos {
 
         System.out.println("Starting browser (may download JCEF on first run ~150 MB)...");
 
+        // Register termination handler before building CefApp.
+        // When CefApp reaches TERMINATED state (after dispose()) we can safely exit.
+        CefApp.addAppHandler(new CefAppHandlerAdapter(args) {
+            @Override
+            public void stateHasChanged(CefApp.CefAppState state) {
+                if (state == CefApp.CefAppState.TERMINATED) {
+                    System.exit(0);
+                }
+            }
+        });
+
         CefAppBuilder builder = new CefAppBuilder();
         builder.setInstallDir(new File("jcef-bundle"));
         builder.setProgressHandler(new ConsoleProgressHandler());
         builder.addJcefArgs("--disable-gpu",
             "--disable-dev-shm-usage",
             "--disable-background-networking",
+            "--disable-extensions",
+            "--disable-component-update",
             // --no-sandbox is required when running as root or in restricted container environments.
             // Remove the next line for normal desktop use to keep Chromium's sandbox active.
             "--no-sandbox");
@@ -83,7 +99,16 @@ public class downloadPhotos {
 
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Google Photos Downloader");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            // DO_NOTHING_ON_CLOSE lets us control shutdown order: dispose CEF first,
+            // then the CefAppHandler fires System.exit(0) once CEF has terminated.
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    CefApp.getInstance().dispose();
+                    frame.dispose();
+                }
+            });
             Component browserUI = cefBrowser.getUIComponent();
             frame.add(browserUI, BorderLayout.CENTER);
             frame.setSize(1280, 900);
