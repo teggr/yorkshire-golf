@@ -1,6 +1,5 @@
-package golf.web;
+package golf.round;
 
-import golf.round.Rounds;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

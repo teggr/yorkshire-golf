@@ -40,9 +40,9 @@ public class YorkshireGolfPageTemplate {
                                         .withClass("navbar-brand fw-bold")
                                         .withHref("/"),
                                 div().withClass("navbar-nav flex-row gap-3").with(
-                                        a("Tracker").withClass("nav-link").withHref("/"),
-                                        a("Courses").withClass("nav-link").withHref("/courses"),
-                                        a("Rounds").withClass("nav-link").withHref("/rounds")
+                                        a("Challenge").withClass("nav-link").withHref("/challenge"),
+                                        a("Rounds").withClass("nav-link").withHref("/rounds"),
+                                        a("Courses").withClass("nav-link").withHref("/courses")
                                 )
                         )
                 );

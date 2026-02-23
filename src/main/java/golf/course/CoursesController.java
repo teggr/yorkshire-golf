@@ -1,6 +1,5 @@
-package golf.web;
+package golf.course;
 
-import golf.course.Courses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

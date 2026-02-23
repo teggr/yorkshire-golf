@@ -1,6 +1,5 @@
-package golf.web;
+package golf.round;
 
-import golf.round.Round;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +7,8 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
+
+import golf.web.YorkshireGolfPageTemplate;
 
 import java.util.List;
 import java.util.Map;
