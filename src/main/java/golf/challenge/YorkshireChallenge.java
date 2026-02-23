@@ -2,6 +2,7 @@ package golf.challenge;
 
 import golf.course.Courses;
 import golf.course.Regions;
+import golf.round.Rounds;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +11,12 @@ import org.springframework.stereotype.Service;
 public class YorkshireChallenge {
 
     private final Courses courses;
-    private final CourseRecords courseRecords;
+    private final Rounds rounds;
 
     public RegionChallengeTracker getTracker() {
         return new RegionChallengeTracker(
                 courses.getCourseRegionCountGroupByRegion(),
-                courseRecords.getCourseRecordsWhereRegionIn(
+                rounds.getRoundsWhereRegionIn(
                         Regions.NorthYorkshire,
                         Regions.EastYorkshire,
                         Regions.SouthYorkshire,
