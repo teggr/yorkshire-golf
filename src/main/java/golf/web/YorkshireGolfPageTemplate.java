@@ -32,18 +32,28 @@ public class YorkshireGolfPageTemplate {
 
     private DomContent buildNavbar() {
         return nav()
-                .withClass("navbar navbar-expand-lg bg-dark")
+                .withClass("navbar navbar-expand-lg ygl-navbar")
                 .attr("data-bs-theme", "dark")
                 .with(
                         div().withClass("container").with(
                                 a("⛳ Yorkshire Golf Life")
-                                        .withClass("navbar-brand fw-bold")
+                                        .withClass("navbar-brand fw-bold ygl-navbar__brand")
                                         .withHref("/"),
                                 div().withClass("navbar-nav flex-row gap-3").with(
-                                        a("Challenge").withClass("nav-link").withHref("/challenge"),
-                                        a("Rounds").withClass("nav-link").withHref("/rounds"),
-                                        a("Courses").withClass("nav-link").withHref("/courses")
+                                        a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge"),
+                                        a("Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds"),
+                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
                                 )
+                        )
+                );
+    }
+
+    private DomContent buildFooter() {
+        return footer()
+                .withClass("ygl-footer")
+                .with(
+                        div().withClass("container").with(
+                                p("© Yorkshire Golf Life").withClass("mb-0")
                         )
                 );
     }
@@ -57,7 +67,9 @@ public class YorkshireGolfPageTemplate {
                                         bootstrapCharsetMetaTag(),
                                         bootstrapViewportMetaTag(),
                                         title(title),
-                                        bootstrapMinCssLinkTag()
+                                        googleFontsLinkTag(),
+                                        bootstrapMinCssLinkTag(),
+                                        themeCssLinkTag()
                                 )
                                 .with(
                                         pageScripts
@@ -68,6 +80,7 @@ public class YorkshireGolfPageTemplate {
                                 .with(
                                         body
                                 )
+                                .with(buildFooter())
                                 .with(
                                         popperMinJsScriptTag(),
                                         bootstrapMinJsScriptTag()

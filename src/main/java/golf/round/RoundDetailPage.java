@@ -32,23 +32,23 @@ public class RoundDetailPage implements View {
         new YorkshireGolfPageTemplate()
                 .withTitle(round.title() + " - Yorkshire Golf Life")
                 .withBody(
-                        div().withClass("container py-4").with(
-                                a("← Back to rounds").withHref("/rounds").withClass("text-decoration-none text-muted mb-4 d-inline-block"),
+                        div().withClass("container ygl-page").with(
+                                a("← Back to rounds").withHref("/rounds").withClass("ygl-back-link"),
                                 div().withClass("row justify-content-center").with(
                                         div().withClass("col-lg-8").with(
                                                 article().with(
-                                                        h1(round.title()).withClass("display-6 mb-1"),
-                                                        p().withClass("text-muted mb-3").with(
+                                                        h1(round.title()).withClass("ygl-article__title"),
+                                                        p().withClass("ygl-article__meta").with(
                                                                 span(round.date()),
                                                                 round.courseName() != null && !round.courseName().isBlank()
                                                                         ? span().with(
                                                                                 text(" · "),
-                                                                                span(round.courseName()).withClass("badge bg-dark fw-normal")
+                                                                                span(round.courseName()).withClass("ygl-badge")
                                                                           )
                                                                         : span("")
                                                         ),
                                                         imagesSection(round.imageUrls(), round.title()),
-                                                        div().withClass("fs-5 lh-lg").with(
+                                                        div().withClass("ygl-article__content").with(
                                                                 p(round.content())
                                                         )
                                                 )
@@ -68,14 +68,14 @@ public class RoundDetailPage implements View {
         if (imageUrls.size() == 1) {
             return img().withSrc(imageUrls.get(0))
                     .withAlt(alt)
-                    .withClass("img-fluid rounded mb-4 w-100");
+                    .withClass("img-fluid rounded-theme mb-4 w-100 ygl-article__image");
         }
         return div().withClass("row g-2 mb-4").with(
                 imageUrls.stream()
                         .map(url -> div().withClass("col-6").with(
                                 img().withSrc(url)
                                         .withAlt(alt)
-                                        .withClass("img-fluid rounded w-100 h-100 object-fit-cover")
+                                        .withClass("img-fluid rounded-theme w-100 h-100 object-fit-cover ygl-article__image")
                         ))
                         .toArray(j2html.tags.DomContent[]::new)
         );

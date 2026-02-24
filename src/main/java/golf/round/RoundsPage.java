@@ -33,16 +33,16 @@ public class RoundsPage implements View {
         new YorkshireGolfPageTemplate()
                 .withTitle("Yorkshire Golf Life - Rounds")
                 .withBody(
-                        div().withClass("container py-4").with(
-                                h1("Rounds").withClass("display-6 mb-2"),
-                                p("Progress, rounds and reflections on the Yorkshire Golf Challenge.").withClass("lead mb-5"),
+                        div().withClass("container ygl-page").with(
+                                h1("Rounds").withClass("ygl-page__title"),
+                                p("Progress, rounds and reflections on the Yorkshire Golf Challenge.").withClass("ygl-page__lead"),
                                 div().withClass("row row-cols-1 row-cols-md-2 g-4").with(
                                         rounds.stream().map(round ->
                                                 div().withClass("col").with(
-                                                        div().withClass("card h-100").with(
-                                                                div().withClass("card-body").with(
-                                                                        h5(round.title()).withClass("card-title"),
-                                                                        p().withClass("card-text text-muted small mb-2").with(
+                                                        div().withClass("ygl-card h-100").with(
+                                                                div().withClass("ygl-card__body").with(
+                                                                        h5(round.title()).withClass("ygl-card__title"),
+                                                                        p().withClass("ygl-card__meta mb-2").with(
                                                                                 span(round.date()),
                                                                                 round.courseName() != null && !round.courseName().isBlank()
                                                                                         ? span(" · " + round.courseName())
@@ -51,9 +51,9 @@ public class RoundsPage implements View {
                                                                         p(round.content().length() > 160
                                                                                 ? round.content().substring(0, 160) + "…"
                                                                                 : round.content()
-                                                                        ).withClass("card-text"),
+                                                                        ).withClass("ygl-card__text"),
                                                                         a("Read more →")
-                                                                                .withClass("btn btn-sm btn-outline-dark mt-2")
+                                                                                .withClass("ygl-btn ygl-btn--outline ygl-btn--sm mt-2")
                                                                                 .withHref("/rounds/" + round.id())
                                                                 )
                                                         )

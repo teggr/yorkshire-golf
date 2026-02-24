@@ -66,13 +66,15 @@ public class RegionTrackerPage implements View {
         chartJsPluginDoughnutLabelLibScript()
       )
       .withBody(
-        h1("#yorkshiregolfchallenge"),
-        div()
-          .withStyle("max-width: 640px")
-          .with(
-            canvas().withId("myChart")
-          ),
-        chartJsConfigScript("myChart", chartData)
+        div().withClass("container ygl-page").with(
+          h1("#yorkshiregolfchallenge").withClass("ygl-page__title"),
+          div()
+            .withClass("ygl-chart")
+            .with(
+              canvas().withId("myChart")
+            ),
+          chartJsConfigScript("myChart", chartData)
+        )
       );
 
     pageTemplate.render(response.getWriter());
