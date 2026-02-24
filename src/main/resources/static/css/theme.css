@@ -318,6 +318,4 @@ h1, h2, h3, h4, h5, h6,
   border-radius: var(--ygl-radius-lg) !important;
 }
 
-/* Cards inside Bootstrap grid inherit theme */
-.ygl-card .card-body { padding: 0; }
-.ygl-card .card-footer { background-color: transparent; border-top: 1px solid var(--ygl-color-border); }
+
