@@ -85,7 +85,7 @@ public class YorkshireGolfPageTemplate {
                                                         div().withClass("ygl-footer__heading").with(text("Challenge")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(a("Tracker").withHref("/challenge")),
-                                                                li().with(a("#yorkshiregolfchallenge"))
+                                                                li().with(a("#yorkshiregolfchallenge").withHref("/challenge"))
                                                         )
                                                 )
                                         )

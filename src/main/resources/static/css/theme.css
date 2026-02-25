@@ -624,6 +624,23 @@ img {
   margin-bottom: 1.75rem;
 }
 
+.ygl-feature__stat {
+  font-family: var(--ygl-font-heading);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--ygl-color-primary);
+  line-height: 1;
+}
+
+.ygl-feature__stat-label {
+  font-size: 0.875rem;
+  color: var(--ygl-color-text-muted);
+  margin-top: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 /* ---------- ygl-footer ---------- */
 .ygl-footer {
   background-color: var(--ygl-color-primary-dark);

@@ -101,8 +101,8 @@ public class HomePage implements View {
                 ),
                 div().withClass("col-lg-4 offset-lg-1 text-center").with(
                   div().with(
-                    span(String.valueOf(totalCourses)).withClass("d-block").withStyle("font-family:var(--ygl-font-heading);font-size:4rem;font-weight:700;color:var(--ygl-color-primary);line-height:1"),
-                    span("courses across Yorkshire").withClass("d-block").withStyle("font-size:0.875rem;color:var(--ygl-color-text-muted);margin-top:0.5rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em")
+                    span(String.valueOf(totalCourses)).withClass("d-block ygl-feature__stat"),
+                    span("courses across Yorkshire").withClass("d-block ygl-feature__stat-label")
                   )
                 )
               )
