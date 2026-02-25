@@ -33,23 +33,25 @@ public class RoundDetailPage implements View {
                 .withTitle(round.title() + " - Yorkshire Golf Life")
                 .withBody(
                         div().withClass("container ygl-page").with(
-                                a("← Back to rounds").withHref("/rounds").withClass("ygl-back-link"),
-                                div().withClass("row justify-content-center").with(
-                                        div().withClass("col-lg-8").with(
-                                                article().with(
-                                                        h1(round.title()).withClass("ygl-article__title"),
-                                                        p().withClass("ygl-article__meta").with(
-                                                                span(round.date()),
-                                                                round.courseName() != null && !round.courseName().isBlank()
-                                                                        ? span().with(
-                                                                                text(" · "),
-                                                                                span(round.courseName()).withClass("ygl-badge")
-                                                                          )
-                                                                        : span("")
-                                                        ),
-                                                        imagesSection(round.imageUrls(), round.title()),
-                                                        div().withClass("ygl-article__content").with(
-                                                                p(round.content())
+                                div().withClass("ygl-page__content").with(
+                                        a("← Back to Rounds").withHref("/rounds").withClass("ygl-back-link"),
+                                        div().withClass("row justify-content-center").with(
+                                                div().withClass("col-lg-8").with(
+                                                        article().withClass("ygl-article").with(
+                                                                h1(round.title()).withClass("ygl-article__title"),
+                                                                p().withClass("ygl-article__meta").with(
+                                                                        span(round.date()),
+                                                                        round.courseName() != null && !round.courseName().isBlank()
+                                                                                ? span().with(
+                                                                                        text(" · "),
+                                                                                        span(round.courseName()).withClass("ygl-badge")
+                                                                                  )
+                                                                                : span("")
+                                                                ),
+                                                                imagesSection(round.imageUrls(), round.title()),
+                                                                div().withClass("ygl-article__content").with(
+                                                                        p(round.content())
+                                                                )
                                                         )
                                                 )
                                         )

@@ -36,13 +36,27 @@ public class YorkshireGolfPageTemplate {
                 .attr("data-bs-theme", "dark")
                 .with(
                         div().withClass("container").with(
-                                a("⛳ Yorkshire Golf Life")
-                                        .withClass("navbar-brand fw-bold ygl-navbar__brand")
-                                        .withHref("/"),
-                                div().withClass("navbar-nav flex-row gap-3").with(
-                                        a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge"),
-                                        a("Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds"),
-                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
+                                a().withClass("navbar-brand ygl-navbar__brand").withHref("/").with(
+                                        text("Yorkshire Golf Life")
+                                ),
+                                button()
+                                        .withClass("navbar-toggler")
+                                        .attr("type", "button")
+                                        .attr("data-bs-toggle", "collapse")
+                                        .attr("data-bs-target", "#navbarNav")
+                                        .with(span().withClass("navbar-toggler-icon")),
+                                div().withClass("collapse navbar-collapse justify-content-end").withId("navbarNav").with(
+                                        ul().withClass("navbar-nav ygl-navbar__nav").with(
+                                                li().withClass("nav-item").with(
+                                                        a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
+                                                ),
+                                                li().withClass("nav-item").with(
+                                                        a("Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds")
+                                                ),
+                                                li().withClass("nav-item").with(
+                                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
+                                                )
+                                        )
                                 )
                         )
                 );
@@ -52,8 +66,35 @@ public class YorkshireGolfPageTemplate {
         return footer()
                 .withClass("ygl-footer")
                 .with(
-                        div().withClass("container").with(
-                                p("© Yorkshire Golf Life").withClass("mb-0")
+                        div().withClass("ygl-footer__top").with(
+                                div().withClass("container").with(
+                                        div().withClass("row g-4").with(
+                                                div().withClass("col-lg-5").with(
+                                                        div().withClass("ygl-footer__brand").with(text("Yorkshire Golf Life")),
+                                                        p("Tracking the journey to play every golf course across the four ridings of Yorkshire.").withClass("ygl-footer__tagline")
+                                                ),
+                                                div().withClass("col-6 col-lg-2 offset-lg-2").with(
+                                                        div().withClass("ygl-footer__heading").with(text("Explore")),
+                                                        ul().withClass("ygl-footer__link-list").with(
+                                                                li().with(a("Home").withHref("/")),
+                                                                li().with(a("Courses").withHref("/courses")),
+                                                                li().with(a("Rounds").withHref("/rounds"))
+                                                        )
+                                                ),
+                                                div().withClass("col-6 col-lg-2").with(
+                                                        div().withClass("ygl-footer__heading").with(text("Challenge")),
+                                                        ul().withClass("ygl-footer__link-list").with(
+                                                                li().with(a("Tracker").withHref("/challenge")),
+                                                                li().with(a("#yorkshiregolfchallenge"))
+                                                        )
+                                                )
+                                        )
+                                )
+                        ),
+                        div().withClass("ygl-footer__bottom").with(
+                                div().withClass("container").with(
+                                        text("© Yorkshire Golf Life")
+                                )
                         )
                 );
     }
@@ -67,6 +108,7 @@ public class YorkshireGolfPageTemplate {
                                         bootstrapCharsetMetaTag(),
                                         bootstrapViewportMetaTag(),
                                         title(title),
+                                        googleFontsPreconnect(),
                                         googleFontsLinkTag(),
                                         bootstrapMinCssLinkTag(),
                                         themeCssLinkTag()

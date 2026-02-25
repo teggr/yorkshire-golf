@@ -1,5 +1,6 @@
 package golf.utils.bootstrap;
 
+import j2html.tags.DomContent;
 import j2html.tags.specialized.LinkTag;
 import j2html.tags.specialized.MetaTag;
 import j2html.tags.specialized.ScriptTag;
@@ -19,9 +20,16 @@ public class BootstrapTagCreator {
                 .attr("content", "width=device-width, initial-scale=1");
     }
 
+    public static DomContent googleFontsPreconnect() {
+        return join(
+                link().attr("rel", "preconnect").withHref("https://fonts.googleapis.com"),
+                link().attr("rel", "preconnect").withHref("https://fonts.gstatic.com").attr("crossorigin", "")
+        );
+    }
+
     public static LinkTag googleFontsLinkTag() {
         return link()
-                .withHref("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap")
+                .withHref("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap")
                 .attr("rel", "stylesheet");
     }
 
