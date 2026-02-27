@@ -111,6 +111,7 @@ public class YorkshireGolfPageTemplate {
                                         googleFontsPreconnect(),
                                         googleFontsLinkTag(),
                                         bootstrapMinCssLinkTag(),
+                                        bootstrapIconsCssLinkTag(),
                                         themeCssLinkTag()
                                 )
                                 .with(

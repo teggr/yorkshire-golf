@@ -61,7 +61,15 @@ public class HomePage implements View {
                   h1(featuredCourse.name()).withClass("ygl-hero__title"),
                   p(featuredCourse.region().displayName()).withClass("ygl-hero__subtitle"),
                   featuredCourse.website() != null && !featuredCourse.website().isEmpty()
-                    ? p(featuredCourse.website()).withClass("ygl-hero__url")
+                    ? a().withHref(featuredCourse.website())
+                        .withTarget("_blank")
+                        .attr("rel", "noopener noreferrer")
+                        .withClass("ygl-hero__link")
+                        .with(
+                          text(featuredCourse.website()),
+                          text(" "),
+                          i().withClass("bi bi-box-arrow-up-right")
+                        )
                     : text(""),
                   a("Explore All Courses →").withClass("ygl-btn ygl-btn--primary ygl-btn--lg").withHref("/courses")
                 )

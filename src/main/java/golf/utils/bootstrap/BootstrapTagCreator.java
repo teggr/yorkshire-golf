@@ -41,6 +41,12 @@ public class BootstrapTagCreator {
                 .attr("crossorigin", "anonymous");
     }
 
+    public static LinkTag bootstrapIconsCssLinkTag() {
+        return link()
+                .withHref("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+                .attr("rel", "stylesheet");
+    }
+
     public static LinkTag themeCssLinkTag() {
         return link()
                 .withHref("/css/theme.css")

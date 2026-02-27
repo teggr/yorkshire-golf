@@ -225,6 +225,25 @@ img {
   line-height: 1.6;
 }
 
+.ygl-hero__link {
+  display: block;
+  font-size: 0.9375rem;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 2rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--ygl-transition-fast);
+}
+
+.ygl-hero__link:hover {
+  color: var(--ygl-color-accent);
+}
+
+.ygl-hero__link .bi {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
 /* ---------- ygl-page-header (used on sub-pages) ---------- */
 .ygl-page-header {
   background: linear-gradient(165deg, var(--ygl-color-primary) 0%, var(--ygl-color-primary-dark) 100%);
@@ -426,6 +445,26 @@ img {
 .ygl-card--course:hover {
   border-color: var(--ygl-color-primary-light);
   box-shadow: var(--ygl-shadow-xs);
+}
+
+/* clickable card link wrapper */
+.ygl-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.ygl-card-link:hover {
+  text-decoration: none;
+  color: inherit;
+  transform: translateY(-2px);
+}
+
+.ygl-card-link:hover .ygl-card--course {
+  border-color: var(--ygl-color-primary-light);
+  box-shadow: var(--ygl-shadow-md);
+  cursor: pointer;
 }
 
 /* ---------- ygl-btn ---------- */
