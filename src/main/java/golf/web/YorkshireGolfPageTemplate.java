@@ -48,13 +48,13 @@ public class YorkshireGolfPageTemplate {
                                 div().withClass("collapse navbar-collapse justify-content-end").withId("navbarNav").with(
                                         ul().withClass("navbar-nav ygl-navbar__nav").with(
                                                 li().withClass("nav-item").with(
+                                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
+                                                ),
+                                                li().withClass("nav-item").with(
                                                         a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
                                                 ),
                                                 li().withClass("nav-item").with(
-                                                        a("Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds")
-                                                ),
-                                                li().withClass("nav-item").with(
-                                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
+                                                        a("My Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds")
                                                 )
                                         )
                                 )
@@ -69,23 +69,35 @@ public class YorkshireGolfPageTemplate {
                         div().withClass("ygl-footer__top").with(
                                 div().withClass("container").with(
                                         div().withClass("row g-4").with(
-                                                div().withClass("col-lg-5").with(
+                                                div().withClass("col-lg-4").with(
                                                         div().withClass("ygl-footer__brand").with(text("Yorkshire Golf Life")),
-                                                        p("Tracking the journey to play every golf course across the four ridings of Yorkshire.").withClass("ygl-footer__tagline")
+                                                        p("Celebrating Yorkshire's exceptional golfing heritage").withClass("ygl-footer__tagline")
                                                 ),
-                                                div().withClass("col-6 col-lg-2 offset-lg-2").with(
+                                                div().withClass("col-6 col-lg-2").with(
                                                         div().withClass("ygl-footer__heading").with(text("Explore")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(a("Home").withHref("/")),
-                                                                li().with(a("Courses").withHref("/courses")),
-                                                                li().with(a("Rounds").withHref("/rounds"))
+                                                                li().with(a("Courses").withHref("/courses"))
                                                         )
                                                 ),
                                                 div().withClass("col-6 col-lg-2").with(
                                                         div().withClass("ygl-footer__heading").with(text("Challenge")),
                                                         ul().withClass("ygl-footer__link-list").with(
-                                                                li().with(a("Tracker").withHref("/challenge")),
                                                                 li().with(a("#yorkshiregolfchallenge").withHref("/challenge"))
+                                                        )
+                                                ),
+                                                div().withClass("col-6 col-lg-2").with(
+                                                        div().withClass("ygl-footer__heading").with(text("Socials")),
+                                                        ul().withClass("ygl-footer__link-list").with(
+                                                                li().with(
+                                                                        a().withHref("https://www.instagram.com/yorkshiregolflife/")
+                                                                                .withTarget("_blank")
+                                                                                .withRel("noopener noreferrer")
+                                                                                .with(
+                                                                                        i().withClass("bi bi-instagram me-2"),
+                                                                                        text("@yorkshiregolflife")
+                                                                                )
+                                                                )
                                                         )
                                                 )
                                         )
