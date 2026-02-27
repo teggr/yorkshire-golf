@@ -49,7 +49,7 @@ public class BootstrapTagCreator {
 
     public static LinkTag themeCssLinkTag() {
         return link()
-                .withHref("/css/theme.css")
+                .withHref("/css/styles.css")
                 .attr("rel", "stylesheet");
     }
 

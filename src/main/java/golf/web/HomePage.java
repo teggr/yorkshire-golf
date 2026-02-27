@@ -64,19 +64,17 @@ public class HomePage implements View {
                     ? a().withHref(featuredCourse.website())
                         .withTarget("_blank")
                         .attr("rel", "noopener noreferrer")
-                        .withClass("ygl-hero__link")
+                        .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
                         .with(
                           text(featuredCourse.website()),
                           text(" "),
                           i().withClass("bi bi-box-arrow-up-right")
                         )
-                    : text(""),
-                  a("Explore All Courses →").withClass("ygl-btn ygl-btn--primary ygl-btn--lg").withHref("/courses")
+                    : text("")
                 )
               : div().with(
                   h1("Yorkshire Golf Life").withClass("ygl-hero__title"),
-                  p("Tracking the journey to play every golf course across Yorkshire.").withClass("ygl-hero__subtitle"),
-                  a("Explore All Courses →").withClass("ygl-btn ygl-btn--primary ygl-btn--lg").withHref("/courses")
+                  p("Tracking the journey to play every golf course across Yorkshire.").withClass("ygl-hero__subtitle")
                 )
           )
         ),
@@ -96,6 +94,13 @@ public class HomePage implements View {
                 )
               ).toArray(j2html.tags.DomContent[]::new)
             )
+          )
+        ),
+
+        // Explore All Courses CTA
+        div().withClass("ygl-section text-center").with(
+          div().withClass("container").with(
+            a("Explore All Courses →").withClass("ygl-btn ygl-btn--accent-light ygl-btn--xl").withHref("/courses")
           )
         ),
 

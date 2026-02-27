@@ -548,6 +548,26 @@ img {
   padding: 0.8rem 2rem;
 }
 
+.ygl-btn--xl {
+  font-size: 1rem;
+  padding: 1.2rem 3rem;
+  font-weight: 700;
+}
+
+.ygl-btn--accent-light {
+  background-color: #f4d97e;
+  border-color: #f4d97e;
+  color: var(--ygl-color-primary-dark);
+}
+
+.ygl-btn--accent-light:hover {
+  background-color: var(--ygl-color-accent);
+  border-color: var(--ygl-color-accent);
+  color: var(--ygl-color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(244,217,126,0.4);
+}
+
 /* ---------- ygl-badge ---------- */
 .ygl-badge {
   display: inline-block;

@@ -52,46 +52,52 @@ public class CoursesPage implements View {
                                 )
                         ),
                         // Course listings
-                        div().withClass("container ygl-page").with(
-                                div().with(
-                                        regionOrder.stream().map(region -> {
-                                            List<Course> regionCourses = byRegion.getOrDefault(region, List.of());
-                                            return div().withClass("mb-5").with(
-                                                    div().withClass("ygl-region-header").with(
-                                                            h2(region.displayName()).withClass("ygl-region-header__title"),
-                                                            span(regionCourses.size() + " courses").withClass("ygl-region-header__count")
-                                                    ),
-                                                    div().withClass("row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3").with(
-                                                            regionCourses.stream()
-                                                                    .map(course -> div().withClass("col").with(
-                                                                            course.website() != null && !course.website().isEmpty()
-                                                                                ? a().withHref(course.website())
-                                                                                    .withTarget("_blank")
-                                                                                    .withRel("noopener noreferrer")
-                                                                                    .withClass("ygl-card-link").with(
-                                                                                        div().withClass("ygl-card ygl-card--course h-100").with(
-                                                                                                div().withClass("ygl-card__body").with(
-                                                                                                        p(course.name()).withClass("ygl-card__text mb-2"),
-                                                                                                        p(course.website()).withClass("ygl-card__url text-muted small mb-0")
-                                                                                                )
-                                                                                        )
-                                                                                )
-                                                                                : div().withClass("ygl-card ygl-card--course h-100").with(
-                                                                                        div().withClass("ygl-card__body").with(
-                                                                                                p(course.name()).withClass("ygl-card__text mb-2")
-                                                                                        )
-                                                                                )
-                                                                    ))
-                                                                    .toArray(j2html.tags.DomContent[]::new)
-                                                    )
-                                            );
-                                        }).toArray(j2html.tags.DomContent[]::new)
-                                )
-                        )
+                        coursesList(byRegion, regionOrder)
                 )
                 .render(response.getWriter());
 
         log.info("CoursesPage rendered");
+    }
+
+    static j2html.tags.DomContent coursesList(Map<Region, List<Course>> byRegion, List<Region> regionOrder) {
+        return div().withClass("container ygl-page").with(
+                div().with(
+                        regionOrder.stream().map(region -> {
+                            List<Course> regionCourses = byRegion.getOrDefault(region, List.of());
+                            return div().withClass("mb-5").with(
+                                    div().withClass("ygl-region-header").with(
+                                            h2(region.displayName()).withClass("ygl-region-header__title"),
+                                            span(regionCourses.size() + " courses").withClass("ygl-region-header__count")
+                                    ),
+                                    div().withClass("row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3").with(
+                                            regionCourses.stream()
+                                                    .map(course -> div().withClass("col").with(courseCard(course)))
+                                                    .toArray(j2html.tags.DomContent[]::new)
+                                    )
+                            );
+                        }).toArray(j2html.tags.DomContent[]::new)
+                )
+        );
+    }
+
+    static j2html.tags.DomContent courseCard(Course course) {
+        return course.website() != null && !course.website().isEmpty()
+                ? a().withHref(course.website())
+                    .withTarget("_blank")
+                    .withRel("noopener noreferrer")
+                    .withClass("ygl-card-link").with(
+                        div().withClass("ygl-card ygl-card--course h-100").with(
+                                div().withClass("ygl-card__body").with(
+                                        p(course.name()).withClass("ygl-card__text mb-2"),
+                                        p(course.website()).withClass("ygl-card__url text-muted small mb-0")
+                                )
+                        )
+                )
+                : div().withClass("ygl-card ygl-card--course h-100").with(
+                        div().withClass("ygl-card__body").with(
+                                p(course.name()).withClass("ygl-card__text mb-2")
+                        )
+                );
     }
 
 }
