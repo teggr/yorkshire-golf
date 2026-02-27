@@ -60,6 +60,9 @@ public class HomePage implements View {
                   span("Featured Course").withClass("ygl-hero__label"),
                   h1(featuredCourse.name()).withClass("ygl-hero__title"),
                   p(featuredCourse.region().displayName()).withClass("ygl-hero__subtitle"),
+                  featuredCourse.website() != null && !featuredCourse.website().isEmpty()
+                    ? p(featuredCourse.website()).withClass("ygl-hero__url")
+                    : text(""),
                   a("Explore All Courses →").withClass("ygl-btn ygl-btn--primary ygl-btn--lg").withHref("/courses")
                 )
               : div().with(

@@ -66,7 +66,10 @@ public class CoursesPage implements View {
                                                                     .map(course -> div().withClass("col").with(
                                                                             div().withClass("ygl-card ygl-card--course h-100").with(
                                                                                     div().withClass("ygl-card__body").with(
-                                                                                            p(course.name()).withClass("ygl-card__text mb-0")
+                                                                                            p(course.name()).withClass("ygl-card__text mb-2"),
+                                                                                            course.website() != null && !course.website().isEmpty()
+                                                                                                ? p(course.website()).withClass("ygl-card__url text-muted small mb-0")
+                                                                                                : text("")
                                                                                     )
                                                                             )
                                                                     ))

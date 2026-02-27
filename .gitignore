@@ -42,3 +42,4 @@ build/
 
 jcef-bundle/
 credentials.json
+.playwright-mcp/

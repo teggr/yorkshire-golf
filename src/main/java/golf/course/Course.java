@@ -1,4 +1,6 @@
 package golf.course;
 
-public record Course(String name, Region region) {
+import org.jspecify.annotations.Nullable;
+
+public record Course(String name, Region region, @Nullable String website) {
 }
