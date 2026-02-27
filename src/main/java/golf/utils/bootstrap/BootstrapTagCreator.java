@@ -1,5 +1,6 @@
 package golf.utils.bootstrap;
 
+import j2html.tags.DomContent;
 import j2html.tags.specialized.LinkTag;
 import j2html.tags.specialized.MetaTag;
 import j2html.tags.specialized.ScriptTag;
@@ -19,12 +20,31 @@ public class BootstrapTagCreator {
                 .attr("content", "width=device-width, initial-scale=1");
     }
 
+    public static DomContent googleFontsPreconnect() {
+        return join(
+                link().attr("rel", "preconnect").withHref("https://fonts.googleapis.com"),
+                link().attr("rel", "preconnect").withHref("https://fonts.gstatic.com").attr("crossorigin", "")
+        );
+    }
+
+    public static LinkTag googleFontsLinkTag() {
+        return link()
+                .withHref("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap")
+                .attr("rel", "stylesheet");
+    }
+
     public static LinkTag bootstrapMinCssLinkTag() {
         return link()
                 .withHref("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css")
                 .attr("rel", "stylesheet")
                 .attr("integrity", "sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH")
                 .attr("crossorigin", "anonymous");
+    }
+
+    public static LinkTag themeCssLinkTag() {
+        return link()
+                .withHref("/css/theme.css")
+                .attr("rel", "stylesheet");
     }
 
     public static ScriptTag popperMinJsScriptTag() {

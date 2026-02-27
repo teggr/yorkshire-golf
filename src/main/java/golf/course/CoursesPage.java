@@ -44,20 +44,29 @@ public class CoursesPage implements View {
         new YorkshireGolfPageTemplate()
                 .withTitle("Yorkshire Golf Courses")
                 .withBody(
-                        div().withClass("container py-4").with(
-                                h1("Yorkshire Golf Courses").withClass("display-6 mb-2"),
-                                p("Explore all the golf courses across the four ridings of Yorkshire.").withClass("lead mb-5"),
+                        // Page header
+                        div().withClass("ygl-page-header").with(
+                                div().withClass("container").with(
+                                        h1("Golf Courses").withClass("ygl-page-header__title"),
+                                        p("Explore all " + courses.size() + " golf courses across the four ridings of Yorkshire.").withClass("ygl-page-header__lead")
+                                )
+                        ),
+                        // Course listings
+                        div().withClass("container ygl-page").with(
                                 div().with(
                                         regionOrder.stream().map(region -> {
                                             List<Course> regionCourses = byRegion.getOrDefault(region, List.of());
                                             return div().withClass("mb-5").with(
-                                                    h2(region.displayName()).withClass("h4 fw-bold border-bottom pb-2 mb-3"),
+                                                    div().withClass("ygl-region-header").with(
+                                                            h2(region.displayName()).withClass("ygl-region-header__title"),
+                                                            span(regionCourses.size() + " courses").withClass("ygl-region-header__count")
+                                                    ),
                                                     div().withClass("row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3").with(
                                                             regionCourses.stream()
                                                                     .map(course -> div().withClass("col").with(
-                                                                            div().withClass("card h-100").with(
-                                                                                    div().withClass("card-body").with(
-                                                                                            p(course.name()).withClass("card-text mb-0")
+                                                                            div().withClass("ygl-card ygl-card--course h-100").with(
+                                                                                    div().withClass("ygl-card__body").with(
+                                                                                            p(course.name()).withClass("ygl-card__text mb-0")
                                                                                     )
                                                                             )
                                                                     ))

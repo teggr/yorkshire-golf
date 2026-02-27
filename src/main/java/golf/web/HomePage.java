@@ -47,45 +47,84 @@ public class HomePage implements View {
     Map<Region, Long> courseCountByRegion = allCourses.stream()
       .collect(Collectors.groupingBy(Course::region, Collectors.counting()));
 
+    long totalCourses = allCourses.size();
+
     new YorkshireGolfPageTemplate()
       .withTitle("Yorkshire Golf Life")
       .withBody(
-        // Hero section: randomly picked golf course
-        div().withClass("bg-dark text-white py-5").with(
+        // Hero
+        div().withClass("ygl-hero").with(
           div().withClass("container").with(
-            featuredCourse != null ? p("Featured Course").withClass("text-uppercase text-secondary fw-semibold mb-1") : p(""),
-            featuredCourse != null ? h1(featuredCourse.name()).withClass("display-4 fw-bold mb-2") : h1("Yorkshire Golf Life").withClass("display-4 fw-bold mb-2"),
-            featuredCourse != null ? p(featuredCourse.region().displayName()).withClass("lead mb-4") : p(""),
-            a("Explore all courses").withClass("btn btn-outline-light").withHref("/courses")
+            featuredCourse != null
+              ? div().with(
+                  span("Featured Course").withClass("ygl-hero__label"),
+                  h1(featuredCourse.name()).withClass("ygl-hero__title"),
+                  p(featuredCourse.region().displayName()).withClass("ygl-hero__subtitle"),
+                  a("Explore All Courses →").withClass("ygl-btn ygl-btn--primary ygl-btn--lg").withHref("/courses")
+                )
+              : div().with(
+                  h1("Yorkshire Golf Life").withClass("ygl-hero__title"),
+                  p("Tracking the journey to play every golf course across Yorkshire.").withClass("ygl-hero__subtitle"),
+                  a("Explore All Courses →").withClass("ygl-btn ygl-btn--primary ygl-btn--lg").withHref("/courses")
+                )
           )
         ),
-        // Yorkshire Challenge section
-        div().withClass("py-5 border-bottom").with(
+
+        // Stat strip
+        div().withClass("ygl-stat-strip").with(
           div().withClass("container").with(
-            div().withClass("row align-items-center g-4").with(
-              div().withClass("col-md-7").with(
-                h2("The Yorkshire Challenge").withClass("fw-bold mb-3"),
-                p("Can you play every golf course across the four ridings of Yorkshire? Track your progress through North, East, South and West Yorkshire and see how far along the challenge you are.").withClass("lead mb-4"),
-                a("View the Challenge Tracker").withClass("btn btn-dark").withHref("/challenge")
+            div().withClass("row g-3 row-cols-2 row-cols-lg-4").with(
+              regionOrder.stream().map(region ->
+                div().withClass("col").with(
+                  div().withClass("ygl-card ygl-card--stat").with(
+                    div().withClass("ygl-card__body").with(
+                      span(String.valueOf(courseCountByRegion.getOrDefault(region, 0L))).withClass("ygl-card__number"),
+                      p(region.displayName()).withClass("ygl-card__label")
+                    )
+                  )
+                )
+              ).toArray(j2html.tags.DomContent[]::new)
+            )
+          )
+        ),
+
+        // Yorkshire Challenge feature
+        div().withClass("ygl-section").with(
+          div().withClass("container").with(
+            div().withClass("ygl-feature").with(
+              div().withClass("row align-items-center g-4").with(
+                div().withClass("col-lg-7").with(
+                  span("The Challenge").withClass("ygl-feature__eyebrow"),
+                  h2("The Yorkshire Golf Challenge").withClass("ygl-feature__title"),
+                  p("Can you play every golf course across the four ridings of Yorkshire? Track your progress through North, East, South and West Yorkshire and see how far along the challenge you are.").withClass("ygl-feature__text"),
+                  a("View the Challenge Tracker →").withClass("ygl-btn ygl-btn--dark").withHref("/challenge")
+                ),
+                div().withClass("col-lg-4 offset-lg-1 text-center").with(
+                  div().with(
+                    span(String.valueOf(totalCourses)).withClass("d-block ygl-feature__stat"),
+                    span("courses across Yorkshire").withClass("d-block ygl-feature__stat-label")
+                  )
+                )
               )
             )
           )
         ),
-        // Golf courses in Yorkshire section
-        div().withClass("py-5 bg-light").with(
+
+        // Courses by region
+        div().withClass("ygl-section ygl-section--alt").with(
           div().withClass("container").with(
-            h2("Golf Courses in Yorkshire").withClass("fw-bold mb-2"),
-            p("Yorkshire is home to an incredible variety of golf courses spread across its four ridings.").withClass("lead mb-5"),
+            h2("Courses by Region").withClass("ygl-section__title"),
+            p("Yorkshire is home to an incredible variety of golf courses spread across its four historic ridings.").withClass("ygl-section__subtitle"),
             div().withClass("row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4").with(
               regionOrder.stream().map(region ->
                 div().withClass("col").with(
-                  div().withClass("card h-100 text-center").with(
-                    div().withClass("card-body").with(
-                      h3(region.displayName()).withClass("h5 fw-bold card-title"),
-                      p(courseCountByRegion.getOrDefault(region, 0L) + " courses").withClass("card-text text-muted")
+                  div().withClass("ygl-card h-100").with(
+                    div().withClass("ygl-card__body text-center").with(
+                      h3(region.displayName()).withClass("ygl-card__title"),
+                      p(courseCountByRegion.getOrDefault(region, 0L) + " courses").withClass("ygl-card__text mb-0")
                     ),
-                    div().withClass("card-footer").with(
-                      a("Browse courses").withClass("btn btn-sm btn-outline-dark").withHref("/courses")
+                    div().withClass("ygl-card__footer").with(
+                      a("Browse →").withClass("ygl-btn ygl-btn--outline ygl-btn--sm").withHref("/courses")
                     )
                   )
                 )
