@@ -1,40 +1,39 @@
 package golf.course;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import jakarta.annotation.PostConstruct;
-import org.springframework.core.io.ClassPathResource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class Courses {
 
     private final List<Course> courses = new ArrayList<>();
+    private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
     @PostConstruct
     public void onLoad() throws IOException {
 
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ClassPathResource("courses.csv").getInputStream(), StandardCharsets.UTF_8.newDecoder()))) {
-            boolean ignoreNextLine = true;
-            for (; ; ) {
-                String line = bufferedReader.readLine();
-                if (line == null)
-                    break;
-                if (ignoreNextLine) {
-                    ignoreNextLine = false;
-                    continue;
-                }
-                String[] split = line.split(",");
-                courses.add(new Course(split[0], new Region(split[1])));
-            }
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath:courses/*.yaml");
+        
+        for (Resource resource : resources) {
+            Course course = yamlMapper.readValue(resource.getInputStream(), Course.class);
+            courses.add(course);
         }
+        
+        log.info("Loaded {} courses from YAML files", courses.size());
 
     }
 

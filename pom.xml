@@ -72,6 +72,12 @@
 			<scope>test</scope>
 		</dependency>	
 
+		<!-- YAML support for course data -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
