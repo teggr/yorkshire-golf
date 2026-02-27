@@ -1,43 +1,56 @@
 package golf.round;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import golf.course.Courses;
 import golf.course.Region;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.core.io.ClassPathResource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class Rounds {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final Courses courses;
     private final List<Round> rounds = new ArrayList<>();
 
     @PostConstruct
     @SneakyThrows
     public void onLoad() {
-        Round[] loaded = objectMapper.readValue(
-                new ClassPathResource("round-records.json").getInputStream(),
-                Round[].class
-        );
-        Arrays.stream(loaded)
-                .map(r -> {
-                    var course = courses.getCourseByName(r.courseName());
-                    return new Round(r.id(), r.title(), r.date(), r.courseName(), course, r.imageUrls(), r.content());
-                })
-                .sorted((a, b) -> b.date().compareTo(a.date()))
-                .forEach(rounds::add);
+        ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath:rounds/*.yaml");
+        
+        for (Resource resource : resources) {
+            Round loaded = yamlMapper.readValue(resource.getInputStream(), Round.class);
+            var course = courses.getCourseByName(loaded.courseName());
+            Round enriched = new Round(
+                loaded.id(), 
+                loaded.title(), 
+                loaded.date(), 
+                loaded.courseName(), 
+                course, 
+                loaded.imageUrls(), 
+                loaded.content()
+            );
+            rounds.add(enriched);
+        }
+        
+        rounds.sort((a, b) -> b.date().compareTo(a.date()));
+        log.info("Loaded {} rounds from YAML files", rounds.size());
     }
 
     public List<Round> getAllRounds() {
