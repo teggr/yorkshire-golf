@@ -19,12 +19,12 @@ public class CoursesPageTest {
         // Given - example courses grouped by region
         Map<Region, List<Course>> byRegion = Map.of(
                 Regions.NorthYorkshire, List.of(
-                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com"),
-                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk")
+                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null),
+                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null)
                 ),
                 Regions.WestYorkshire, List.of(
-                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk"),
-                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null)
+                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null),
+                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null)
                 )
         );
 
@@ -56,7 +56,8 @@ public class CoursesPageTest {
         Course courseWithWebsite = new Course(
                 "Ganton Golf Club",
                 Regions.NorthYorkshire,
-                "https://www.gantongolfclub.com"
+                "https://www.gantongolfclub.com",
+                null
         );
 
         // When - render course card
@@ -79,6 +80,7 @@ public class CoursesPageTest {
         Course courseWithoutWebsite = new Course(
                 "Sand Moor Golf Club",
                 Regions.WestYorkshire,
+                null,
                 null
         );
 
@@ -91,6 +93,31 @@ public class CoursesPageTest {
         assertTrue(html.contains("Sand Moor Golf Club"));
         assertTrue(html.contains("ygl-card--course"));
         assertFalse(html.contains("href"));
+
+        return result;
+    }
+
+    @Test
+    @Preview
+    public DomContent courseCardWithImageExample() {
+        // Given - a course with a website and main image
+        Course courseWithImage = new Course(
+                "Rudding Park Golf Club",
+                Regions.NorthYorkshire,
+                "https://www.ruddingpark.com/",
+                "/images/courses/rudding-park-golf-club.jpg"
+        );
+
+        // When - render course card
+        var result = CoursesPage.courseCard(courseWithImage);
+
+        // Then - should render successfully with image
+        assertNotNull(result);
+        String html = result.render();
+        assertTrue(html.contains("Rudding Park Golf Club"));
+        assertTrue(html.contains("ygl-card--course"));
+        assertTrue(html.contains("ygl-card__img"));
+        assertTrue(html.contains("/images/courses/rudding-park-golf-club.jpg"));
 
         return result;
     }

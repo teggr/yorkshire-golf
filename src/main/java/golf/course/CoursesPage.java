@@ -81,23 +81,28 @@ public class CoursesPage implements View {
     }
 
     static j2html.tags.DomContent courseCard(Course course) {
+        j2html.tags.DomContent imageEl = course.mainImageUrl() != null && !course.mainImageUrl().isEmpty()
+                ? img().withSrc(course.mainImageUrl()).withAlt(course.name()).withClass("ygl-card__img")
+                : null;
+
+        j2html.tags.DomContent cardBody = div().withClass("ygl-card__body").with(
+                p(course.name()).withClass("ygl-card__text mb-2"),
+                course.website() != null && !course.website().isEmpty()
+                        ? p(course.website()).withClass("ygl-card__url text-muted small mb-0")
+                        : span()
+        );
+
+        j2html.tags.DomContent card = div().withClass("ygl-card ygl-card--course h-100").with(
+                imageEl != null ? imageEl : span(),
+                cardBody
+        );
+
         return course.website() != null && !course.website().isEmpty()
                 ? a().withHref(course.website())
                     .withTarget("_blank")
                     .withRel("noopener noreferrer")
-                    .withClass("ygl-card-link").with(
-                        div().withClass("ygl-card ygl-card--course h-100").with(
-                                div().withClass("ygl-card__body").with(
-                                        p(course.name()).withClass("ygl-card__text mb-2"),
-                                        p(course.website()).withClass("ygl-card__url text-muted small mb-0")
-                                )
-                        )
-                )
-                : div().withClass("ygl-card ygl-card--course h-100").with(
-                        div().withClass("ygl-card__body").with(
-                                p(course.name()).withClass("ygl-card__text mb-2")
-                        )
-                );
+                    .withClass("ygl-card-link").with(card)
+                : card;
     }
 
 }
