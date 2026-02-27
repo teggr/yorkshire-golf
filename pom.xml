@@ -54,7 +54,6 @@
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.17.2</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- testing -->
@@ -97,6 +96,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.4.1</version>
+				<configuration>
+					<mainClass>golf.DownloadCourseImages</mainClass>
+					<arguments>
+						<argument>999</argument>
+					</arguments>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>io.fabric8</groupId>

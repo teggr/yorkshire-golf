@@ -52,8 +52,8 @@ public class DownloadCourseImages {
                 .connectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .build();
 
-        // Limit to first N courses with a website for initial validation (default: 3)
-        int limit = 3;
+        // Limit to first N courses with a website (default: 999 to process all)
+        int limit = 999;
         if (args.length > 0) {
             try {
                 limit = Integer.parseInt(args[0]);
@@ -205,7 +205,8 @@ public class DownloadCourseImages {
     private static int parseIntSafe(String s) {
         try {
             // Strip common CSS suffixes like 'px' before parsing
-            return Integer.parseInt(s.trim().replaceAll("[^0-9].*$", ""));
+            String digits = s.trim().replaceAll("[^0-9].*$", "");
+            return digits.isEmpty() ? 0 : Integer.parseInt(digits);
         } catch (NumberFormatException e) {
             return 0;
         }
