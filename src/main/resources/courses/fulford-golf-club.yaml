@@ -1,5 +1,5 @@
-name: Fulford Golf Club
+name: "Fulford Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.fulfordgolfclub.co.uk/
-
+  name: "NORTH_YORKSHIRE"
+website: "https://www.fulfordgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

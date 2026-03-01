@@ -1,4 +1,5 @@
-name: Owston Hall Golf Club
+name: "Owston Hall Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.owstonhall.com/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.owstonhall.com/"
+mainImageUrl: "/images/courses/owston-hall-golf-club.png"

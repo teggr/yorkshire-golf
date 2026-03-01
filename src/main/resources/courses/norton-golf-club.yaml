@@ -1,3 +1,4 @@
-name: Norton Golf Club
+name: "Norton Golf Club"
 region:
-  name: NORTH_YORKSHIRE
+  name: "NORTH_YORKSHIRE"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

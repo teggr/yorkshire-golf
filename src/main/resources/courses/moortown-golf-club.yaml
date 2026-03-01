@@ -1,5 +1,5 @@
-name: Moortown Golf Club
+name: "Moortown Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.moortowngc.co.uk/
-
+  name: "WEST_YORKSHIRE"
+website: "https://www.moortowngc.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

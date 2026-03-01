@@ -1,4 +1,5 @@
-name: Roundhay Golf Club
+name: "Roundhay Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://active.leeds.gov.uk/classesandactivities/sports/golf
+  name: "WEST_YORKSHIRE"
+website: "https://active.leeds.gov.uk/classesandactivities/sports/golf"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

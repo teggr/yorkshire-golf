@@ -1,5 +1,5 @@
-name: Sand Moor Golf Club
+name: "Sand Moor Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.sandmoorgolfclub.co.uk/
-
+  name: "WEST_YORKSHIRE"
+website: "https://www.sandmoorgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

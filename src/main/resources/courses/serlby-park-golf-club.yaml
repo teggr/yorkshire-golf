@@ -1,4 +1,5 @@
-name: Serlby Park Golf Club
+name: "Serlby Park Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.serlbyparkgolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.serlbyparkgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

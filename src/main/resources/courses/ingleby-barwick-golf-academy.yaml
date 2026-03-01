@@ -1,4 +1,5 @@
-name: Ingleby Barwick Golf Academy
+name: "Ingleby Barwick Golf Academy"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.inglebygolf.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.inglebygolf.co.uk/"
+mainImageUrl: "/images/courses/ingleby-barwick-golf-academy.png"

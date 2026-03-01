@@ -1,4 +1,5 @@
-name: Sandburn Hall
+name: "Sandburn Hall"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.sandburnhall.co.uk/golf/index.html
+  name: "NORTH_YORKSHIRE"
+website: "https://www.sandburnhall.co.uk/golf/index.html"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

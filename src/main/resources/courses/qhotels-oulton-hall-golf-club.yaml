@@ -1,4 +1,5 @@
-name: QHotels Oulton Hall Golf Club
+name: "QHotels Oulton Hall Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.qhotels.co.uk/our-locations/oulton-hall/
+  name: "WEST_YORKSHIRE"
+website: "https://www.qhotels.co.uk/our-locations/oulton-hall/"
+mainImageUrl: "/images/courses/qhotels-oulton-hall-golf-club.jpg"

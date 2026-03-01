@@ -1,4 +1,5 @@
-name: Lees Hall Golf Club
+name: "Lees Hall Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.leeshallgolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.leeshallgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

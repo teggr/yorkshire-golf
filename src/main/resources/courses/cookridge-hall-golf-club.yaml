@@ -1,4 +1,5 @@
-name: Cookridge Hall Golf Club
+name: "Cookridge Hall Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.cookridgehall.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.cookridgehall.co.uk/"
+mainImageUrl: "/images/courses/cookridge-hall-golf-club.jpg"

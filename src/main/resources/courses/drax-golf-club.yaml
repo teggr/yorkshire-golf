@@ -1,4 +1,5 @@
-name: Drax Golf Club
+name: "Drax Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.draxgolfclub.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.draxgolfclub.com/"
+mainImageUrl: "/images/courses/drax-golf-club.jpg"

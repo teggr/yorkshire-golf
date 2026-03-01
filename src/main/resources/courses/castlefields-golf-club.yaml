@@ -1,4 +1,5 @@
-name: Castlefields Golf Club
+name: "Castlefields Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.castlefieldsgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.castlefieldsgolfclub.co.uk/"
+mainImageUrl: "/images/courses/castlefields-golf-club.jpg"

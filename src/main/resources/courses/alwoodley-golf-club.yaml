@@ -1,5 +1,5 @@
-name: Alwoodley Golf Club
+name: "Alwoodley Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.alwoodleygc.co.uk/
-
+  name: "WEST_YORKSHIRE"
+website: "https://www.alwoodleygc.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

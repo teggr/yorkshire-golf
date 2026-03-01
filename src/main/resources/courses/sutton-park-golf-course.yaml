@@ -1,4 +1,5 @@
-name: Sutton Park Golf Course
+name: "Sutton Park Golf Course"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.suttonparkgolfclub.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.suttonparkgolfclub.uk/"
+mainImageUrl: "/images/courses/sutton-park-golf-course.png"

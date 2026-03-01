@@ -1,4 +1,5 @@
-name: Wortley Golf Club
+name: "Wortley Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.wortleygolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.wortleygolfclub.co.uk/"
+mainImageUrl: "/images/courses/wortley-golf-club.jpg"

@@ -1,4 +1,5 @@
-name: Skidby Lakes Golf Club
+name: "Skidby Lakes Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.skidbylakes.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.skidbylakes.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

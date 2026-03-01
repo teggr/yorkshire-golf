@@ -1,4 +1,5 @@
-name: Halifax West End Golf Club
+name: "Halifax West End Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.westendgc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.westendgc.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

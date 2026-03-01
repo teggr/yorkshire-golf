@@ -1,4 +1,5 @@
-name: Masham Golf Club
+name: "Masham Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.mashamgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.mashamgolfclub.co.uk/"
+mainImageUrl: "/images/courses/masham-golf-club.jpg"

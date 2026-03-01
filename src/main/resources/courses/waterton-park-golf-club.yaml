@@ -1,4 +1,5 @@
-name: Waterton Park Golf Club
+name: "Waterton Park Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://watertonparkgc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://watertonparkgc.co.uk/"
+mainImageUrl: "/images/courses/waterton-park-golf-club.jpg"

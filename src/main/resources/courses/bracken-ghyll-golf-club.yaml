@@ -1,4 +1,5 @@
-name: Bracken Ghyll Golf Club
+name: "Bracken Ghyll Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.brackenghyllgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.brackenghyllgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

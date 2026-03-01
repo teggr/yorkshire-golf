@@ -1,4 +1,5 @@
-name: The Manor Golf Club
+name: "The Manor Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.themanorgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.themanorgolfclub.co.uk/"
+mainImageUrl: "/images/courses/the-manor-golf-club.png"

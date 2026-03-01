@@ -1,4 +1,5 @@
-name: Kirkbymoorside Golf Club
+name: "Kirkbymoorside Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.kirkbymoorsidegolf.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.kirkbymoorsidegolf.co.uk/"
+mainImageUrl: "/images/courses/kirkbymoorside-golf-club.jpg"

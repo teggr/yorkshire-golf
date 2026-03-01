@@ -1,4 +1,5 @@
-name: Kilnwick Percy Golf Club
+name: "Kilnwick Percy Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.thekp.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.thekp.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

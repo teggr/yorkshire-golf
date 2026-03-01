@@ -1,5 +1,5 @@
-name: Horsforth Golf Club
+name: "Horsforth Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.horsforthgolfclub.co.uk/
-
+  name: "WEST_YORKSHIRE"
+website: "https://www.horsforthgolfclub.co.uk/"
+mainImageUrl: "/images/courses/horsforth-golf-club.jpg"

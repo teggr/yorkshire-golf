@@ -1,4 +1,5 @@
-name: Burstwick Country Golf
+name: "Burstwick Country Golf"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.burstwick.golf/
+  name: "EAST_YORKSHIRE"
+website: "https://www.burstwick.golf/"
+mainImageUrl: "/images/courses/burstwick-country-golf.png"

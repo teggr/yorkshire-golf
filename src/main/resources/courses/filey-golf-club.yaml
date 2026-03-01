@@ -1,4 +1,5 @@
-name: Filey Golf Club
+name: "Filey Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.fileygolfclub.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.fileygolfclub.com/"
+mainImageUrl: "/images/courses/filey-golf-club.jpg"

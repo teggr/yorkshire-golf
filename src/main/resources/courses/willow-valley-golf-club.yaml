@@ -1,4 +1,5 @@
-name: Willow Valley Golf Club
+name: "Willow Valley Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.wvgc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.wvgc.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

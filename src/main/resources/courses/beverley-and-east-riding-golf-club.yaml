@@ -1,4 +1,5 @@
-name: Beverley and East Riding Golf Club
+name: "Beverley and East Riding Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.beverleygolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.beverleygolfclub.co.uk/"
+mainImageUrl: "/images/courses/beverley-and-east-riding-golf-club.jpg"

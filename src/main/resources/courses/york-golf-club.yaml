@@ -1,5 +1,5 @@
-name: York Golf Club
+name: "York Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.yorkgolfclub.co.uk/
-
+  name: "NORTH_YORKSHIRE"
+website: "https://www.yorkgolfclub.co.uk/"
+mainImageUrl: "/images/courses/york-golf-club.jpg"

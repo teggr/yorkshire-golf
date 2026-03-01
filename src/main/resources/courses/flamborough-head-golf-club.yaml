@@ -1,4 +1,5 @@
-name: Flamborough Head Golf Club
+name: "Flamborough Head Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.flamboroughheadgolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.flamboroughheadgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

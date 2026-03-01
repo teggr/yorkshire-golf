@@ -1,4 +1,5 @@
-name: Rother Valley Golf Centre
+name: "Rother Valley Golf Centre"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.rothervalleygolfcentre.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.rothervalleygolfcentre.co.uk/"
+mainImageUrl: "/images/courses/rother-valley-golf-centre.jpg"

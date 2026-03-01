@@ -1,4 +1,5 @@
-name: Ampleforth College Golf Club
+name: "Ampleforth College Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.ampleforthgolf.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.ampleforthgolf.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

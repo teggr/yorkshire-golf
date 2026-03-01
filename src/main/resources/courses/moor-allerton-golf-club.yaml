@@ -1,4 +1,5 @@
-name: Moor Allerton Golf Club
+name: "Moor Allerton Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://moorallertongolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://moorallertongolfclub.co.uk/"
+mainImageUrl: "/images/courses/moor-allerton-golf-club.jpg"

@@ -1,3 +1,4 @@
-name: Renishaw Park Golf Club
+name: "Renishaw Park Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
+  name: "SOUTH_YORKSHIRE"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

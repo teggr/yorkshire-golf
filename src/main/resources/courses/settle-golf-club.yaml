@@ -1,4 +1,5 @@
-name: Settle Golf Club
+name: "Settle Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.settlegolfclub.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.settlegolfclub.com/"
+mainImageUrl: "/images/courses/settle-golf-club.jpg"

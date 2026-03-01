@@ -1,4 +1,5 @@
-name: Sitwell Park Golf Club
+name: "Sitwell Park Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.sitwellgolf.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.sitwellgolf.co.uk/"
+mainImageUrl: "/images/courses/sitwell-park-golf-club.jpg"

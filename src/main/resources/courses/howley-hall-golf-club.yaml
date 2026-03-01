@@ -1,4 +1,5 @@
-name: Howley Hall Golf Club
+name: "Howley Hall Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.howleyhall.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.howleyhall.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

@@ -1,5 +1,5 @@
-name: Headingley Golf Club
+name: "Headingley Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.headingleygolfclub.co.uk/
-
+  name: "WEST_YORKSHIRE"
+website: "https://www.headingleygolfclub.co.uk/"
+mainImageUrl: "/images/courses/headingley-golf-club.webp"

@@ -1,4 +1,5 @@
-name: Hickleton Golf Club
+name: "Hickleton Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.hickletongolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.hickletongolfclub.co.uk/"
+mainImageUrl: "/images/courses/hickleton-golf-club.png"

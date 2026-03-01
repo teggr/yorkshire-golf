@@ -1,3 +1,4 @@
-name: Cocksford Golf Club
+name: "Cocksford Golf Club"
 region:
-  name: NORTH_YORKSHIRE
+  name: "NORTH_YORKSHIRE"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

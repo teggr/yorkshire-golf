@@ -1,4 +1,5 @@
-name: Meltham Golf Club
+name: "Meltham Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.meltham-golf.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.meltham-golf.co.uk/"
+mainImageUrl: "/images/courses/meltham-golf-club.jpg"

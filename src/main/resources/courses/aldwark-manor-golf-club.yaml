@@ -1,4 +1,5 @@
-name: Aldwark Manor Golf Club
+name: "Aldwark Manor Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.qhotels.co.uk/hotels/aldwark-manor-york-yorkshire/golf.aspx
+  name: "NORTH_YORKSHIRE"
+website: "https://www.qhotels.co.uk/hotels/aldwark-manor-york-yorkshire/golf.aspx"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

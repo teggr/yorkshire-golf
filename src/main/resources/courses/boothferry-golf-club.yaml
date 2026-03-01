@@ -1,4 +1,5 @@
-name: Boothferry Golf Club
+name: "Boothferry Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: http://boothferrygolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "http://boothferrygolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

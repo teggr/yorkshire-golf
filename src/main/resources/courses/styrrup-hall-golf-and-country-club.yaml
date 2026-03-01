@@ -1,4 +1,5 @@
-name: Styrrup Hall Golf and Country Club
+name: "Styrrup Hall Golf and Country Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://styrruphall.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://styrruphall.co.uk/"
+mainImageUrl: "/images/courses/styrrup-hall-golf-and-country-club.jpg"

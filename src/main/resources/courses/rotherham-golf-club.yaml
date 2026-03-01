@@ -1,4 +1,5 @@
-name: Rotherham Golf Club
+name: "Rotherham Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.rotherhamgolfclub.com/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.rotherhamgolfclub.com/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

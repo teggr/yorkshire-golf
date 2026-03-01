@@ -1,4 +1,5 @@
-name: Scarborough North Cliff Golf Club
+name: "Scarborough North Cliff Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://northcliffgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://northcliffgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

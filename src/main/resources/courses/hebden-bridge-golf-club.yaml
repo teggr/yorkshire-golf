@@ -1,4 +1,5 @@
-name: Hebden Bridge Golf Club
+name: "Hebden Bridge Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.hebdenbridgegolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.hebdenbridgegolfclub.co.uk/"
+mainImageUrl: "/images/courses/hebden-bridge-golf-club.jpg"

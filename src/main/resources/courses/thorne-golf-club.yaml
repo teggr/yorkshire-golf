@@ -1,4 +1,5 @@
-name: Thorne Golf Club
+name: "Thorne Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.thornegolf.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.thornegolf.co.uk/"
+mainImageUrl: "/images/courses/thorne-golf-club.png"

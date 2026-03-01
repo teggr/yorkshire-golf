@@ -1,4 +1,5 @@
-name: Ganstead Park Golf Club
+name: "Ganstead Park Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.gansteadpark.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.gansteadpark.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

@@ -1,4 +1,5 @@
-name: Baildon Golf Club
+name: "Baildon Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.baildongolfclub.com/
+  name: "WEST_YORKSHIRE"
+website: "https://www.baildongolfclub.com/"
+mainImageUrl: "/images/courses/baildon-golf-club.png"

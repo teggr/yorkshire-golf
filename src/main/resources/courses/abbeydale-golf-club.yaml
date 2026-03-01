@@ -1,5 +1,5 @@
-name: Abbeydale Golf Club
+name: "Abbeydale Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.abbeydalegolfclub.co.uk/
-
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.abbeydalegolfclub.co.uk/"
+mainImageUrl: "/images/courses/abbeydale-golf-club.jpg"

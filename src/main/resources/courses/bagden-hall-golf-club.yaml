@@ -1,4 +1,5 @@
-name: Bagden Hall Golf Club
+name: "Bagden Hall Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://bagdenhallhotel.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://bagdenhallhotel.co.uk/"
+mainImageUrl: "/images/courses/bagden-hall-golf-club.webp"

@@ -1,4 +1,5 @@
-name: Pike Hills Golf Club
+name: "Pike Hills Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.pikehillsgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.pikehillsgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

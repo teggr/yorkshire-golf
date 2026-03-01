@@ -1,4 +1,5 @@
-name: Outlane Golf Club
+name: "Outlane Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.outlanegolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.outlanegolfclub.co.uk/"
+mainImageUrl: "/images/courses/outlane-golf-club.png"

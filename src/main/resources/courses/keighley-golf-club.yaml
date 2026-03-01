@@ -1,4 +1,5 @@
-name: Keighley Golf Club
+name: "Keighley Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.keighleygolfclub.com/
+  name: "WEST_YORKSHIRE"
+website: "https://www.keighleygolfclub.com/"
+mainImageUrl: "/images/courses/keighley-golf-club.jpg"

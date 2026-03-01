@@ -1,4 +1,5 @@
-name: South Leeds Golf Club
+name: "South Leeds Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://southleedsgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://southleedsgolfclub.co.uk/"
+mainImageUrl: "/images/courses/south-leeds-golf-club.jpg"

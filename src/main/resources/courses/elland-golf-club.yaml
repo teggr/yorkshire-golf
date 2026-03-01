@@ -1,4 +1,5 @@
-name: Elland Golf Club
+name: "Elland Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.ellandgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.ellandgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

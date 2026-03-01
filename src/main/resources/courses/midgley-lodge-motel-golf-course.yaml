@@ -1,3 +1,4 @@
-name: Midgley Lodge Motel & Golf Course
+name: "Midgley Lodge Motel & Golf Course"
 region:
-  name: WEST_YORKSHIRE
+  name: "WEST_YORKSHIRE"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

@@ -1,4 +1,5 @@
-name: Brough Golf Club
+name: "Brough Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.brough-golfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.brough-golfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

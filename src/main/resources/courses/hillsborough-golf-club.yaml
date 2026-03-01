@@ -1,4 +1,5 @@
-name: Hillsborough Golf Club
+name: "Hillsborough Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.hillsboroughgolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.hillsboroughgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

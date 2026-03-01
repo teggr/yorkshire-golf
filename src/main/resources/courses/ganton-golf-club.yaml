@@ -1,4 +1,5 @@
-name: Ganton Golf Club
+name: "Ganton Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.gantongolfclub.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.gantongolfclub.com/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

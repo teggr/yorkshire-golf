@@ -1,4 +1,5 @@
-name: Ripon City Golf Club
+name: "Ripon City Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.riponcitygolfclub.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.riponcitygolfclub.com/"
+mainImageUrl: "/images/courses/ripon-city-golf-club.jpg"

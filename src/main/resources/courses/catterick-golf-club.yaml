@@ -1,4 +1,5 @@
-name: Catterick Golf Club
+name: "Catterick Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.catterickgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.catterickgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

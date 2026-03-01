@@ -1,4 +1,5 @@
-name: Hessle Golf Club
+name: "Hessle Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://hesslegolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://hesslegolfclub.co.uk/"
+mainImageUrl: "/images/courses/hessle-golf-club.png"

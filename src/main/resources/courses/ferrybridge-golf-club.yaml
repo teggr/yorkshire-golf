@@ -1,4 +1,5 @@
-name: Ferrybridge Golf Club
+name: "Ferrybridge Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.ferrybridgegolf.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.ferrybridgegolf.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

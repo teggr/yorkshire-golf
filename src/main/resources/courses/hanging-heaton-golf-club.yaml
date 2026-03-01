@@ -1,4 +1,5 @@
-name: Hanging Heaton Golf Club
+name: "Hanging Heaton Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.hhgc.org/
+  name: "WEST_YORKSHIRE"
+website: "https://www.hhgc.org/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

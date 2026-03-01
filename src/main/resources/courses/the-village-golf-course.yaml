@@ -1,4 +1,5 @@
-name: The Village Golf Course
+name: "The Village Golf Course"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.brandonandthevillagegolfcourses.co.uk/village/index.html
+  name: "WEST_YORKSHIRE"
+website: "https://www.brandonandthevillagegolfcourses.co.uk/village/index.html"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

@@ -1,4 +1,5 @@
-name: Waterfront Golf
+name: "Waterfront Golf"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://waterfrontgolf.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://waterfrontgolf.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

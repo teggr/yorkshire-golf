@@ -1,4 +1,5 @@
-name: Dore & Totley Golf Club
+name: "Dore & Totley Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.doreandtotleygolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.doreandtotleygolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

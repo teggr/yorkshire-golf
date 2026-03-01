@@ -1,4 +1,5 @@
-name: Hunley Hotel and Golf Club
+name: "Hunley Hotel and Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.hunleyhotel.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.hunleyhotel.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

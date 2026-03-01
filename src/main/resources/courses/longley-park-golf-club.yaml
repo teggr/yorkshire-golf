@@ -1,4 +1,5 @@
-name: Longley Park Golf Club
+name: "Longley Park Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.longleyparkgc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.longleyparkgc.co.uk/"
+mainImageUrl: "/images/courses/longley-park-golf-club.jpg"

@@ -1,4 +1,5 @@
-name: Owston Park Golf Course
+name: "Owston Park Golf Course"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.owstonparkgolfcourse.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.owstonparkgolfcourse.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

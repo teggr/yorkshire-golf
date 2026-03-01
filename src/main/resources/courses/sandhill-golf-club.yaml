@@ -1,4 +1,5 @@
-name: Sandhill Golf Club
+name: "Sandhill Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.sandhillgolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.sandhillgolfclub.co.uk/"
+mainImageUrl: "/images/courses/sandhill-golf-club.png"

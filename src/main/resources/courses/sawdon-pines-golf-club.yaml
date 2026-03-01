@@ -1,3 +1,4 @@
-name: Sawdon Pines Golf Club
+name: "Sawdon Pines Golf Club"
 region:
-  name: NORTH_YORKSHIRE
+  name: "NORTH_YORKSHIRE"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

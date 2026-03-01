@@ -1,4 +1,5 @@
-name: Headley Golf Club
+name: "Headley Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://headleygolf.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://headleygolf.co.uk/"
+mainImageUrl: "/images/courses/headley-golf-club.gif"

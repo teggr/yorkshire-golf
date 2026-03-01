@@ -1,4 +1,5 @@
-name: Knotty Hill Golf Centre
+name: "Knotty Hill Golf Centre"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.knottyhill.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.knottyhill.com/"
+mainImageUrl: "/images/courses/knotty-hill-golf-centre.jpg"

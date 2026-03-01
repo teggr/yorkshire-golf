@@ -1,4 +1,5 @@
-name: Teesside Golf Club
+name: "Teesside Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.teessidegolfclub.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.teessidegolfclub.com/"
+mainImageUrl: "/images/courses/teesside-golf-club.jpg"

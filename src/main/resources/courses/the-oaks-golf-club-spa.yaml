@@ -1,4 +1,5 @@
-name: The Oaks Golf Club & Spa
+name: "The Oaks Golf Club & Spa"
 region:
-  name: NORTH_YORKSHIRE
-website: http://www.theoaksgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "http://www.theoaksgolfclub.co.uk/"
+mainImageUrl: "/images/courses/the-oaks-golf-club-spa.jpg"

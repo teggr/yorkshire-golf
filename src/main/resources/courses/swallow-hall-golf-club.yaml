@@ -1,4 +1,5 @@
-name: Swallow Hall Golf Club
+name: "Swallow Hall Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.swallowhall.com/golf-course/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.swallowhall.com/golf-course/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

@@ -1,4 +1,5 @@
-name: Lightcliffe Golf Club
+name: "Lightcliffe Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.lightcliffegolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.lightcliffegolfclub.co.uk/"
+mainImageUrl: "/images/courses/lightcliffe-golf-club.jpg"

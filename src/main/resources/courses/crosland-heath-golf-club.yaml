@@ -1,4 +1,5 @@
-name: Crosland Heath Golf Club
+name: "Crosland Heath Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.croslandheath.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.croslandheath.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

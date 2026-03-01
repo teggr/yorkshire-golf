@@ -1,4 +1,5 @@
-name: Wheatley Golf Club
+name: "Wheatley Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.wheatleygolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.wheatleygolfclub.co.uk/"
+mainImageUrl: "/images/courses/wheatley-golf-club.png"

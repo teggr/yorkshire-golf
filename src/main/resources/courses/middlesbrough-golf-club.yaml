@@ -1,4 +1,5 @@
-name: Middlesbrough Golf Club
+name: "Middlesbrough Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.middlesbroughgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.middlesbroughgolfclub.co.uk/"
+mainImageUrl: "/images/courses/middlesbrough-golf-club.jpg"

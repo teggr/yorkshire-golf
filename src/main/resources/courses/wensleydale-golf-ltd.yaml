@@ -1,3 +1,4 @@
-name: Wensleydale Golf Ltd
+name: "Wensleydale Golf Ltd"
 region:
-  name: NORTH_YORKSHIRE
+  name: "NORTH_YORKSHIRE"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

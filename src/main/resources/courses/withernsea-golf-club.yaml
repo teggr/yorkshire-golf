@@ -1,4 +1,5 @@
-name: Withernsea Golf Club
+name: "Withernsea Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.withernseagolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.withernseagolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

@@ -1,4 +1,5 @@
-name: Bradley Park Golf Club
+name: "Bradley Park Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.bradleyparkgc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.bradleyparkgc.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

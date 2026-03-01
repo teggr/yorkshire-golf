@@ -1,4 +1,5 @@
-name: Selby Golf Club
+name: "Selby Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.selbygolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.selbygolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

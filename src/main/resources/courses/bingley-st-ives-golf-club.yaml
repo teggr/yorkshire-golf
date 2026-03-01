@@ -1,4 +1,5 @@
-name: Bingley St Ives Golf Club
+name: "Bingley St Ives Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://bingleystivesgc.com/
+  name: "WEST_YORKSHIRE"
+website: "https://bingleystivesgc.com/"
+mainImageUrl: "/images/courses/bingley-st-ives-golf-club.png"

@@ -1,4 +1,5 @@
-name: Low Laithes Golf Club
+name: "Low Laithes Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.lowlaithesgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.lowlaithesgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

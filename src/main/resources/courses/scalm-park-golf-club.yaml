@@ -1,4 +1,5 @@
-name: Scalm Park Golf Club
+name: "Scalm Park Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://scalmparkleisure.co.uk/golf
+  name: "NORTH_YORKSHIRE"
+website: "https://scalmparkleisure.co.uk/golf"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

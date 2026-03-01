@@ -1,4 +1,5 @@
-name: Bawtry (Austerfield) Golf Club
+name: "Bawtry (Austerfield) Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.bawtrygolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.bawtrygolfclub.co.uk/"
+mainImageUrl: "/images/courses/bawtry-austerfield-golf-club.png"

@@ -1,4 +1,5 @@
-name: Branshaw Golf Club
+name: "Branshaw Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.branshawgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.branshawgolfclub.co.uk/"
+mainImageUrl: "/images/courses/branshaw-golf-club.png"

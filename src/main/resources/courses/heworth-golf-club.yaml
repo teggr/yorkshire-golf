@@ -1,4 +1,5 @@
-name: Heworth Golf Club
+name: "Heworth Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://heworthgolfclubyork.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://heworthgolfclubyork.co.uk/"
+mainImageUrl: "/images/courses/heworth-golf-club.jpg"

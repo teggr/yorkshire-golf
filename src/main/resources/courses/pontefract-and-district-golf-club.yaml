@@ -1,4 +1,5 @@
-name: Pontefract and District Golf Club
+name: "Pontefract and District Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.pdgc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.pdgc.co.uk/"
+mainImageUrl: "/images/courses/pontefract-and-district-golf-club.jpg"

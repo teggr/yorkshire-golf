@@ -1,4 +1,5 @@
-name: Beauchief Golf Club
+name: "Beauchief Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.beauchiefgolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.beauchiefgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

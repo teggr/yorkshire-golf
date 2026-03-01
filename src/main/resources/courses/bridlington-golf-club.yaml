@@ -1,4 +1,5 @@
-name: Bridlington Golf Club
+name: "Bridlington Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.bridlingtongolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.bridlingtongolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

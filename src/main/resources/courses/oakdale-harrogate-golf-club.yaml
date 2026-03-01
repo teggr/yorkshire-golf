@@ -1,4 +1,5 @@
-name: Oakdale (Harrogate) Golf Club
+name: "Oakdale (Harrogate) Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.oakdalegolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.oakdalegolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

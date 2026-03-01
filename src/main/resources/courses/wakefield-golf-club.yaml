@@ -1,4 +1,5 @@
-name: Wakefield Golf Club
+name: "Wakefield Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.wakefieldgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.wakefieldgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

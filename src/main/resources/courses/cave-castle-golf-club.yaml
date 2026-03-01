@@ -1,4 +1,5 @@
-name: Cave Castle Golf Club
+name: "Cave Castle Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.cavecastlegolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.cavecastlegolfclub.co.uk/"
+mainImageUrl: "/images/courses/cave-castle-golf-club.webp"

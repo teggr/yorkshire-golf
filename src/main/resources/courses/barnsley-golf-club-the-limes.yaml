@@ -1,4 +1,5 @@
-name: Barnsley Golf Club (The Limes)
+name: "Barnsley Golf Club (The Limes)"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://barnsleygolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://barnsleygolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

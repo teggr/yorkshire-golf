@@ -1,4 +1,5 @@
-name: Hillies Golf Club
+name: "Hillies Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.bplgolf.co.uk/hillies-golf-course/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.bplgolf.co.uk/hillies-golf-course/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

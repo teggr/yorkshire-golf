@@ -1,4 +1,5 @@
-name: Ben Rhydding Golf Club
+name: "Ben Rhydding Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.benrhyddinggolfclub.com/
+  name: "WEST_YORKSHIRE"
+website: "https://www.benrhyddinggolfclub.com/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

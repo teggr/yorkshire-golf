@@ -1,4 +1,5 @@
-name: Birley Wood Golf Club
+name: "Birley Wood Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.sheffieldgolf.co.uk/birley
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.sheffieldgolf.co.uk/birley"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

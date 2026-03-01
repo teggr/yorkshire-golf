@@ -1,4 +1,5 @@
-name: Whitwood Golf Club
+name: "Whitwood Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.whitwoodgolfclub.com/
+  name: "WEST_YORKSHIRE"
+website: "https://www.whitwoodgolfclub.com/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

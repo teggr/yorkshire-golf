@@ -1,4 +1,5 @@
-name: Driffield Golf Club
+name: "Driffield Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.driffieldgolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.driffieldgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

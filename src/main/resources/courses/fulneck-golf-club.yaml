@@ -1,4 +1,5 @@
-name: Fulneck Golf Club
+name: "Fulneck Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.fulneckgolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.fulneckgolfclub.co.uk/"
+mainImageUrl: "/images/courses/fulneck-golf-club.jpg"

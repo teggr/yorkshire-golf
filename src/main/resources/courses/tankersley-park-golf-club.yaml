@@ -1,4 +1,5 @@
-name: Tankersley Park Golf Club
+name: "Tankersley Park Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.tankersleyparkgolfclub.org.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.tankersleyparkgolfclub.org.uk/"
+mainImageUrl: "/images/courses/tankersley-park-golf-club.jpg"

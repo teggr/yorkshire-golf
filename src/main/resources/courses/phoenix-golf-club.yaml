@@ -1,4 +1,5 @@
-name: Phoenix Golf Club
+name: "Phoenix Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.phoenixgolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.phoenixgolfclub.co.uk/"
+mainImageUrl: "/images/courses/phoenix-golf-club.png"

@@ -1,5 +1,5 @@
-name: Pannal Golf Club
+name: "Pannal Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.pannalgolfclub.co.uk/
-
+  name: "NORTH_YORKSHIRE"
+website: "https://www.pannalgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

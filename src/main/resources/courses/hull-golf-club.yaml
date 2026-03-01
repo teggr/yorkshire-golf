@@ -1,4 +1,5 @@
-name: Hull Golf Club
+name: "Hull Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.hullgolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.hullgolfclub.co.uk/"
+mainImageUrl: "/images/courses/hull-golf-club.jpg"

@@ -1,4 +1,5 @@
-name: Stokesley Golf Range
+name: "Stokesley Golf Range"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.stokesleygolfrange.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.stokesleygolfrange.co.uk/"
+mainImageUrl: "/images/courses/stokesley-golf-range.png"

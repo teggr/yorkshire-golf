@@ -1,4 +1,5 @@
-name: Concord Park Golf Club
+name: "Concord Park Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.concordparkgolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.concordparkgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

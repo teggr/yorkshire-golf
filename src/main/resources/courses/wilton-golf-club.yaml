@@ -1,4 +1,5 @@
-name: Wilton Golf Club
+name: "Wilton Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.wiltongolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.wiltongolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

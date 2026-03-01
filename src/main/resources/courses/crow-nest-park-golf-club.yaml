@@ -1,4 +1,5 @@
-name: Crow Nest Park Golf Club
+name: "Crow Nest Park Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.crownestgolf.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.crownestgolf.co.uk/"
+mainImageUrl: "/images/courses/crow-nest-park-golf-club.jpg"

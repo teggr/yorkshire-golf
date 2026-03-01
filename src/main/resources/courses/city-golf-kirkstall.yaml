@@ -1,3 +1,4 @@
-name: City Golf (Kirkstall)
+name: "City Golf (Kirkstall)"
 region:
-  name: WEST_YORKSHIRE
+  name: "WEST_YORKSHIRE"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

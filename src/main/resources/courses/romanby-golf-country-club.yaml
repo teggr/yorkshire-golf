@@ -1,4 +1,5 @@
-name: Romanby Golf & Country Club
+name: "Romanby Golf & Country Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.romanby.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.romanby.com/"
+mainImageUrl: "/images/courses/romanby-golf-country-club.jpg"

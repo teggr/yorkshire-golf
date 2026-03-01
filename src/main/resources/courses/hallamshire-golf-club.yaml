@@ -1,4 +1,5 @@
-name: Hallamshire Golf Club
+name: "Hallamshire Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.hallamshiregolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.hallamshiregolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

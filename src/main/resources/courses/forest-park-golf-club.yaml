@@ -1,4 +1,5 @@
-name: Forest Park Golf Club
+name: "Forest Park Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.forestparkgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.forestparkgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

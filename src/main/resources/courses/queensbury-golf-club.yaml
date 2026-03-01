@@ -1,4 +1,5 @@
-name: Queensbury Golf Club
+name: "Queensbury Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.queensburygc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.queensburygc.co.uk/"
+mainImageUrl: "/images/courses/queensbury-golf-club.jpg"

@@ -1,4 +1,5 @@
-name: Silkstone Golf Club
+name: "Silkstone Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.silkstonegolfclub.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.silkstonegolfclub.co.uk/"
+mainImageUrl: "/images/courses/silkstone-golf-club.jpg"

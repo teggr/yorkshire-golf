@@ -1,4 +1,5 @@
-name: Kingswood Golf Club
+name: "Kingswood Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.kingswoodgolfcentre.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.kingswoodgolfcentre.co.uk/"
+mainImageUrl: "/images/courses/kingswood-golf-club.png"

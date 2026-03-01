@@ -1,4 +1,5 @@
-name: Wetherby Golf Club
+name: "Wetherby Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.wetherbygolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.wetherbygolfclub.co.uk/"
+mainImageUrl: "/images/courses/wetherby-golf-club.jpg"

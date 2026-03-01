@@ -1,4 +1,5 @@
-name: Bentham Golf Club
+name: "Bentham Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.benthamgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.benthamgolfclub.co.uk/"
+mainImageUrl: "/images/courses/bentham-golf-club.jpg"

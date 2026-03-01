@@ -1,4 +1,5 @@
-name: Woodhall Hills Golf Club
+name: "Woodhall Hills Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.woodhallhillsgc.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.woodhallhillsgc.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

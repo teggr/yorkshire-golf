@@ -1,4 +1,5 @@
-name: Tinsley Park Golf Club
+name: "Tinsley Park Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.tinsleyparkgolfcourse.co.uk/tinsley
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.tinsleyparkgolfcourse.co.uk/tinsley"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

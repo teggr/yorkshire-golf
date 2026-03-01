@@ -1,4 +1,5 @@
-name: Hornsea Golf Club
+name: "Hornsea Golf Club"
 region:
-  name: EAST_YORKSHIRE
-website: https://www.hornseagolfclub.co.uk/
+  name: "EAST_YORKSHIRE"
+website: "https://www.hornseagolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

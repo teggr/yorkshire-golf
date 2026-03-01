@@ -1,4 +1,5 @@
-name: Skipton Golf Club
+name: "Skipton Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.skiptongolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.skiptongolfclub.co.uk/"
+mainImageUrl: "/images/courses/skipton-golf-club.png"

@@ -1,4 +1,5 @@
-name: Cleckheaton Golf Club
+name: "Cleckheaton Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://cleckheatongolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://cleckheatongolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

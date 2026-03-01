@@ -1,4 +1,5 @@
-name: Crookhill Park Municipal Golf Club
+name: "Crookhill Park Municipal Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.crookhillpark.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.crookhillpark.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

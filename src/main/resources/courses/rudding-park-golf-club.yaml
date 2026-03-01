@@ -1,4 +1,5 @@
-name: Rudding Park Golf Club
+name: "Rudding Park Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.ruddingpark.com/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.ruddingpark.com/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

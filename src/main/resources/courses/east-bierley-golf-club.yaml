@@ -1,4 +1,5 @@
-name: East Bierley Golf Club
+name: "East Bierley Golf Club"
 region:
-  name: WEST_YORKSHIRE
-website: https://www.eastbierleygolfclub.co.uk/
+  name: "WEST_YORKSHIRE"
+website: "https://www.eastbierleygolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

@@ -1,4 +1,5 @@
-name: Doncaster Town Moor Golf Club
+name: "Doncaster Town Moor Golf Club"
 region:
-  name: SOUTH_YORKSHIRE
-website: https://www.doncastertownmoorgc.co.uk/
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.doncastertownmoorgc.co.uk/"
+mainImageUrl: "/images/courses/doncaster-town-moor-golf-club.png"

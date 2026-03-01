@@ -1,5 +1,5 @@
-name: Harrogate Golf Club
+name: "Harrogate Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.harrogateg olfclub.co.uk/
-
+  name: "NORTH_YORKSHIRE"
+website: "https://www.harrogateg olfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"

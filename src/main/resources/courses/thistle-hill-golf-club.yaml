@@ -1,4 +1,5 @@
-name: Thistle Hill Golf Club
+name: "Thistle Hill Golf Club"
 region:
-  name: NORTH_YORKSHIRE
-website: https://www.thethistlehillgolfclub.co.uk/
+  name: "NORTH_YORKSHIRE"
+website: "https://www.thethistlehillgolfclub.co.uk/"
+mainImageUrl: "/images/courses/placeholder-course.jpg"
