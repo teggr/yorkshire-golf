@@ -1,4 +1,5 @@
 name: "Birch Hall Golf Club"
+closed: true
 region:
   name: "SOUTH_YORKSHIRE"
 mainImageUrl: "/images/courses/placeholder-course.jpg"

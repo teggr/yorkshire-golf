@@ -3,6 +3,7 @@
 //DEPS com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1
 //DEPS com.fasterxml.jackson.core:jackson-databind:2.16.1
 //DEPS org.slf4j:slf4j-simple:2.0.9
+//DEPS com.twelvemonkeys.imageio:imageio-webp:3.10.1
 //JAVA 21
 
 import com.fasterxml.jackson.databind.ObjectMapper;
