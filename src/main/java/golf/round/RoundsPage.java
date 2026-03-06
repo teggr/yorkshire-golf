@@ -30,7 +30,7 @@ public class RoundsPage implements View {
         @SuppressWarnings("unchecked")
         List<Round> rounds = (List<Round>) model.get("rounds");
 
-        new YorkshireGolfPageTemplate()
+        new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Yorkshire Golf Life - Rounds")
                 .withBody(
                         // Page header

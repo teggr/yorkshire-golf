@@ -29,7 +29,7 @@ public class RoundDetailPage implements View {
 
         Round round = (Round) model.get("round");
 
-        new YorkshireGolfPageTemplate()
+        new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle(round.title() + " - Yorkshire Golf Life")
                 .withBody(
                         div().withClass("container ygl-page").with(

@@ -1,7 +1,11 @@
 package golf.web;
 
+import golf.utils.security.CsrfUtil;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 
@@ -14,6 +18,7 @@ public class YorkshireGolfPageTemplate {
     private String title;
     private DomContent[] pageScripts = new DomContent[0];
     private DomContent[] body = new DomContent[0];
+    private HttpServletRequest request;
 
     public YorkshireGolfPageTemplate withTitle(String title) {
         this.title = title;
@@ -30,7 +35,19 @@ public class YorkshireGolfPageTemplate {
         return this;
     }
 
+    public YorkshireGolfPageTemplate withRequest(HttpServletRequest request) {
+        this.request = request;
+        return this;
+    }
+
+    private static boolean isAuthenticated() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal());
+    }
+
     private DomContent buildNavbar() {
+        boolean loggedIn = isAuthenticated();
+        DomContent csrfField = request != null ? CsrfUtil.csrfInput(request) : text("");
         return nav()
                 .withClass("navbar navbar-expand-lg ygl-navbar")
                 .attr("data-bs-theme", "dark")
@@ -56,9 +73,23 @@ public class YorkshireGolfPageTemplate {
                                                 li().withClass("nav-item").with(
                                                         a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
                                                 ),
-                                                li().withClass("nav-item").with(
-                                                        a("My Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds")
-                                                )
+                                                loggedIn
+                                                        ? li().withClass("nav-item").with(
+                                                                a("My Rounds").withClass("nav-link ygl-navbar__link").withHref("/my-rounds")
+                                                          )
+                                                        : li().withClass("nav-item").with(
+                                                                a("Sign In").withClass("nav-link ygl-navbar__link").withHref("/login")
+                                                          ),
+                                                loggedIn
+                                                        ? li().withClass("nav-item").with(
+                                                                form().withMethod("post").withAction("/logout")
+                                                                        .withClass("d-inline").with(
+                                                                        csrfField,
+                                                                        button("Sign Out").withType("submit")
+                                                                                .withClass("nav-link ygl-navbar__link btn btn-link")
+                                                                )
+                                                          )
+                                                        : text("")
                                         )
                                 )
                         )
