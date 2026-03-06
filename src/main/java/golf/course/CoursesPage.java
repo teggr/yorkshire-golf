@@ -91,9 +91,13 @@ public class CoursesPage implements View {
     }
 
     static j2html.tags.DomContent courseCard(Course course) {
+        return courseCard(course, course.mainImageUrl());
+    }
+
+    static j2html.tags.DomContent courseCard(Course course, @Nullable String imageUrl) {
         j2html.tags.DomContent mediaEl = div().withClass("ygl-card__media").with(
-                course.mainImageUrl() != null && !course.mainImageUrl().isEmpty()
-                        ? img().withSrc(course.mainImageUrl()).withAlt(course.name()).withClass("ygl-card__img")
+                imageUrl != null && !imageUrl.isEmpty()
+                        ? img().withSrc(imageUrl).withAlt(course.name()).withClass("ygl-card__img")
                         : div("No image available").withClass("ygl-card__placeholder").attr("aria-hidden", "true")
         );
 

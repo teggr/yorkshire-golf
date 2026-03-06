@@ -54,7 +54,12 @@ public class PlayAndStayPage implements View {
                         ? p("No Play & Stay courses found.").withClass("text-muted")
                         : div().withClass("row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3").with(
                                 courses.stream()
-                                        .map(course -> div().withClass("col").with(CoursesPage.courseCard(course)))
+                                        .map(course -> {
+                                            String playAndStayImage = course.stayImageUrl() != null && !course.stayImageUrl().isEmpty()
+                                                    ? course.stayImageUrl()
+                                                    : course.mainImageUrl();
+                                            return div().withClass("col").with(CoursesPage.courseCard(course, playAndStayImage));
+                                        })
                                         .toArray(j2html.tags.DomContent[]::new)
                         )
         );

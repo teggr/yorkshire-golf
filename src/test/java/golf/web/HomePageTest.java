@@ -20,15 +20,16 @@ public class HomePageTest {
                 Regions.NorthYorkshire,
                 "https://featured.example",
                 "/images/featured.jpg",
+                null,
                 false,
                 false
         );
 
         List<Course> courses = List.of(
-                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", "/images/ganton.jpg", false, false),
-                new Course("Bridlington Links", Regions.EastYorkshire, "https://bridlington.example", null, false, false),
-                new Course("Rother Valley Golf", Regions.SouthYorkshire, "https://rothervalley.example", "/images/rother.jpg", false, false),
-                new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", "/images/moortown.jpg", false, false)
+                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", "/images/ganton.jpg", null, false, false),
+                new Course("Bridlington Links", Regions.EastYorkshire, "https://bridlington.example", null, null, false, false),
+                new Course("Rother Valley Golf", Regions.SouthYorkshire, "https://rothervalley.example", "/images/rother.jpg", null, false, false),
+                new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", "/images/moortown.jpg", null, false, false)
         );
 
         // Render through view to validate full home markup

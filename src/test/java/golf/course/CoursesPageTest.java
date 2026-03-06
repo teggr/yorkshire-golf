@@ -19,12 +19,12 @@ public class CoursesPageTest {
         // Given - example courses grouped by region
         Map<Region, List<Course>> byRegion = Map.of(
                 Regions.NorthYorkshire, List.of(
-                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, false, false),
-                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, false, false)
+                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false),
+                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, null, false, false)
                 ),
                 Regions.WestYorkshire, List.of(
-                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, false, false),
-                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, false, false)
+                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, null, false, false),
+                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, null, false, false)
                 )
         );
 
@@ -62,6 +62,7 @@ public class CoursesPageTest {
                 Regions.NorthYorkshire,
                 "https://www.gantongolfclub.com",
                 null,
+                null,
                 false,
                 false
         );
@@ -88,6 +89,7 @@ public class CoursesPageTest {
         Course courseWithoutWebsite = new Course(
                 "Sand Moor Golf Club",
                 Regions.WestYorkshire,
+                null,
                 null,
                 null,
                 false,
@@ -118,6 +120,7 @@ public class CoursesPageTest {
                 Regions.NorthYorkshire,
                 "https://www.ruddingpark.com/",
                 "/images/courses/rudding-park-golf-club.jpg",
+                null,
                 false,
                 false
         );
@@ -155,6 +158,7 @@ public class CoursesPageTest {
                 Regions.NorthYorkshire,
                 "https://www.ruddingpark.com/",
                 "/images/courses/rudding-park-golf-club.jpg",
+                null,
                 false,
                 true
         );

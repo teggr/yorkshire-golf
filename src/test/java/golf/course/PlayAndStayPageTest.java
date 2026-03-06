@@ -17,8 +17,8 @@ public class PlayAndStayPageTest {
     public DomContent courseGridExample() {
         // Given - courses with play and stay
         List<Course> courses = List.of(
-                new Course("Rudding Park Golf Club", Regions.NorthYorkshire, "https://www.ruddingpark.com/", "/images/courses/rudding-park-golf-club.png", false, true),
-                new Course("Hollins Hall Hotel & Country Club", Regions.WestYorkshire, "https://www.britanniahotels.com/hotels/hollins-hall-hotel-country-club/golf", "/images/courses/hollins-hall-hotel-country-club.jpg", false, true)
+            new Course("Rudding Park Golf Club", Regions.NorthYorkshire, "https://www.ruddingpark.com/", "/images/courses/rudding-park-golf-club.png", "https://example.com/rudding-stay.jpg", false, true),
+            new Course("Hollins Hall Hotel & Country Club", Regions.WestYorkshire, "https://www.britanniahotels.com/hotels/hollins-hall-hotel-country-club/golf", "/images/courses/hollins-hall-hotel-country-club.jpg", null, false, true)
         );
 
         // When - render course grid
@@ -30,6 +30,8 @@ public class PlayAndStayPageTest {
         assertTrue(html.contains("Rudding Park Golf Club"));
         assertTrue(html.contains("Hollins Hall Hotel &amp; Country Club"));
         assertTrue(html.contains("ygl-card--course"));
+        assertTrue(html.contains("https://example.com/rudding-stay.jpg"));
+        assertTrue(html.contains("/images/courses/hollins-hall-hotel-country-club.jpg"));
 
         return result;
     }

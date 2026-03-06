@@ -64,7 +64,9 @@ public class CourseAudit {
         app.post("/next", CourseAudit::handleNext);
         app.post("/previous", CourseAudit::handlePrevious);
         app.post("/update-website", CourseAudit::handleUpdateWebsite);
+        app.post("/update-stay-image", CourseAudit::handleUpdateStayImage);
         app.post("/update-closed", CourseAudit::handleUpdateClosed);
+        app.post("/update-play-and-stay", CourseAudit::handleUpdatePlayAndStay);
         app.post("/download-image", CourseAudit::handleDownloadImage);
         app.post("/jump-to-letter", CourseAudit::handleJumpToLetter);
         app.post("/search-course", CourseAudit::handleSearchCourse);
@@ -100,8 +102,9 @@ public class CourseAudit {
             CourseData course = parseCourse(yamlContent);
             ValidationResult websiteValidation = validator.validateWebsite(course.website);
             ValidationResult imageValidation = validator.validateImage(course.mainImageUrl);
+            ValidationResult stayImageValidation = validator.validateImage(course.stayImageUrl);
             
-            ctx.html(renderHTML(fileName, yamlContent, course, websiteValidation, imageValidation, null));
+            ctx.html(renderHTML(fileName, yamlContent, course, websiteValidation, imageValidation, stayImageValidation, null));
         } catch (Exception e) {
             e.printStackTrace(); // Log full stack trace
             ctx.html(renderError("Error loading course", e.getClass().getName() + ": " + e.getMessage() + "\\n" + 
@@ -194,6 +197,45 @@ public class CourseAudit {
             ctx.html(renderError("Update error", e.getMessage()));
         }
     }
+
+    private static void handleUpdatePlayAndStay(Context ctx) {
+        try {
+            List<String> playAndStayParams = ctx.formParams("playAndStay");
+            boolean isPlayAndStay = playAndStayParams != null && playAndStayParams.contains("true");
+
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+
+            String updatedYaml = updatePlayAndStayInYaml(yamlContent, isPlayAndStay);
+
+            Files.writeString(currentFile, updatedYaml);
+
+            ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Update error", e.getMessage()));
+        }
+    }
+
+    private static void handleUpdateStayImage(Context ctx) {
+        try {
+            String newStayImageUrl = ctx.formParam("newStayImageUrl");
+            if (newStayImageUrl == null) {
+                newStayImageUrl = "";
+            }
+            newStayImageUrl = newStayImageUrl.trim();
+
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+
+            String updatedYaml = updateStayImageUrlInYaml(yamlContent, newStayImageUrl);
+
+            Files.writeString(currentFile, updatedYaml);
+
+            ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Update error", e.getMessage()));
+        }
+    }
     
     private static void handleDownloadImage(Context ctx) {
         try {
@@ -279,6 +321,7 @@ public class CourseAudit {
         String name = (String) data.get("name");
         String website = (String) data.get("website");
         String mainImageUrl = (String) data.get("mainImageUrl");
+        String stayImageUrl = (String) data.get("stayImageUrl");
         
         // Parse closed field - handle both Boolean and String types
         boolean closed = false;
@@ -288,6 +331,14 @@ public class CourseAudit {
         } else if (closedObj instanceof String) {
             closed = "true".equalsIgnoreCase((String) closedObj);
         }
+
+        boolean playAndStay = false;
+        Object playAndStayObj = data.get("playAndStay");
+        if (playAndStayObj instanceof Boolean) {
+            playAndStay = (Boolean) playAndStayObj;
+        } else if (playAndStayObj instanceof String) {
+            playAndStay = "true".equalsIgnoreCase((String) playAndStayObj);
+        }
         
         // Extract region.name
         String region = null;
@@ -296,11 +347,12 @@ public class CourseAudit {
             region = (String) ((Map<?, ?>) regionObj).get("name");
         }
         
-        return new CourseData(name, website, mainImageUrl, region, closed);
+        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay);
     }
     
     private static String renderHTML(String fileName, String yamlContent, CourseData course,
                                      ValidationResult websiteValidation, ValidationResult imageValidation,
+                                     ValidationResult stayImageValidation,
                                      String message) {
         int current = fileNavigator.getCurrentIndex() + 1;
         int total = fileNavigator.getTotalFiles();
@@ -309,6 +361,7 @@ public class CourseAudit {
         
         // Image preview
         String imagePreview = renderImagePreview(course.mainImageUrl, imageValidation);
+        String stayImagePreview = renderImagePreview(course.stayImageUrl, stayImageValidation);
         
         // Website validation with visit button
         String websiteSection = renderWebsiteValidation(course.website, websiteValidation);
@@ -691,6 +744,11 @@ public class CourseAudit {
                         <div class="validation-label">Image Preview</div>
                         %s
                     </div>
+
+                    <div class="image-section">
+                        <div class="validation-label">Stay Image Preview</div>
+                        %s
+                    </div>
                     
                     <div class="validation-section">
                         <div class="validation-label">Website Validation</div>
@@ -699,6 +757,11 @@ public class CourseAudit {
                     
                     <div class="validation-section">
                         <div class="validation-label">Image Validation</div>
+                        %s
+                    </div>
+
+                    <div class="validation-section">
+                        <div class="validation-label">Stay Image Validation</div>
                         %s
                     </div>
                 </div>
@@ -710,6 +773,15 @@ public class CourseAudit {
                             <input type="url" name="newWebsiteUrl" placeholder="https://example.com" value="%s" class="form-input">
                             <button type="submit" formaction="/update-website" class="btn-primary form-button">🌐 Update Website</button>
                             <div style="font-size: 11px; color: #666; margin-top: 8px;">Updates website URL in file automatically</div>
+                        </div>
+                    </div>
+
+                    <div class="validation-section">
+                        <div class="validation-label">Update Stay Image URL</div>
+                        <div class="form-section">
+                            <input type="url" name="newStayImageUrl" placeholder="https://example.com/stay-image.jpg" value="%s" class="form-input">
+                            <button type="submit" formaction="/update-stay-image" class="btn-primary form-button">🏨 Update Stay Image URL</button>
+                            <div style="font-size: 11px; color: #666; margin-top: 8px;">Updates stayImageUrl in file automatically</div>
                         </div>
                     </div>
                     
@@ -734,6 +806,15 @@ public class CourseAudit {
                                     <span style="font-size: 14px;"><strong>Mark as CLOSED</strong></span>
                                 </label>
                             </div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="hidden" name="playAndStay" value="false">
+                                    <input type="checkbox" name="playAndStay" value="true" %s
+                                           onchange="this.form.action='/update-play-and-stay'; this.form.submit();"
+                                           style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;">
+                                    <span style="font-size: 14px;"><strong>Play & Stay</strong></span>
+                                </label>
+                            </div>
                             <div style="font-size: 11px; color: #666;">Check this box if the course is permanently closed</div>
                         </div>
                     </div>
@@ -743,6 +824,7 @@ public class CourseAudit {
                         <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; border: 1px solid #e0e0e0;">
                             <div style="margin-bottom: 10px;"><strong>Name:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Region:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Play & Stay:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Status:</strong> <span style="color: %s; font-weight: bold;">%s</span></div>
                             <div><strong>File:</strong> <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 12px;">%s</code></div>
                         </div>
@@ -771,12 +853,17 @@ public class CourseAudit {
             message != null ? message : "",
             navHeader,  // Navigation header
             imagePreview,
+            stayImagePreview,
             "%WEBSITE_SECTION%",
             renderValidationResult(imageValidation),
+            renderValidationResult(stayImageValidation),
             escapeHtml(course.website != null ? course.website : ""),
+            escapeHtml(course.stayImageUrl != null ? course.stayImageUrl : ""),
             course.closed ? "checked" : "",
+            course.playAndStay ? "checked" : "",
             escapeHtml(course.name != null ? course.name : "N/A"),
             escapeHtml(course.region != null ? course.region : "N/A"),
+            course.playAndStay ? "Yes" : "No",
             course.closed ? "#ef5350" : "#4caf50",
             course.closed ? "CLOSED" : "OPEN",
             fileName,
@@ -1049,6 +1136,49 @@ public class CourseAudit {
         
         return result.toString();
     }
+
+    private static String updateStayImageUrlInYaml(String yamlContent, String newStayImageUrl) {
+        boolean hasStayImageField = yamlContent.contains("stayImageUrl:");
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean foundStayImage = false;
+        boolean addedStayImage = false;
+
+        for (String line : lines) {
+            if (line.trim().startsWith("stayImageUrl:")) {
+                if (!foundStayImage) {
+                    String indent = line.substring(0, line.indexOf("stayImageUrl:"));
+                    if (newStayImageUrl.isEmpty()) {
+                        result.append(indent).append("stayImageUrl:");
+                    } else {
+                        result.append(indent).append("stayImageUrl: \"").append(newStayImageUrl).append("\"");
+                    }
+                    foundStayImage = true;
+                    result.append("\n");
+                }
+                continue;
+            }
+
+            result.append(line);
+
+            if (!hasStayImageField && !addedStayImage && line.trim().startsWith("mainImageUrl:")) {
+                String indent = "";
+                if (line.indexOf("mainImageUrl:") > 0) {
+                    indent = line.substring(0, line.indexOf("mainImageUrl:"));
+                }
+                if (newStayImageUrl.isEmpty()) {
+                    result.append("\n").append(indent).append("stayImageUrl:");
+                } else {
+                    result.append("\n").append(indent).append("stayImageUrl: \"").append(newStayImageUrl).append("\"");
+                }
+                addedStayImage = true;
+            }
+
+            result.append("\n");
+        }
+
+        return result.toString();
+    }
     
     private static String updateWebsiteUrlInYaml(String yamlContent, String newWebsiteUrl) {
         // Simple line-by-line replacement or addition of website field
@@ -1135,9 +1265,45 @@ public class CourseAudit {
         
         return result.toString();
     }
+
+    private static String updatePlayAndStayInYaml(String yamlContent, boolean isPlayAndStay) {
+        boolean hasPlayAndStayField = yamlContent.contains("playAndStay:");
+
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean foundPlayAndStay = false;
+        boolean addedPlayAndStay = false;
+
+        for (String line : lines) {
+            if (line.trim().startsWith("playAndStay:")) {
+                if (!foundPlayAndStay) {
+                    String indent = line.substring(0, line.indexOf("playAndStay:"));
+                    result.append(indent).append("playAndStay: ").append(isPlayAndStay);
+                    foundPlayAndStay = true;
+                    result.append("\n");
+                }
+                continue;
+            }
+
+            result.append(line);
+
+            if (!hasPlayAndStayField && !addedPlayAndStay && line.trim().startsWith("name:")) {
+                String indent = "";
+                if (line.indexOf("name:") > 0) {
+                    indent = line.substring(0, line.indexOf("name:"));
+                }
+                result.append("\n").append(indent).append("playAndStay: ").append(isPlayAndStay);
+                addedPlayAndStay = true;
+            }
+
+            result.append("\n");
+        }
+
+        return result.toString();
+    }
     
     // Data classes
-    record CourseData(String name, String website, String mainImageUrl, String region, boolean closed) {}
+    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay) {}
     
     record ValidationResult(ValidationStatus status, String message, String dimensions) {}
     

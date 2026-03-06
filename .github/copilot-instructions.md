@@ -15,7 +15,7 @@
   - `GET /courses-list` list of all course files
   - `POST /next`, `POST /previous` navigation
   - `POST /jump-to-letter`, `POST /search-course` lookup/navigation
-  - `POST /update-website`, `POST /update-closed`, `POST /download-image` metadata updates
+  - `POST /update-website`, `POST /update-stay-image`, `POST /update-closed`, `POST /update-play-and-stay`, `POST /download-image` metadata updates
 
 ## Canonical page names and routes
 - **Home** (`/`) → `HomePage`
