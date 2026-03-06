@@ -2,6 +2,10 @@
 
 Web based tracker for Yorkshire Golf
 
+# Copilot Instructions
+
+For consistent naming of pages/sections and guidance for the `scripts` Course Audit tool, see [.github/copilot-instructions.md](.github/copilot-instructions.md).
+
 # Data Store
 
 Managed as resouces:

@@ -25,7 +25,7 @@ public class HomePageTest {
 
         List<Course> courses = List.of(
                 new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", "/images/ganton.jpg", false),
-                new Course("Bridlington Links", Regions.EastYorkshire, "https://bridlington.example", "/images/bridlington.jpg", false),
+                new Course("Bridlington Links", Regions.EastYorkshire, "https://bridlington.example", null, false),
                 new Course("Rother Valley Golf", Regions.SouthYorkshire, "https://rothervalley.example", "/images/rother.jpg", false),
                 new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", "/images/moortown.jpg", false)
         );
@@ -47,6 +47,9 @@ public class HomePageTest {
         assertTrue(body.contains("/courses#east-yorkshire"));
         assertTrue(body.contains("/courses#south-yorkshire"));
         assertTrue(body.contains("/courses#west-yorkshire"));
+        assertTrue(body.contains("ygl-card__media"));
+        assertTrue(body.contains("ygl-card__img"));
+        assertTrue(body.contains("ygl-card__placeholder"));
 
         assertTrue(body.contains("https://www.gantongolfclub.com")
                 || body.contains("https://bridlington.example")

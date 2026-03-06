@@ -244,15 +244,19 @@ img {
   opacity: 0.8;
 }
 
+.ygl-hero__image-wrapper {
+  border-radius: var(--ygl-radius-lg);
+  overflow: hidden;
+  border-top: 3px solid var(--ygl-color-accent);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.15);
+}
+
 .ygl-hero__image {
   width: 100%;
-  height: 100%;
+  display: block;
   min-height: 300px;
   max-height: 400px;
   object-fit: cover;
-  border-radius: var(--ygl-radius-lg);
-  border-top: 3px solid var(--ygl-color-accent);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.15);
 }
 
 @media (max-width: 991.98px) {
@@ -398,12 +402,32 @@ img {
   letter-spacing: 0.02em;
 }
 
+.ygl-card__media {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--ygl-radius-sm);
+  background: var(--ygl-color-bg-alt);
+}
+
 .ygl-card__img {
   width: 100%;
-  height: 180px;
+  height: 100%;
   object-fit: cover;
   object-position: center;
   display: block;
+}
+
+.ygl-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ygl-color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .ygl-card__footer {
@@ -813,6 +837,20 @@ img {
   position: relative;
   z-index: 10;
   margin-bottom: 0.5rem;
+}
+
+/* ---------- Region navigation (courses page jump links) ---------- */
+.ygl-region-nav {
+  background-color: #fff;
+  border-bottom: 1px solid var(--ygl-color-border);
+  padding: 0.875rem 0;
+}
+
+.ygl-region-nav .container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 /* ---------- Region section header ---------- */

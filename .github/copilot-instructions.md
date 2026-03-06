@@ -1,0 +1,50 @@
+# Copilot Instructions for `yorkshire-golf`
+
+## Scope and style
+- Keep changes small and focused.
+- Preserve the existing stack and patterns: Java 21, Spring MVC controllers, j2html page views, resource-backed YAML data.
+- Prefer existing naming and routes over introducing new terms.
+
+## Scripts folder: Course Audit
+- Canonical name: **Course Audit** (`scripts/CourseAudit.java`).
+- Purpose: local audit/editor for course YAML + course images.
+- Run from repo root with: `jbang scripts/CourseAudit.java`.
+- Default local URL: `http://localhost:7070`.
+- Key Course Audit routes/actions:
+  - `GET /` current course audit screen
+  - `GET /courses-list` list of all course files
+  - `POST /next`, `POST /previous` navigation
+  - `POST /jump-to-letter`, `POST /search-course` lookup/navigation
+  - `POST /update-website`, `POST /update-closed`, `POST /download-image` metadata updates
+
+## Canonical page names and routes
+- **Home** (`/`) → `HomePage`
+- **Courses** (`/courses`) → `CoursesPage`
+- **Challenge Tracker** (`/challenge`) → `RegionTrackerPage`
+- **Rounds** (`/rounds`) → `RoundsPage`
+- **Round Detail** (`/rounds/{id}`) → `RoundDetailPage`
+
+## Canonical section names (use these exact labels in prompts/PRs)
+- Home sections:
+  - **Hero**
+  - **Stat strip**
+  - **Explore All Courses CTA**
+  - **Yorkshire Challenge feature**
+  - **Courses by Region**
+- Courses page sections:
+  - **Page header**
+  - **Course listings** (grouped by region)
+- Challenge Tracker sections:
+  - **Page header**
+  - **Chart**
+- Rounds page sections:
+  - **Page header**
+  - **Rounds card grid**
+- Round Detail sections:
+  - **Back to Rounds link**
+  - **Article** (title, meta, images, content)
+
+## Naming consistency rules
+- Use **Challenge Tracker** for `/challenge` (avoid alternate names).
+- Use **Rounds** for the list page and **Round Detail** for a single round.
+- Use **Course Audit** when referring to the script/tooling in `scripts/`.

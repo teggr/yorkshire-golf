@@ -1051,27 +1051,45 @@ public class CourseAudit {
     }
     
     private static String updateWebsiteUrlInYaml(String yamlContent, String newWebsiteUrl) {
-        // Simple line-by-line replacement of website
+        // Simple line-by-line replacement or addition of website field
+        boolean hasWebsiteField = yamlContent.contains("website:");
         String[] lines = yamlContent.split("\n");
         StringBuilder result = new StringBuilder();
         boolean foundWebsite = false;
-        
+        boolean addedWebsite = false;
+
         for (String line : lines) {
             if (line.trim().startsWith("website:")) {
-                // Replace with new URL
-                String indent = line.substring(0, line.indexOf("website:"));
-                if (newWebsiteUrl.isEmpty()) {
-                    result.append(indent).append("website:");
-                } else {
-                    result.append(indent).append("website: \"").append(newWebsiteUrl).append("\"");
+                if (!foundWebsite) {
+                    // Replace the first website field found
+                    String indent = line.substring(0, line.indexOf("website:"));
+                    if (newWebsiteUrl.isEmpty()) {
+                        result.append(indent).append("website:");
+                    } else {
+                        result.append(indent).append("website: \"").append(newWebsiteUrl).append("\"");
+                    }
+                    foundWebsite = true;
+                    result.append("\n");
                 }
-                foundWebsite = true;
-            } else {
-                result.append(line);
+                // Skip any duplicate website fields
+                continue;
             }
+
+            result.append(line);
+
+            // Add website field after name if it doesn't exist anywhere
+            if (!hasWebsiteField && !addedWebsite && !newWebsiteUrl.isEmpty() && line.trim().startsWith("name:")) {
+                String indent = "";
+                if (line.indexOf("name:") > 0) {
+                    indent = line.substring(0, line.indexOf("name:"));
+                }
+                result.append("\n").append(indent).append("website: \"").append(newWebsiteUrl).append("\"");
+                addedWebsite = true;
+            }
+
             result.append("\n");
         }
-        
+
         return result.toString();
     }
     

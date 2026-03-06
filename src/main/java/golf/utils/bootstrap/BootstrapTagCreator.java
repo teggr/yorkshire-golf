@@ -9,6 +9,8 @@ import static j2html.TagCreator.*;
 
 public class BootstrapTagCreator {
 
+    private static final String CSS_CACHE_BUST_KEY = Long.toString(System.currentTimeMillis(), 36);
+
     public static MetaTag bootstrapCharsetMetaTag() {
         return meta()
                 .attr("charset", "utf-8");
@@ -49,7 +51,7 @@ public class BootstrapTagCreator {
 
     public static LinkTag themeCssLinkTag() {
         return link()
-                .withHref("/css/styles.css")
+                .withHref("/css/styles.css?v=" + CSS_CACHE_BUST_KEY)
                 .attr("rel", "stylesheet");
     }
 

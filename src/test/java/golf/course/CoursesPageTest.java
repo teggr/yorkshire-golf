@@ -100,6 +100,8 @@ public class CoursesPageTest {
         String html = result.render();
         assertTrue(html.contains("Sand Moor Golf Club"));
         assertTrue(html.contains("ygl-card--course"));
+        assertTrue(html.contains("ygl-card__media"));
+        assertTrue(html.contains("ygl-card__placeholder"));
         assertFalse(html.contains("href"));
 
         return result;
@@ -125,6 +127,7 @@ public class CoursesPageTest {
         String html = result.render();
         assertTrue(html.contains("Rudding Park Golf Club"));
         assertTrue(html.contains("ygl-card--course"));
+        assertTrue(html.contains("ygl-card__media"));
         assertTrue(html.contains("ygl-card__img"));
         assertTrue(html.contains("/images/courses/rudding-park-golf-club.jpg"));
                 assertTrue(html.contains("Visit website"));

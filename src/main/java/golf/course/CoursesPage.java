@@ -51,6 +51,16 @@ public class CoursesPage implements View {
                                         p("Explore all " + courses.size() + " golf courses across the four ridings of Yorkshire.").withClass("ygl-page-header__lead")
                                 )
                         ),
+                        // Region navigation
+                        nav().attr("aria-label", "Jump to region").withClass("ygl-region-nav").with(
+                                div().withClass("container").with(
+                                        regionOrder.stream().map(region ->
+                                                a(region.displayName())
+                                                        .withClass("ygl-btn ygl-btn--outline ygl-btn--lg")
+                                                        .withHref("#" + toRegionSlug(region))
+                                        ).toArray(j2html.tags.DomContent[]::new)
+                                )
+                        ),
                         // Course listings
                         coursesList(byRegion, regionOrder)
                 )
@@ -81,9 +91,11 @@ public class CoursesPage implements View {
     }
 
     static j2html.tags.DomContent courseCard(Course course) {
-        j2html.tags.DomContent imageEl = course.mainImageUrl() != null && !course.mainImageUrl().isEmpty()
-                ? img().withSrc(course.mainImageUrl()).withAlt(course.name()).withClass("ygl-card__img")
-                : null;
+        j2html.tags.DomContent mediaEl = div().withClass("ygl-card__media").with(
+                course.mainImageUrl() != null && !course.mainImageUrl().isEmpty()
+                        ? img().withSrc(course.mainImageUrl()).withAlt(course.name()).withClass("ygl-card__img")
+                        : div("No image available").withClass("ygl-card__placeholder").attr("aria-hidden", "true")
+        );
 
         j2html.tags.DomContent cardBody = div().withClass("ygl-card__body").with(
                 p(course.name()).withClass("ygl-card__text mb-2"),
@@ -102,7 +114,7 @@ public class CoursesPage implements View {
         );
 
         return div().withClass("ygl-card ygl-card--course h-100").with(
-                imageEl != null ? imageEl : span(),
+                mediaEl,
                 cardBody
         );
     }

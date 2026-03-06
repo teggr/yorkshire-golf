@@ -100,9 +100,11 @@ public class HomePage implements View {
               // Image Column
               featuredCourse != null && featuredCourse.mainImageUrl() != null && !featuredCourse.mainImageUrl().isEmpty()
                 ? div().withClass("col-12 col-lg-5 order-2").with(
-                    img().withSrc(featuredCourse.mainImageUrl())
-                        .withAlt(featuredCourse.name())
-                        .withClass("ygl-hero__image")
+                    div().withClass("ygl-hero__image-wrapper").with(
+                      img().withSrc(featuredCourse.mainImageUrl())
+                          .withAlt(featuredCourse.name())
+                          .withClass("ygl-hero__image")
+                    )
                   )
                 : text("")
             )
@@ -128,7 +130,7 @@ public class HomePage implements View {
         ),
 
         // Explore All Courses CTA
-        div().withClass("ygl-section text-center").with(
+        div().withClass("ygl-section pb-0 text-center").with(
           div().withClass("container").with(
             a("Explore All Courses →").withClass("ygl-btn ygl-btn--accent-light ygl-btn--xl").withHref("/courses")
           )
@@ -168,11 +170,13 @@ public class HomePage implements View {
                   div().withClass("ygl-card h-100").with(
                     div().withClass("ygl-card__body").with(
                       h3(region.displayName()).withClass("ygl-card__title"),
-                      regionCourse != null && regionCourse.mainImageUrl() != null && !regionCourse.mainImageUrl().isEmpty()
-                        ? img().withSrc(regionCourse.mainImageUrl())
-                            .withAlt(regionCourse.name())
-                            .withClass("ygl-card__img mb-3")
-                        : text(""),
+                      div().withClass("ygl-card__media mb-3").with(
+                        regionCourse != null && regionCourse.mainImageUrl() != null && !regionCourse.mainImageUrl().isEmpty()
+                          ? img().withSrc(regionCourse.mainImageUrl())
+                              .withAlt(regionCourse.name())
+                              .withClass("ygl-card__img")
+                          : div("No image available").withClass("ygl-card__placeholder").attr("aria-hidden", "true")
+                      ),
                       regionCourse != null
                         ? p(regionCourse.name()).withClass("ygl-card__text mb-2")
                         : p("No courses currently available.").withClass("ygl-card__text mb-2"),
