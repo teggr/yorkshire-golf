@@ -55,27 +55,40 @@ public class HomePage implements View {
         // Hero
         div().withClass("ygl-hero").with(
           div().withClass("container").with(
-            featuredCourse != null
-              ? div().with(
-                  span("Featured Course").withClass("ygl-hero__label"),
-                  h1(featuredCourse.name()).withClass("ygl-hero__title"),
-                  p(featuredCourse.region().displayName()).withClass("ygl-hero__subtitle"),
-                  featuredCourse.website() != null && !featuredCourse.website().isEmpty()
-                    ? a().withHref(featuredCourse.website())
-                        .withTarget("_blank")
-                        .attr("rel", "noopener noreferrer")
-                        .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
-                        .with(
-                          text(featuredCourse.website()),
-                          text(" "),
-                          i().withClass("bi bi-box-arrow-up-right")
-                        )
-                    : text("")
-                )
-              : div().with(
-                  h1("Yorkshire Golf Life").withClass("ygl-hero__title"),
-                  p("Tracking the journey to play every golf course across Yorkshire.").withClass("ygl-hero__subtitle")
-                )
+            div().withClass("row g-4 align-items-center").with(
+              // Text Content Column
+              div().withClass("col-12 col-lg-7 order-1").with(
+                featuredCourse != null
+                  ? div().with(
+                      span("Featured Course").withClass("ygl-hero__label"),
+                      h1(featuredCourse.name()).withClass("ygl-hero__title"),
+                      p(featuredCourse.region().displayName()).withClass("ygl-hero__subtitle"),
+                      featuredCourse.website() != null && !featuredCourse.website().isEmpty()
+                        ? a().withHref(featuredCourse.website())
+                            .withTarget("_blank")
+                            .attr("rel", "noopener noreferrer")
+                            .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
+                            .with(
+                              text(featuredCourse.website()),
+                              text(" "),
+                              i().withClass("bi bi-box-arrow-up-right")
+                            )
+                        : text("")
+                    )
+                  : div().with(
+                      h1("Yorkshire Golf Life").withClass("ygl-hero__title"),
+                      p("Tracking the journey to play every golf course across Yorkshire.").withClass("ygl-hero__subtitle")
+                    )
+              ),
+              // Image Column
+              featuredCourse != null && featuredCourse.mainImageUrl() != null && !featuredCourse.mainImageUrl().isEmpty()
+                ? div().withClass("col-12 col-lg-5 order-2").with(
+                    img().withSrc(featuredCourse.mainImageUrl())
+                        .withAlt(featuredCourse.name())
+                        .withClass("ygl-hero__image")
+                  )
+                : text("")
+            )
           )
         ),
 

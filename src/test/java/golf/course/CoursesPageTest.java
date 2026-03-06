@@ -19,12 +19,12 @@ public class CoursesPageTest {
         // Given - example courses grouped by region
         Map<Region, List<Course>> byRegion = Map.of(
                 Regions.NorthYorkshire, List.of(
-                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null),
-                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null)
+                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, false),
+                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, false)
                 ),
                 Regions.WestYorkshire, List.of(
-                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null),
-                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null)
+                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, false),
+                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, false)
                 )
         );
 
@@ -57,7 +57,8 @@ public class CoursesPageTest {
                 "Ganton Golf Club",
                 Regions.NorthYorkshire,
                 "https://www.gantongolfclub.com",
-                null
+                null,
+                false
         );
 
         // When - render course card
@@ -81,7 +82,8 @@ public class CoursesPageTest {
                 "Sand Moor Golf Club",
                 Regions.WestYorkshire,
                 null,
-                null
+                null,
+                false
         );
 
         // When - render course card
@@ -105,7 +107,8 @@ public class CoursesPageTest {
                 "Rudding Park Golf Club",
                 Regions.NorthYorkshire,
                 "https://www.ruddingpark.com/",
-                "/images/courses/rudding-park-golf-club.jpg"
+                "/images/courses/rudding-park-golf-club.jpg",
+                false
         );
 
         // When - render course card

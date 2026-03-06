@@ -38,7 +38,9 @@ public class Courses {
     }
 
     public List<Course> getAllCourses() {
-        return new ArrayList<>(courses);
+        return courses.stream()
+                .filter(course -> !course.closed())
+                .toList();
     }
 
     public Course getCourseByName(String name) {
@@ -48,11 +50,13 @@ public class Courses {
     }
 
     public Map<Region, Long> getCourseRegionCountGroupByRegion() {
-        return courses.stream().collect(
-                Collectors.groupingBy(
-                        Course::region,
-                        Collectors.counting()
-                )
-        );
+        return courses.stream()
+                .filter(course -> !course.closed())
+                .collect(
+                        Collectors.groupingBy(
+                                Course::region,
+                                Collectors.counting()
+                        )
+                );
     }
 }
