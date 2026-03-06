@@ -51,6 +51,9 @@ public class YorkshireGolfPageTemplate {
                                                         a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
                                                 ),
                                                 li().withClass("nav-item").with(
+                                                        a("Play & Stay").withClass("nav-link ygl-navbar__link").withHref("/play-and-stay")
+                                                ),
+                                                li().withClass("nav-item").with(
                                                         a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
                                                 ),
                                                 li().withClass("nav-item").with(
@@ -77,7 +80,8 @@ public class YorkshireGolfPageTemplate {
                                                         div().withClass("ygl-footer__heading").with(text("Explore")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(a("Home").withHref("/")),
-                                                                li().with(a("Courses").withHref("/courses"))
+                                                                li().with(a("Courses").withHref("/courses")),
+                                                                li().with(a("Play & Stay").withHref("/play-and-stay"))
                                                         )
                                                 ),
                                                 div().withClass("col-6 col-lg-2").with(

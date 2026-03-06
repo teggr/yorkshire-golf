@@ -100,7 +100,7 @@ public class CoursesPage implements View {
         j2html.tags.DomContent cardBody = div().withClass("ygl-card__body").with(
                 p(course.name()).withClass("ygl-card__text mb-2"),
                 course.website() != null && !course.website().isEmpty()
-                        ? p().withClass("mb-0").with(
+                        ? p().withClass("mb-0 d-flex align-items-center gap-2").with(
                                 a().withClass("ygl-btn ygl-btn--primary ygl-btn--sm")
                                         .withHref(course.website())
                                         .withTarget("_blank")
@@ -108,7 +108,13 @@ public class CoursesPage implements View {
                                         .with(
                                                 text("Visit website"),
                                                 i().withClass("bi bi-box-arrow-up-right")
-                                        )
+                                        ),
+                                course.playAndStay()
+                                        ? span().attr("role", "img")
+                                                .attr("title", "Play & Stay – onsite accommodation available")
+                                                .attr("aria-label", "Play & Stay – onsite accommodation available")
+                                                .with(i().withClass("bi bi-house-door-fill ygl-badge--play-and-stay").attr("aria-hidden", "true"))
+                                        : span()
                         )
                         : span()
         );

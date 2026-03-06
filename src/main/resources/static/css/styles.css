@@ -614,6 +614,12 @@ img {
   vertical-align: middle;
 }
 
+.ygl-badge--play-and-stay {
+  color: var(--ygl-color-primary);
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
 /* ---------- ygl-page ---------- */
 .ygl-page {
   padding-top: 2.5rem;
