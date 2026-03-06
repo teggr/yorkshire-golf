@@ -13,6 +13,7 @@ import org.springframework.web.servlet.View;
 
 import java.util.List;
 import java.util.Map;
+import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 
 import static j2html.TagCreator.*;
@@ -47,6 +48,23 @@ public class HomePage implements View {
     Map<Region, Long> courseCountByRegion = allCourses.stream()
       .collect(Collectors.groupingBy(Course::region, Collectors.counting()));
 
+    RandomGenerator random = RandomGenerator.getDefault();
+
+    Map<Region, List<Course>> coursesByRegion = allCourses.stream()
+      .collect(Collectors.groupingBy(Course::region));
+
+    Map<Region, Course> featuredCourseByRegion = regionOrder.stream()
+      .collect(Collectors.toMap(
+        region -> region,
+        region -> {
+          List<Course> regionCourses = coursesByRegion.getOrDefault(region, List.of());
+          if (regionCourses.isEmpty()) {
+            return null;
+          }
+          return regionCourses.get(random.nextInt(regionCourses.size()));
+        }
+      ));
+
     long totalCourses = allCourses.size();
 
     new YorkshireGolfPageTemplate()
@@ -69,8 +87,7 @@ public class HomePage implements View {
                             .attr("rel", "noopener noreferrer")
                             .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
                             .with(
-                              text(featuredCourse.website()),
-                              text(" "),
+                              text("Visit website"),
                               i().withClass("bi bi-box-arrow-up-right")
                             )
                         : text("")
@@ -145,19 +162,38 @@ public class HomePage implements View {
             h2("Courses by Region").withClass("ygl-section__title"),
             p("Yorkshire is home to an incredible variety of golf courses spread across its four historic ridings.").withClass("ygl-section__subtitle"),
             div().withClass("row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4").with(
-              regionOrder.stream().map(region ->
-                div().withClass("col").with(
+              regionOrder.stream().map(region -> {
+                Course regionCourse = featuredCourseByRegion.get(region);
+                return div().withClass("col").with(
                   div().withClass("ygl-card h-100").with(
-                    div().withClass("ygl-card__body text-center").with(
+                    div().withClass("ygl-card__body").with(
                       h3(region.displayName()).withClass("ygl-card__title"),
-                      p(courseCountByRegion.getOrDefault(region, 0L) + " courses").withClass("ygl-card__text mb-0")
+                      regionCourse != null && regionCourse.mainImageUrl() != null && !regionCourse.mainImageUrl().isEmpty()
+                        ? img().withSrc(regionCourse.mainImageUrl())
+                            .withAlt(regionCourse.name())
+                            .withClass("ygl-card__img mb-3")
+                        : text(""),
+                      regionCourse != null
+                        ? p(regionCourse.name()).withClass("ygl-card__text mb-2")
+                        : p("No courses currently available.").withClass("ygl-card__text mb-2"),
+                      regionCourse != null && regionCourse.website() != null && !regionCourse.website().isEmpty()
+                        ? p().withClass("mb-0").with(
+                            a().withClass("ygl-btn ygl-btn--primary ygl-btn--sm").withHref(regionCourse.website())
+                              .withTarget("_blank")
+                              .withRel("noopener noreferrer")
+                              .with(
+                                text("Visit website"),
+                                i().withClass("bi bi-box-arrow-up-right")
+                              )
+                          )
+                        : text("")
                     ),
                     div().withClass("ygl-card__footer").with(
-                      a("Browse →").withClass("ygl-btn ygl-btn--outline ygl-btn--sm").withHref("/courses")
+                      a("Browse →").withClass("ygl-btn ygl-btn--outline ygl-btn--sm").withHref("/courses#" + toRegionSlug(region))
                     )
                   )
-                )
-              ).toArray(j2html.tags.DomContent[]::new)
+                );
+              }).toArray(j2html.tags.DomContent[]::new)
             )
           )
         )
@@ -166,6 +202,10 @@ public class HomePage implements View {
 
     log.info("HomePage rendered");
 
+  }
+
+  static String toRegionSlug(Region region) {
+    return region.displayName().toLowerCase().replace(" ", "-");
   }
 
 }

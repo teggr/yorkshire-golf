@@ -45,6 +45,10 @@ public class CoursesPageTest {
         assertTrue(html.contains("North Yorkshire"));
         assertTrue(html.contains("Ganton Golf Club"));
         assertTrue(html.contains("Moortown Golf Club"));
+        assertTrue(html.contains("id=\"north-yorkshire\""));
+        assertTrue(html.contains("id=\"east-yorkshire\""));
+        assertTrue(html.contains("id=\"south-yorkshire\""));
+        assertTrue(html.contains("id=\"west-yorkshire\""));
 
         return result;
     }
@@ -70,6 +74,8 @@ public class CoursesPageTest {
         assertTrue(html.contains("Ganton Golf Club"));
         assertTrue(html.contains("https://www.gantongolfclub.com"));
         assertTrue(html.contains("ygl-card--course"));
+        assertTrue(html.contains("Visit website"));
+        assertTrue(html.contains("bi bi-box-arrow-up-right"));
 
         return result;
     }
@@ -121,7 +127,16 @@ public class CoursesPageTest {
         assertTrue(html.contains("ygl-card--course"));
         assertTrue(html.contains("ygl-card__img"));
         assertTrue(html.contains("/images/courses/rudding-park-golf-club.jpg"));
+                assertTrue(html.contains("Visit website"));
 
         return result;
     }
+
+        @Test
+        void toRegionSlugMapsDisplayNameToAnchorSlug() {
+                assertEquals("north-yorkshire", CoursesPage.toRegionSlug(Regions.NorthYorkshire));
+                assertEquals("east-yorkshire", CoursesPage.toRegionSlug(Regions.EastYorkshire));
+                assertEquals("south-yorkshire", CoursesPage.toRegionSlug(Regions.SouthYorkshire));
+                assertEquals("west-yorkshire", CoursesPage.toRegionSlug(Regions.WestYorkshire));
+        }
 }

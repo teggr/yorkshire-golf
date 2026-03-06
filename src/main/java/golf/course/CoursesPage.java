@@ -64,7 +64,7 @@ public class CoursesPage implements View {
                 div().with(
                         regionOrder.stream().map(region -> {
                             List<Course> regionCourses = byRegion.getOrDefault(region, List.of());
-                            return div().withClass("mb-5").with(
+                            return div().withClass("mb-5").withId(toRegionSlug(region)).with(
                                     div().withClass("ygl-region-header").with(
                                             h2(region.displayName()).withClass("ygl-region-header__title"),
                                             span(regionCourses.size() + " courses").withClass("ygl-region-header__count")
@@ -88,21 +88,27 @@ public class CoursesPage implements View {
         j2html.tags.DomContent cardBody = div().withClass("ygl-card__body").with(
                 p(course.name()).withClass("ygl-card__text mb-2"),
                 course.website() != null && !course.website().isEmpty()
-                        ? p(course.website()).withClass("ygl-card__url text-muted small mb-0")
+                        ? p().withClass("mb-0").with(
+                                a().withClass("ygl-btn ygl-btn--primary ygl-btn--sm")
+                                        .withHref(course.website())
+                                        .withTarget("_blank")
+                                        .withRel("noopener noreferrer")
+                                        .with(
+                                                text("Visit website"),
+                                                i().withClass("bi bi-box-arrow-up-right")
+                                        )
+                        )
                         : span()
         );
 
-        j2html.tags.DomContent card = div().withClass("ygl-card ygl-card--course h-100").with(
+        return div().withClass("ygl-card ygl-card--course h-100").with(
                 imageEl != null ? imageEl : span(),
                 cardBody
         );
-
-        return course.website() != null && !course.website().isEmpty()
-                ? a().withHref(course.website())
-                    .withTarget("_blank")
-                    .withRel("noopener noreferrer")
-                    .withClass("ygl-card-link").with(card)
-                : card;
     }
+
+        static String toRegionSlug(Region region) {
+                return region.displayName().toLowerCase().replace(" ", "-");
+        }
 
 }
