@@ -49,6 +49,13 @@ public class Courses {
                 .orElseThrow(() -> new RuntimeException("Could not find " + name));
     }
 
+    public List<Course> getPlayAndStayCourses() {
+        return courses.stream()
+                .filter(course -> !course.closed())
+                .filter(Course::playAndStay)
+                .toList();
+    }
+
     public Map<Region, Long> getCourseRegionCountGroupByRegion() {
         return courses.stream()
                 .filter(course -> !course.closed())

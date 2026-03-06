@@ -19,12 +19,12 @@ public class CoursesPageTest {
         // Given - example courses grouped by region
         Map<Region, List<Course>> byRegion = Map.of(
                 Regions.NorthYorkshire, List.of(
-                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, false),
-                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, false)
+                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, false, false),
+                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, false, false)
                 ),
                 Regions.WestYorkshire, List.of(
-                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, false),
-                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, false)
+                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, false, false),
+                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, false, false)
                 )
         );
 
@@ -62,6 +62,7 @@ public class CoursesPageTest {
                 Regions.NorthYorkshire,
                 "https://www.gantongolfclub.com",
                 null,
+                false,
                 false
         );
 
@@ -89,6 +90,7 @@ public class CoursesPageTest {
                 Regions.WestYorkshire,
                 null,
                 null,
+                false,
                 false
         );
 
@@ -116,6 +118,7 @@ public class CoursesPageTest {
                 Regions.NorthYorkshire,
                 "https://www.ruddingpark.com/",
                 "/images/courses/rudding-park-golf-club.jpg",
+                false,
                 false
         );
 
@@ -142,4 +145,30 @@ public class CoursesPageTest {
                 assertEquals("south-yorkshire", CoursesPage.toRegionSlug(Regions.SouthYorkshire));
                 assertEquals("west-yorkshire", CoursesPage.toRegionSlug(Regions.WestYorkshire));
         }
+
+    @Test
+    @Preview
+    public DomContent courseCardWithPlayAndStayExample() {
+        // Given - a course with play and stay
+        Course courseWithPlayAndStay = new Course(
+                "Rudding Park Golf Club",
+                Regions.NorthYorkshire,
+                "https://www.ruddingpark.com/",
+                "/images/courses/rudding-park-golf-club.jpg",
+                false,
+                true
+        );
+
+        // When - render course card
+        var result = CoursesPage.courseCard(courseWithPlayAndStay);
+
+        // Then - should render with hotel icon
+        assertNotNull(result);
+        String html = result.render();
+        assertTrue(html.contains("Rudding Park Golf Club"));
+        assertTrue(html.contains("bi bi-house-door-fill"));
+        assertTrue(html.contains("Play &amp; Stay"));
+
+        return result;
+    }
 }

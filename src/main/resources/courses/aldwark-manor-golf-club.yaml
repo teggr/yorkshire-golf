@@ -1,4 +1,5 @@
 name: "Aldwark Manor Golf Club"
+playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.aldwarkmanorestate.co.uk/golf/"

@@ -1,4 +1,5 @@
 name: "Sandburn Hall"
+playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.sandburnhall.co.uk/golf/"
