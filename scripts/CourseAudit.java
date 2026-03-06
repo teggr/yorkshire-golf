@@ -66,6 +66,9 @@ public class CourseAudit {
         app.post("/update-website", CourseAudit::handleUpdateWebsite);
         app.post("/update-closed", CourseAudit::handleUpdateClosed);
         app.post("/download-image", CourseAudit::handleDownloadImage);
+        app.post("/jump-to-letter", CourseAudit::handleJumpToLetter);
+        app.post("/search-course", CourseAudit::handleSearchCourse);
+        app.get("/courses-list", CourseAudit::handleCoursesList);
         
         System.out.println("\n===========================================");
         System.out.println("Course Audit Webapp running at:");
@@ -224,6 +227,51 @@ public class CourseAudit {
         }
     }
     
+    private static void handleJumpToLetter(Context ctx) {
+        try {
+            String letter = ctx.formParam("letter");
+            if (letter == null || letter.isEmpty()) {
+                ctx.redirect("/");
+                return;
+            }
+            
+            int index = fileNavigator.findFirstCourseStartingWith(letter.charAt(0));
+            if (index >= 0) {
+                fileNavigator.jumpToIndex(index);
+            }
+            ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Navigation error", e.getMessage()));
+        }
+    }
+    
+    private static void handleSearchCourse(Context ctx) {
+        try {
+            String searchTerm = ctx.formParam("search");
+            if (searchTerm == null || searchTerm.isEmpty()) {
+                ctx.redirect("/");
+                return;
+            }
+            
+            int index = fileNavigator.findCourseByName(searchTerm);
+            if (index >= 0) {
+                fileNavigator.jumpToIndex(index);
+            }
+            ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Search error", e.getMessage()));
+        }
+    }
+    
+    private static void handleCoursesList(Context ctx) {
+        try {
+            List<Map<String, Object>> courses = fileNavigator.getAllCoursesInfo();
+            ctx.json(courses);
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of("error", e.getMessage()));
+        }
+    }
+    
     private static CourseData parseCourse(String yaml) throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Map<String, Object> data = mapper.readValue(yaml, Map.class);
@@ -264,6 +312,9 @@ public class CourseAudit {
         
         // Website validation with visit button
         String websiteSection = renderWebsiteValidation(course.website, websiteValidation);
+        
+        // Navigation header with alphabet and search
+        String navHeader = renderNavigationHeader();
         
         return """
 <!DOCTYPE html>
@@ -509,6 +560,117 @@ public class CourseAudit {
             margin-left: 15px;
             vertical-align: middle;
         }
+        .nav-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        .nav-section {
+            margin-bottom: 12px;
+        }
+        .nav-section:last-child {
+            margin-bottom: 0;
+        }
+        .nav-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .letter-btn {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 32px;
+            text-align: center;
+        }
+        .letter-btn:hover {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+            transform: translateY(-1px);
+        }
+        .letter-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+        .letter-btn:disabled {
+            background: #f5f5f5;
+            color: #ccc;
+            cursor: not-allowed;
+            border-color: #e0e0e0;
+        }
+        .letter-btn:disabled:hover {
+            transform: none;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        .search-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .search-btn:hover {
+            background: #1976d2;
+            transform: translateY(-1px);
+        }
+        .search-results {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .search-result-item:hover {
+            background: #f5f5f5;
+        }
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -517,6 +679,8 @@ public class CourseAudit {
             <h1>Course Audit: %s%s</h1>
             <div class="progress">File %d of %d</div>
         </div>
+        
+        %s
         
         %s
         
@@ -605,6 +769,7 @@ public class CourseAudit {
             current, 
             total,
             message != null ? message : "",
+            navHeader,  // Navigation header
             imagePreview,
             "%WEBSITE_SECTION%",
             renderValidationResult(imageValidation),
@@ -703,6 +868,48 @@ public class CourseAudit {
         return "<div class='validation-result %s'>%s %s</div>".formatted(
             cssClass, icon, escapeHtml(result.message)
         );
+    }
+    
+    private static String renderNavigationHeader() {
+        Set<Character> availableLetters = fileNavigator.getAvailableFirstLetters();
+        StringBuilder alphabetNav = new StringBuilder();
+        
+        // Generate A-Z letter buttons
+        for (char c = 'a'; c <= 'z'; c++) {
+            boolean available = availableLetters.contains(c);
+            String upperLetter = String.valueOf(c).toUpperCase();
+            
+            if (available) {
+                alphabetNav.append("""
+                    <form method="post" action="/jump-to-letter" style="display: inline;">
+                        <input type="hidden" name="letter" value="%s">
+                        <button type="submit" class="letter-btn">%s</button>
+                    </form>
+                    """.formatted(c, upperLetter));
+            } else {
+                alphabetNav.append("""
+                    <button class="letter-btn" disabled>%s</button>
+                    """.formatted(upperLetter));
+            }
+        }
+        
+        return """
+        <div class="nav-header">
+            <div class="nav-section">
+                <div class="nav-label">Jump to Letter</div>
+                <div class="alphabet-nav">
+                    %s
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-label">Search Course</div>
+                <form method="post" action="/search-course" class="search-box">
+                    <input type="text" name="search" class="search-input" placeholder="Type course name..." autocomplete="off">
+                    <button type="submit" class="search-btn">🔍 Search</button>
+                </form>
+            </div>
+        </div>
+        """.formatted(alphabetNav.toString());
     }
     
     private static String renderError(String title, String message) {
@@ -967,6 +1174,59 @@ public class CourseAudit {
             if (hasPrevious()) {
                 currentIndex--;
             }
+        }
+        
+        public void jumpToIndex(int index) {
+            if (index >= 0 && index < courseFiles.size()) {
+                currentIndex = index;
+            }
+        }
+        
+        public int findFirstCourseStartingWith(char letter) {
+            String targetLetter = String.valueOf(letter).toLowerCase();
+            for (int i = 0; i < courseFiles.size(); i++) {
+                String fileName = courseFiles.get(i).getFileName().toString().toLowerCase();
+                if (fileName.startsWith(targetLetter)) {
+                    return i;
+                }
+            }
+            return -1; // Not found
+        }
+        
+        public int findCourseByName(String searchTerm) {
+            String searchLower = searchTerm.toLowerCase().trim();
+            for (int i = 0; i < courseFiles.size(); i++) {
+                String fileName = courseFiles.get(i).getFileName().toString().toLowerCase();
+                if (fileName.contains(searchLower)) {
+                    return i;
+                }
+            }
+            return -1; // Not found
+        }
+        
+        public List<Map<String, Object>> getAllCoursesInfo() {
+            List<Map<String, Object>> courses = new ArrayList<>();
+            for (int i = 0; i < courseFiles.size(); i++) {
+                Map<String, Object> info = new HashMap<>();
+                String fileName = courseFiles.get(i).getFileName().toString();
+                String displayName = fileName.replace(".yaml", "").replace("-", " ");
+                info.put("index", i);
+                info.put("fileName", fileName);
+                info.put("displayName", displayName);
+                courses.add(info);
+            }
+            return courses;
+        }
+        
+        public Set<Character> getAvailableFirstLetters() {
+            Set<Character> letters = new TreeSet<>();
+            for (Path file : courseFiles) {
+                String fileName = file.getFileName().toString();
+                if (!fileName.isEmpty()) {
+                    letters.add(Character.toLowerCase(fileName.charAt(0)));
+                }
+            }
+            return letters;
         }
     }
     

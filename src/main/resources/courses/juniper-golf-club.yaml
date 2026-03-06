@@ -1,4 +1,5 @@
 name: "Juniper Golf Club"
+closed: true
 region:
   name: "NORTH_YORKSHIRE"
 mainImageUrl: "/images/courses/placeholder-course.jpg"

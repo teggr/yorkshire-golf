@@ -1,4 +1,5 @@
 name: "Laurel Park Golf Club"
+closed: true
 region:
   name: "WEST_YORKSHIRE"
 mainImageUrl: "/images/courses/placeholder-course.jpg"
