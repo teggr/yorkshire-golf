@@ -1,5 +1,6 @@
 package golf.web;
 
+import golf.course.Courses;
 import golf.course.Course;
 import golf.course.Region;
 import golf.course.Regions;
@@ -81,16 +82,9 @@ public class HomePage implements View {
                       span("Featured Course").withClass("ygl-hero__label"),
                       h1(featuredCourse.name()).withClass("ygl-hero__title"),
                       p(featuredCourse.region().displayName()).withClass("ygl-hero__subtitle"),
-                      featuredCourse.website() != null && !featuredCourse.website().isEmpty()
-                        ? a().withHref(featuredCourse.website())
-                            .withTarget("_blank")
-                            .attr("rel", "noopener noreferrer")
-                            .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
-                            .with(
-                              text("Visit website"),
-                              i().withClass("bi bi-box-arrow-up-right")
-                            )
-                        : text("")
+                      a().withHref("/courses/" + Courses.toCourseSlug(featuredCourse.name()))
+                          .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
+                          .with(text("View course"))
                     )
                   : div().with(
                       h1("Yorkshire Golf Life").withClass("ygl-hero__title"),
@@ -180,15 +174,11 @@ public class HomePage implements View {
                       regionCourse != null
                         ? p(regionCourse.name()).withClass("ygl-card__text mb-2")
                         : p("No courses currently available.").withClass("ygl-card__text mb-2"),
-                      regionCourse != null && regionCourse.website() != null && !regionCourse.website().isEmpty()
+                      regionCourse != null
                         ? p().withClass("mb-0").with(
-                            a().withClass("ygl-btn ygl-btn--primary ygl-btn--sm").withHref(regionCourse.website())
-                              .withTarget("_blank")
-                              .withRel("noopener noreferrer")
-                              .with(
-                                text("Visit website"),
-                                i().withClass("bi bi-box-arrow-up-right")
-                              )
+                            a().withClass("ygl-btn ygl-btn--primary ygl-btn--sm")
+                              .withHref("/courses/" + Courses.toCourseSlug(regionCourse.name()))
+                              .with(text("View course"))
                           )
                         : text("")
                     ),

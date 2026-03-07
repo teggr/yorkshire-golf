@@ -49,6 +49,20 @@ public class Courses {
                 .orElseThrow(() -> new RuntimeException("Could not find " + name));
     }
 
+    public Course getCourseBySlug(String slug) {
+        return courses.stream()
+                .filter(c -> toCourseSlug(c.name()).equals(slug))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Could not find course with slug: " + slug));
+    }
+
+    public static String toCourseSlug(String courseName) {
+        return courseName.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .trim()
+                .replaceAll("\\s+", "-");
+    }
+
     public List<Course> getPlayAndStayCourses() {
         return courses.stream()
                 .filter(course -> !course.closed())
