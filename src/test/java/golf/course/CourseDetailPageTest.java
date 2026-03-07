@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import j2html.tags.DomContent;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CourseDetailPageTest {
 
@@ -25,7 +28,15 @@ public class CourseDetailPageTest {
                 "/images/courses/alwoodley-golf-club.jpg",
                 null,
                 false,
-                false
+            false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
         );
 
         DomContent result = CourseDetailPage.courseDetail(course);
@@ -48,7 +59,15 @@ public class CourseDetailPageTest {
                 "/images/courses/rudding-park-golf-club.jpg",
                 null,
                 false,
-                true
+            true,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
         );
 
         DomContent result = CourseDetailPage.courseDetail(course);
@@ -68,7 +87,15 @@ public class CourseDetailPageTest {
                 null,
                 null,
                 false,
-                false
+            false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
         );
 
         DomContent result = CourseDetailPage.courseDetail(course);

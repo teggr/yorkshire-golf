@@ -26,6 +26,8 @@ public class PlayAndStayPage implements View {
 
     @Override
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.setCharacterEncoding("UTF-8");
 
         @SuppressWarnings("unchecked")
         List<Course> courses = (List<Course>) model.get("courses");

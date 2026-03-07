@@ -64,42 +64,44 @@ public class YorkshireGolfPageTemplate {
                                         .with(span().withClass("navbar-toggler-icon")),
                                 div().withClass("collapse navbar-collapse justify-content-end").withId("navbarNav").with(
                                         ul().withClass("navbar-nav ygl-navbar__nav").with(
+                                                
+                                                li().withClass("nav-item").with(
+                                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
+                                                ),
                                                 li().withClass("nav-item").with(
                                                         a("Top 100").withClass("nav-link ygl-navbar__link").withHref("/top-100")
                                                 ),
                                                 li().withClass("nav-item").with(
-                                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
+                                                        a("Next 100").withClass("nav-link ygl-navbar__link").withHref("/next-100")
                                                 ),
                                                 li().withClass("nav-item").with(
                                                         a("Play & Stay").withClass("nav-link ygl-navbar__link").withHref("/play-and-stay")
                                                 ),
                                                 li().withClass("nav-item").with(
-                                                        a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
+                                                        a("Yorkshire Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
                                                 ),
                                                 li().withClass("nav-item").with(
                                                         a("My Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds")
                                                 ),
-                                                li().withClass("nav-item").with(
-                                                        a("Next 100").withClass("nav-link ygl-navbar__link").withHref("/next-100")
-                                                ),
-                                                loggedIn
-                                                        ? li().withClass("nav-item").with(
+                                                iffElse(loggedIn, 
+                                                        li().withClass("nav-item").with(
                                                                 a("My Rounds").withClass("nav-link ygl-navbar__link").withHref("/my-rounds")
-                                                          )
-                                                        : li().withClass("nav-item").with(
+                                                          ), 
+                                                        li().withClass("nav-item").with(
                                                                 a("Sign In").withClass("nav-link ygl-navbar__link").withHref("/login")
-                                                          ),
-                                                loggedIn
-                                                        ? li().withClass("nav-item").with(
+                                                          )
+                                                        ),
+                                                iffElse( loggedIn,
+                                                         li().withClass("nav-item").with(
                                                                 form().withMethod("post").withAction("/logout")
                                                                         .withClass("d-inline").with(
                                                                         csrfField,
                                                                         button("Sign Out").withType("submit")
                                                                                 .withClass("nav-link ygl-navbar__link btn btn-link")
                                                                 )
-                                                          )
-                                                        : text("")
-                                                
+                                                          ),
+                                                           text("")
+                                                        )
                                         )
                                 )
                         )

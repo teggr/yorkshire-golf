@@ -28,6 +28,8 @@ public class RoundsPage implements View {
     @Override
     @SuppressWarnings("unchecked")
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.setCharacterEncoding("UTF-8");
 
         List<UserRound> rounds = (List<UserRound>) model.get("rounds");
 

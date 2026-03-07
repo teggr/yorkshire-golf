@@ -28,6 +28,8 @@ public class RegionTrackerPage implements View {
 
   @Override
   public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    response.setContentType(MediaType.TEXT_HTML_VALUE);
+    response.setCharacterEncoding("UTF-8");
 
     RegionChallengeTracker tracker = (RegionChallengeTracker) model.get("tracker");
 

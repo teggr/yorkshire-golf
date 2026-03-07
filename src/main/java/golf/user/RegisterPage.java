@@ -26,6 +26,8 @@ public class RegisterPage implements View {
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String errorMessage = (String) model.get("error");
         String emailValue = model.get("email") != null ? (String) model.get("email") : "";
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.setCharacterEncoding("UTF-8");
 
         new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Register — Yorkshire Golf Life")

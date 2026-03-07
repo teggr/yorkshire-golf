@@ -23,6 +23,9 @@ public class ForgotPasswordPage implements View {
 
     @Override
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.setCharacterEncoding("UTF-8");
+
         String step = model.get("step") != null ? (String) model.get("step") : "email";
         String errorMessage = (String) model.get("error");
         String token = (String) model.get("token");

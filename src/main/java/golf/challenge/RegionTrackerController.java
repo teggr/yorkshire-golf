@@ -1,6 +1,5 @@
 package golf.challenge;
 
-import golf.user.GolfUser;
 import golf.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -26,6 +26,9 @@ public class AdminPage implements View {
     @Override
     @SuppressWarnings("unchecked")
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.setCharacterEncoding("UTF-8");
+
         List<GolfUser> users = model.get("users") != null ? (List<GolfUser>) model.get("users") : List.of();
         j2html.tags.DomContent csrfField = CsrfUtil.csrfInput(request);
 

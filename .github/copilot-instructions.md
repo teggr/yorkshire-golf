@@ -48,3 +48,9 @@
 - Use **Challenge Tracker** for `/challenge` (avoid alternate names).
 - Use **Rounds** for the list page and **Round Detail** for a single round.
 - Use **Course Audit** when referring to the script/tooling in `scripts/`.
+
+## Testing and TDD rules
+- Follow TDD for behavior changes and bug fixes: write or update a test first, confirm it fails for the expected reason, then implement the code change, then rerun tests.
+- A task is not complete until relevant automated tests pass locally.
+- After code changes, run focused tests first (affected package/class), then run the broader suite when practical.
+- If tests cannot be run in the current environment, explicitly state this and what remains to verify.

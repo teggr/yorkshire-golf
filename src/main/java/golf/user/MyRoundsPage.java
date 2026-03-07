@@ -31,6 +31,9 @@ public class MyRoundsPage implements View {
     @Override
     @SuppressWarnings("unchecked")
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.setCharacterEncoding("UTF-8");
+
         List<UserRound> userRounds = model.get("userRounds") != null ? (List<UserRound>) model.get("userRounds") : List.of();
         String trackerId = (String) model.get("trackerId");
         String errorMessage = (String) model.get("error");

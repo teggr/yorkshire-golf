@@ -9,7 +9,10 @@ import j2html.tags.DomContent;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CoursesPageTest {
 
@@ -19,12 +22,12 @@ public class CoursesPageTest {
         // Given - example courses grouped by region
         Map<Region, List<Course>> byRegion = Map.of(
                 Regions.NorthYorkshire, List.of(
-                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false),
-                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, null, false, false)
+                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null),
+                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, null, false, false, null, null, null, null, null, null, null, null)
                 ),
                 Regions.WestYorkshire, List.of(
-                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, null, false, false),
-                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, null, false, false)
+                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, null, false, false, null, null, null, null, null, null, null, null),
+                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null)
                 )
         );
 
@@ -64,7 +67,15 @@ public class CoursesPageTest {
                 null,
                 null,
                 false,
-                false
+                false,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         // When - render course card
@@ -91,7 +102,15 @@ public class CoursesPageTest {
                 null,
                 null,
                 false,
-                false
+                false,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         // When - render course card
@@ -122,7 +141,15 @@ public class CoursesPageTest {
                 "/images/courses/rudding-park-golf-club.jpg",
                 null,
                 false,
-                false
+                false,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         // When - render course card
@@ -160,7 +187,15 @@ public class CoursesPageTest {
                 "/images/courses/rudding-park-golf-club.jpg",
                 null,
                 false,
-                true
+                true,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         // When - render course card
