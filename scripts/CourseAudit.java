@@ -67,6 +67,7 @@ public class CourseAudit {
         app.post("/update-stay-image", CourseAudit::handleUpdateStayImage);
         app.post("/update-closed", CourseAudit::handleUpdateClosed);
         app.post("/update-play-and-stay", CourseAudit::handleUpdatePlayAndStay);
+        app.post("/update-address", CourseAudit::handleUpdateAddress);
         app.post("/download-image", CourseAudit::handleDownloadImage);
         app.post("/jump-to-letter", CourseAudit::handleJumpToLetter);
         app.post("/search-course", CourseAudit::handleSearchCourse);
@@ -216,6 +217,27 @@ public class CourseAudit {
         }
     }
 
+    private static void handleUpdateAddress(Context ctx) {
+        try {
+            String newAddress = ctx.formParam("newAddress");
+            if (newAddress == null) {
+                newAddress = "";
+            }
+            newAddress = newAddress.trim();
+
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+
+            String updatedYaml = updateAddressInYaml(yamlContent, newAddress);
+
+            Files.writeString(currentFile, updatedYaml);
+
+            ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Update error", e.getMessage()));
+        }
+    }
+
     private static void handleUpdateStayImage(Context ctx) {
         try {
             String newStayImageUrl = ctx.formParam("newStayImageUrl");
@@ -347,6 +369,8 @@ public class CourseAudit {
             region = (String) ((Map<?, ?>) regionObj).get("name");
         }
 
+        String address = (String) data.get("address");
+        
         // Parse next100 field
         Integer next100 = null;
         Object next100Obj = data.get("next100");
@@ -358,7 +382,7 @@ public class CourseAudit {
             } catch (NumberFormatException ignored) {}
         }
         
-        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, next100);
+        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, next100);
     }
     
     private static String renderHTML(String fileName, String yamlContent, CourseData course,
@@ -795,6 +819,15 @@ public class CourseAudit {
                             <div style="font-size: 11px; color: #666; margin-top: 8px;">Updates stayImageUrl in file automatically</div>
                         </div>
                     </div>
+
+                    <div class="validation-section">
+                        <div class="validation-label">Update Address</div>
+                        <div class="form-section">
+                            <input type="text" name="newAddress" placeholder="e.g. Abbeydale Road South, Sheffield, S17 3LA" value="%s" class="form-input">
+                            <button type="submit" formaction="/update-address" class="btn-primary form-button">📍 Update Address</button>
+                            <div style="font-size: 11px; color: #666; margin-top: 8px;">Updates address in file automatically</div>
+                        </div>
+                    </div>
                     
                     <div class="validation-section">
                         <div class="validation-label">Download New Image</div>
@@ -836,6 +869,7 @@ public class CourseAudit {
                             <div style="margin-bottom: 10px;"><strong>Name:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Region:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Play & Stay:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Address:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Status:</strong> <span style="color: %s; font-weight: bold;">%s</span></div>
                             <div><strong>File:</strong> <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 12px;">%s</code></div>
                         </div>
@@ -870,11 +904,13 @@ public class CourseAudit {
             renderValidationResult(stayImageValidation),
             escapeHtml(course.website != null ? course.website : ""),
             escapeHtml(course.stayImageUrl != null ? course.stayImageUrl : ""),
+            escapeHtml(course.address != null ? course.address : ""),
             course.closed ? "checked" : "",
             course.playAndStay ? "checked" : "",
             escapeHtml(course.name != null ? course.name : "N/A"),
             escapeHtml(course.region != null ? course.region : "N/A"),
             course.playAndStay ? "Yes" : "No",
+            escapeHtml(course.address != null ? course.address : "—"),
             course.closed ? "#ef5350" : "#4caf50",
             course.closed ? "CLOSED" : "OPEN",
             fileName,
@@ -1312,9 +1348,48 @@ public class CourseAudit {
 
         return result.toString();
     }
+
+    private static String updateAddressInYaml(String yamlContent, String newAddress) {
+        boolean hasAddressField = yamlContent.contains("address:");
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean foundAddress = false;
+        boolean addedAddress = false;
+
+        for (String line : lines) {
+            if (line.trim().startsWith("address:")) {
+                if (!foundAddress) {
+                    String indent = line.substring(0, line.indexOf("address:"));
+                    if (newAddress.isEmpty()) {
+                        result.append(indent).append("address:");
+                    } else {
+                        result.append(indent).append("address: \"").append(newAddress).append("\"");
+                    }
+                    foundAddress = true;
+                    result.append("\n");
+                }
+                continue;
+            }
+
+            result.append(line);
+
+            if (!hasAddressField && !addedAddress && !newAddress.isEmpty() && line.trim().startsWith("name:")) {
+                String indent = "";
+                if (line.indexOf("name:") > 0) {
+                    indent = line.substring(0, line.indexOf("name:"));
+                }
+                result.append("\n").append(indent).append("address: \"").append(newAddress).append("\"");
+                addedAddress = true;
+            }
+
+            result.append("\n");
+        }
+
+        return result.toString();
+    }
     
     // Data classes
-    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, Integer next100) {}
+    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Integer next100) {}
     
     record ValidationResult(ValidationStatus status, String message, String dimensions) {}
     
