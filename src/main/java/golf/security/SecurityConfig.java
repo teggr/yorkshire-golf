@@ -24,7 +24,8 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/", "/courses/**", "/play-and-stay/**",
                     "/top-100/**", "/next-100/**",
-                        "/rounds/**",
+                    "/rounds/**",
+                    "/my-rounds/**",
                     "/challenge/**",
                         "/register/**", "/login/**", "/forgot-password/**",
                         "/css/**", "/images/**", "/js/**",
@@ -35,7 +36,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/my-rounds", true)
+                .defaultSuccessUrl("/challenge", true)
                 .failureUrl("/login?error=true")
                 .permitAll()
             )

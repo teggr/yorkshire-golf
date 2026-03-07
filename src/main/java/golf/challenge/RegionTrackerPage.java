@@ -1,6 +1,8 @@
 package golf.challenge;
 
+import golf.course.Course;
 import golf.course.Regions;
+import golf.utils.security.CsrfUtil;
 import golf.web.YorkshireGolfPageTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,11 +29,18 @@ public class RegionTrackerPage implements View {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
     response.setContentType(MediaType.TEXT_HTML_VALUE);
     response.setCharacterEncoding("UTF-8");
 
     RegionChallengeTracker tracker = (RegionChallengeTracker) model.get("tracker");
+    String trackerId = (String) model.get("trackerId");
+    boolean canAddRound = Boolean.TRUE.equals(model.get("canAddRound"));
+    List<Course> allCourses = model.get("allCourses") != null ? (List<Course>) model.get("allCourses") : List.of();
+    String errorMessage = (String) model.get("error");
+    String successMessage = (String) model.get("success");
+    j2html.tags.DomContent csrfField = CsrfUtil.csrfInput(request);
 
     Map<String, Object> chartData = new HashMap<>();
     chartData.put("overall_percentage",
@@ -85,7 +94,39 @@ public class RegionTrackerPage implements View {
                 .with(
                   canvas().withId("myChart")
                 ),
-              chartJsConfigScript("myChart", chartData)
+              chartJsConfigScript("myChart", chartData),
+              iff(canAddRound,
+                div().withClass("mt-4").with(
+                  errorMessage != null ? div(errorMessage).withClass("alert alert-danger") : text(""),
+                  successMessage != null ? div(successMessage).withClass("alert alert-success") : text(""),
+                  div().withClass("card mb-4").with(
+                    div().withClass("card-header").with(strong("Add a Round")),
+                    div().withClass("card-body").with(
+                      form().withMethod("post").withAction("/challenge/" + trackerId + "/add-round").with(
+                        csrfField,
+                        div().withClass("row g-3 align-items-end").with(
+                          div().withClass("col-md-6").with(
+                            label("Course").withFor("courseName").withClass("form-label"),
+                            select().withId("courseName").withName("courseName")
+                              .withClass("form-select").attr("required", "").with(
+                                option("— Select a course —").withValue("").attr("disabled", "").attr("selected", ""),
+                                each(allCourses, course -> option(course.name()).withValue(course.name()))
+                              )
+                          ),
+                          div().withClass("col-md-4").with(
+                            label("Date Played").withFor("date").withClass("form-label"),
+                            input().withType("date").withId("date").withName("date")
+                              .withClass("form-control").attr("required", "")
+                          ),
+                          div().withClass("col-md-2").with(
+                            button("Add").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
             )
           )
         )

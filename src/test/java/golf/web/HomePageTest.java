@@ -67,6 +67,9 @@ public class HomePageTest {
         assertTrue(body.contains("ygl-card__media"));
         assertTrue(body.contains("ygl-card__img"));
         assertTrue(body.contains("ygl-card__placeholder"));
+        assertFalse(body.contains("Sign in to track your challenge"));
+        assertFalse(body.contains("Create an account"));
+        assertFalse(body.contains("Forgot password?"));
 
         assertTrue(body.contains("/courses/ganton-golf-club")
                 || body.contains("/courses/bridlington-links")

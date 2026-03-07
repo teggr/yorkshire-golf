@@ -53,6 +53,24 @@ class PublicPagesSecurityTest {
                 .andExpect(status().isNotFound());
     }
 
+        @Test
+        void roundsRoutesAreNotFound() throws Exception {
+        mockMvc.perform(get("/rounds"))
+            .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/rounds/legacy-id"))
+            .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void myRoundsRoutesAreNotFound() throws Exception {
+            mockMvc.perform(get("/my-rounds"))
+                    .andExpect(status().isNotFound());
+
+            mockMvc.perform(get("/my-rounds/add"))
+                    .andExpect(status().isNotFound());
+        }
+
     @Test
     void legacyTrackerPathNowRequiresAuthentication() throws Exception {
         mockMvc.perform(get("/tracker/unknown-tracker"))

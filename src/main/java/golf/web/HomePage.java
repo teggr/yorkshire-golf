@@ -4,7 +4,6 @@ import golf.course.Courses;
 import golf.course.Course;
 import golf.course.Region;
 import golf.course.Regions;
-import golf.utils.security.CsrfUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -221,44 +220,13 @@ public class HomePage implements View {
           div().withClass("text-center").with(
             h2("Welcome back!").withClass("ygl-feature__title mb-3"),
             p("Manage your rounds and track your Yorkshire Golf Challenge progress.").withClass("mb-3"),
-            a("My Rounds →").withClass("ygl-btn ygl-btn--primary me-3").withHref("/my-rounds"),
             a("My Tracker →").withClass("ygl-btn ygl-btn--dark").withHref("/challenge")
           )
         )
       );
     }
 
-    j2html.tags.DomContent csrfField = CsrfUtil.csrfInput(request);
-    return div().withClass("ygl-section pb-0").with(
-      div().withClass("container").with(
-        div().withClass("row justify-content-center").with(
-          div().withClass("col-md-8 col-lg-5").with(
-            h2("Sign in to track your challenge").withClass("ygl-feature__title mb-3 text-center"),
-            form().withMethod("post").withAction("/login").with(
-              csrfField,
-              div().withClass("mb-3").with(
-                label("Email address").withFor("hp-email").withClass("form-label"),
-                input().withType("email").withId("hp-email").withName("username")
-                  .withClass("form-control").attr("required", "")
-              ),
-              div().withClass("mb-3").with(
-                label("Password").withFor("hp-password").withClass("form-label"),
-                input().withType("password").withId("hp-password").withName("password")
-                  .withClass("form-control").attr("required", "")
-              ),
-              button("Sign In").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100 mb-2")
-            ),
-            div().withClass("text-center").with(
-              p().with(
-                a("Create an account").withHref("/register"),
-                text(" · "),
-                a("Forgot password?").withHref("/forgot-password")
-              )
-            )
-          )
-        )
-      )
-    );
+    return text("");
   }
 
 }

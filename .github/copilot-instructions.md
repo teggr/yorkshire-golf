@@ -20,9 +20,7 @@
 ## Canonical page names and routes
 - **Home** (`/`) → `HomePage`
 - **Courses** (`/courses`) → `CoursesPage`
-- **Challenge Tracker** (`/challenge`) → `RegionTrackerPage`
-- **Rounds** (`/rounds`) → `RoundsPage`
-- **Round Detail** (`/rounds/{id}`) → `RoundDetailPage`
+- **Challenge Tracker** (`/challenge/{trackerId}`) → `RegionTrackerPage`
 
 ## Canonical section names (use these exact labels in prompts/PRs)
 - Home sections:
@@ -37,16 +35,10 @@
 - Challenge Tracker sections:
   - **Page header**
   - **Chart**
-- Rounds page sections:
-  - **Page header**
-  - **Rounds card grid**
-- Round Detail sections:
-  - **Back to Rounds link**
-  - **Article** (title, meta, images, content)
+  - **Add a Round form** (visible only to logged-in tracker owner)
 
 ## Naming consistency rules
-- Use **Challenge Tracker** for `/challenge` (avoid alternate names).
-- Use **Rounds** for the list page and **Round Detail** for a single round.
+- Use **Challenge Tracker** for `/challenge` and `/challenge/{trackerId}` (avoid alternate names).
 - Use **Course Audit** when referring to the script/tooling in `scripts/`.
 
 ## Testing and TDD rules
