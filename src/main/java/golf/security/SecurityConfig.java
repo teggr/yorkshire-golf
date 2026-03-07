@@ -25,7 +25,7 @@ public class SecurityConfig {
                         "/", "/courses/**", "/play-and-stay/**",
                     "/top-100/**", "/next-100/**",
                         "/rounds/**",
-                        "/tracker/**",
+                    "/challenge/**",
                         "/register/**", "/login/**", "/forgot-password/**",
                         "/css/**", "/images/**", "/js/**",
                         "/actuator/**"

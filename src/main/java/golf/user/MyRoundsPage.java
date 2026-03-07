@@ -52,8 +52,8 @@ public class MyRoundsPage implements View {
                                         trackerId != null
                                                 ? p().withClass("ygl-page-header__lead").with(
                                                         text("Your public tracker: "),
-                                                        a("/tracker/" + trackerId)
-                                                                .withHref("/tracker/" + trackerId)
+                                                        a("/challenge/" + trackerId)
+                                                                .withHref("/challenge/" + trackerId)
                                                                 .withClass("text-white")
                                                 )
                                                 : text("")

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Yorkshire Challenge tracker example chart</title>
+  <desc id="desc">An example challenge tracker image showing overall progress, region totals, and all courses played.</desc>
+  <rect width="1200" height="800" fill="#f8f9fa" />
+  <rect x="60" y="60" width="1080" height="680" rx="24" fill="#ffffff" stroke="#d7dbe0" />
+
+  <text x="110" y="135" font-family="Arial, sans-serif" font-size="40" font-weight="700" fill="#1f2937">Challenge Info Chart</text>
+  <text x="110" y="175" font-family="Arial, sans-serif" font-size="24" fill="#4b5563">All Yorkshire courses played progress</text>
+
+  <circle cx="285" cy="390" r="155" fill="#eef2f7" />
+  <path d="M285 235 A155 155 0 1 1 136 447" fill="none" stroke="#2563eb" stroke-width="46" stroke-linecap="round" />
+  <circle cx="285" cy="390" r="108" fill="#ffffff" />
+  <text x="285" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#111827">74%</text>
+  <text x="285" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#4b5563">overall</text>
+
+  <g transform="translate(520 250)">
+    <rect x="0" y="10" width="560" height="28" rx="14" fill="#e5e7eb" />
+    <rect x="0" y="10" width="470" height="28" rx="14" fill="#2563eb" />
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="24" fill="#111827">North Yorkshire</text>
+    <text x="560" y="0" text-anchor="end" font-family="Arial, sans-serif" font-size="24" fill="#111827">58 / 72</text>
+
+    <rect x="0" y="95" width="560" height="28" rx="14" fill="#e5e7eb" />
+    <rect x="0" y="95" width="430" height="28" rx="14" fill="#059669" />
+    <text x="0" y="85" font-family="Arial, sans-serif" font-size="24" fill="#111827">East Yorkshire</text>
+    <text x="560" y="85" text-anchor="end" font-family="Arial, sans-serif" font-size="24" fill="#111827">39 / 51</text>
+
+    <rect x="0" y="180" width="560" height="28" rx="14" fill="#e5e7eb" />
+    <rect x="0" y="180" width="388" height="28" rx="14" fill="#7c3aed" />
+    <text x="0" y="170" font-family="Arial, sans-serif" font-size="24" fill="#111827">South Yorkshire</text>
+    <text x="560" y="170" text-anchor="end" font-family="Arial, sans-serif" font-size="24" fill="#111827">29 / 42</text>
+
+    <rect x="0" y="265" width="560" height="28" rx="14" fill="#e5e7eb" />
+    <rect x="0" y="265" width="415" height="28" rx="14" fill="#ea580c" />
+    <text x="0" y="255" font-family="Arial, sans-serif" font-size="24" fill="#111827">West Yorkshire</text>
+    <text x="560" y="255" text-anchor="end" font-family="Arial, sans-serif" font-size="24" fill="#111827">43 / 59</text>
+  </g>
+
+  <text x="110" y="700" font-family="Arial, sans-serif" font-size="26" fill="#111827">169 played • 229 rounds logged • Yorkshire Golf Life</text>
+</svg>

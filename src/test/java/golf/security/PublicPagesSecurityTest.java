@@ -40,4 +40,22 @@ class PublicPagesSecurityTest {
         mockMvc.perform(get("/next-100"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void challengeLandingIsPubliclyAccessible() throws Exception {
+        mockMvc.perform(get("/challenge"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void challengeTrackerPathIsPublicAndReturnsNotFoundForUnknownId() throws Exception {
+        mockMvc.perform(get("/challenge/unknown-tracker"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void legacyTrackerPathNowRequiresAuthentication() throws Exception {
+        mockMvc.perform(get("/tracker/unknown-tracker"))
+                .andExpect(status().is3xxRedirection());
+    }
 }

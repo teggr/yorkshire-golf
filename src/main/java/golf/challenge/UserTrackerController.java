@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
-@RequestMapping("/tracker")
+@RequestMapping("/challenge")
 @RequiredArgsConstructor
 public class UserTrackerController {
 
