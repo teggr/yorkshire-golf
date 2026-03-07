@@ -1,14 +1,14 @@
 package golf.challenge;
 
-import golf.course.Course;
 import golf.course.Region;
+import golf.user.UserRound;
 
 import java.util.List;
 import java.util.Map;
 
 public record RegionChallengeTracker(
         Map<Region, Long> courseCountByRegion,
-        List<Course> playedCourses
+        List<UserRound> rounds
 ) {
 
     public long totalCourseCount() {
@@ -17,7 +17,7 @@ public record RegionChallengeTracker(
     }
 
     public long totalCoursesPlayed() {
-        return playedCourses().size();
+        return rounds().size();
     }
 
     public long totalCoursesToBePlayed() {
@@ -29,7 +29,9 @@ public record RegionChallengeTracker(
     }
 
     public long totalCoursesPlayed(Region region) {
-        return playedCourses().stream().filter(c -> c.region().equals(region)).count();
+        return rounds().stream()
+                .filter(r -> r.course() != null && r.course().region().equals(region))
+                .count();
     }
 
     public long totalCoursesToBePlayed(Region region) {

@@ -19,16 +19,23 @@ public class YorkshireChallenge {
 
     public RegionChallengeTracker getTrackerForUser(Long userId) {
         List<UserRound> userRounds = userRoundRepository.findByUserId(userId);
-        List<Course> playedCourses = userRounds.stream()
-                .map(r -> courses.getCourseByName(r.courseName()))
-                .filter(c -> c != null && List.of(
-                        Regions.NorthYorkshire, Regions.EastYorkshire,
-                        Regions.SouthYorkshire, Regions.WestYorkshire
-                ).contains(c.region()))
+        List<UserRound> enrichedRounds = userRounds.stream()
+                .map(r -> {
+                    Course course = courses.getCourseByName(r.courseName());
+                    if (course == null || !List.of(
+                            Regions.NorthYorkshire, Regions.EastYorkshire,
+                            Regions.SouthYorkshire, Regions.WestYorkshire
+                    ).contains(course.region())) {
+                        return null;
+                    }
+                    return new UserRound(r.id(), r.userId(), r.title(), r.date(),
+                            r.courseName(), course, r.imageUrls(), r.content());
+                })
+                .filter(java.util.Objects::nonNull)
                 .toList();
         return new RegionChallengeTracker(
                 courses.getCourseRegionCountGroupByRegion(),
-                playedCourses
+                enrichedRounds
         );
     }
 

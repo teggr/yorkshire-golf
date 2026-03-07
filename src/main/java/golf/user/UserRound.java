@@ -1,9 +1,17 @@
 package golf.user;
 
+import golf.course.Course;
+
+import java.util.List;
+
 public record UserRound(
-        Long id,
+        String id,
         Long userId,
+        String title,
+        String date,
         String courseName,
-        String date
+        Course course,
+        List<String> imageUrls,
+        String content
 ) {
 }

@@ -19,10 +19,14 @@ public class UserRoundRepository {
     private final JdbcTemplate jdbc;
 
     private static final RowMapper<UserRound> ROUND_ROW_MAPPER = (rs, rowNum) -> new UserRound(
-            rs.getLong("id"),
+            String.valueOf(rs.getLong("id")),
             rs.getLong("user_id"),
+            null,
+            rs.getDate("date").toLocalDate().toString(),
             rs.getString("course_name"),
-            rs.getDate("date").toLocalDate().toString()
+            null,
+            null,
+            null
     );
 
     public List<UserRound> findByUserId(Long userId) {
@@ -63,7 +67,7 @@ public class UserRoundRepository {
             return ps;
         }, keyHolder);
         long id = keyHolder.getKey().longValue();
-        return new UserRound(id, userId, courseName, date);
+        return new UserRound(String.valueOf(id), userId, null, date, courseName, null, null, null);
     }
 
     public void updateDate(Long roundId, Long userId, String date) {
