@@ -1,5 +1,6 @@
 package golf.round;
 
+import golf.user.UserRound;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +28,10 @@ public class RoundDetailPage implements View {
     @Override
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Round round = (Round) model.get("round");
+        UserRound round = (UserRound) model.get("round");
 
-        new YorkshireGolfPageTemplate()
-                .withTitle(round.title() + " - Yorkshire Golf Life")
+        new YorkshireGolfPageTemplate().withRequest(request)
+                .withTitle((round.title() != null ? round.title() : round.courseName()) + " - Yorkshire Golf Life")
                 .withBody(
                         div().withClass("container ygl-page").with(
                                 div().withClass("ygl-page__content").with(
@@ -38,7 +39,7 @@ public class RoundDetailPage implements View {
                                         div().withClass("row justify-content-center").with(
                                                 div().withClass("col-lg-8").with(
                                                         article().withClass("ygl-article").with(
-                                                                h1(round.title()).withClass("ygl-article__title"),
+                                                                h1(round.title() != null ? round.title() : round.courseName()).withClass("ygl-article__title"),
                                                                 p().withClass("ygl-article__meta").with(
                                                                         span(round.date()),
                                                                         round.courseName() != null && !round.courseName().isBlank()
@@ -48,10 +49,10 @@ public class RoundDetailPage implements View {
                                                                                   )
                                                                                 : span("")
                                                                 ),
-                                                                imagesSection(round.imageUrls(), round.title()),
-                                                                div().withClass("ygl-article__content").with(
-                                                                        p(round.content())
-                                                                )
+                                                                imagesSection(round.imageUrls(), round.title() != null ? round.title() : round.courseName()),
+                                                                round.content() != null
+                                                                        ? div().withClass("ygl-article__content").with(p(round.content()))
+                                                                        : text("")
                                                         )
                                                 )
                                         )

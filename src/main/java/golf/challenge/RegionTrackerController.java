@@ -1,8 +1,11 @@
 package golf.challenge;
 
+import golf.user.GolfUser;
+import golf.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class RegionTrackerController {
 
-  private final YorkshireChallenge yorkshireChallenge;
+  private final UserService userService;
 
   @GetMapping
-  public String home(Model model) {
-    model.addAttribute("tracker", yorkshireChallenge.getTracker());
-    return "regionTrackerPage";
+  public String home(@AuthenticationPrincipal UserDetails userDetails) {
+    if (userDetails != null) {
+      return userService.findByEmail(userDetails.getUsername())
+              .map(user -> "redirect:/tracker/" + user.trackerId())
+              .orElse("redirect:/login");
+    }
+    return "redirect:/login";
   }
 
 }

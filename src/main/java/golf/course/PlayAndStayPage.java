@@ -30,7 +30,7 @@ public class PlayAndStayPage implements View {
         @SuppressWarnings("unchecked")
         List<Course> courses = (List<Course>) model.get("courses");
 
-        new YorkshireGolfPageTemplate()
+        new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Play & Stay – Yorkshire Golf")
                 .withBody(
                         // Page header

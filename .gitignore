@@ -43,3 +43,6 @@ build/
 jcef-bundle/
 credentials.json
 .playwright-mcp/
+
+# H2 database files
+data/

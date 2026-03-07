@@ -1,5 +1,6 @@
 package golf.round;
 
+import golf.user.UserRound;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +26,12 @@ public class RoundsPage implements View {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        @SuppressWarnings("unchecked")
-        List<Round> rounds = (List<Round>) model.get("rounds");
+        List<UserRound> rounds = (List<UserRound>) model.get("rounds");
 
-        new YorkshireGolfPageTemplate()
+        new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Yorkshire Golf Life - Rounds")
                 .withBody(
                         // Page header
@@ -53,11 +54,13 @@ public class RoundsPage implements View {
                                                                                         ? span(" · " + round.courseName())
                                                                                         : span("")
                                                                         ),
-                                                                        h5(round.title()).withClass("ygl-card__title"),
-                                                                        p(round.content().length() > 160
-                                                                                ? round.content().substring(0, 160) + "…"
-                                                                                : round.content()
-                                                                        ).withClass("ygl-card__text"),
+                                                                        h5(round.title() != null ? round.title() : round.courseName()).withClass("ygl-card__title"),
+                                                                        round.content() != null
+                                                                                ? p(round.content().length() > 160
+                                                                                        ? round.content().substring(0, 160) + "…"
+                                                                                        : round.content()
+                                                                                  ).withClass("ygl-card__text")
+                                                                                : text(""),
                                                                         a("Read more →")
                                                                                 .withClass("ygl-btn ygl-btn--outline ygl-btn--sm mt-auto")
                                                                                 .withHref("/rounds/" + round.id())

@@ -41,7 +41,7 @@ public class CoursesPage implements View {
                 Regions.WestYorkshire
         );
 
-        new YorkshireGolfPageTemplate()
+        new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Yorkshire Golf Courses")
                 .withBody(
                         // Page header
