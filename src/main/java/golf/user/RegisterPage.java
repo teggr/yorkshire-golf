@@ -26,7 +26,6 @@ public class RegisterPage implements View {
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String errorMessage = (String) model.get("error");
         String emailValue = model.get("email") != null ? (String) model.get("email") : "";
-        String questionValue = model.get("securityQuestion") != null ? (String) model.get("securityQuestion") : "";
 
         new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Register — Yorkshire Golf Life")
@@ -60,20 +59,6 @@ public class RegisterPage implements View {
                                                         div().withClass("mb-3").with(
                                                                 label("Confirm Password").withFor("confirmPassword").withClass("form-label"),
                                                                 input().withType("password").withId("confirmPassword").withName("confirmPassword")
-                                                                        .withClass("form-control").attr("required", "")
-                                                        ),
-                                                        hr(),
-                                                        p("Security question — used if you forget your password").withClass("text-muted small"),
-                                                        div().withClass("mb-3").with(
-                                                                label("Security Question").withFor("securityQuestion").withClass("form-label"),
-                                                                input().withType("text").withId("securityQuestion").withName("securityQuestion")
-                                                                        .withValue(questionValue)
-                                                                        .withClass("form-control").attr("required", "")
-                                                                        .attr("placeholder", "e.g. What was the name of your first pet?")
-                                                        ),
-                                                        div().withClass("mb-3").with(
-                                                                label("Security Answer").withFor("securityAnswer").withClass("form-label"),
-                                                                input().withType("text").withId("securityAnswer").withName("securityAnswer")
                                                                         .withClass("form-control").attr("required", "")
                                                         ),
                                                         button("Create Account").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100 mb-3")

@@ -46,7 +46,6 @@ public class AdminPage implements View {
                                                                 th("Email"),
                                                                 th("Role"),
                                                                 th("Status"),
-                                                                th("Failed Attempts"),
                                                                 th("Actions")
                                                         )
                                                 ),
@@ -56,7 +55,6 @@ public class AdminPage implements View {
                                                                         td(user.email()),
                                                                         td(user.role()),
                                                                         td(user.accountLocked() ? "LOCKED" : "Active"),
-                                                                        td(String.valueOf(user.failedSecurityAttempts())),
                                                                         td().with(
                                                                                 user.accountLocked()
                                                                                         ? form().withMethod("post").withAction("/admin/unlock/" + user.id()).with(

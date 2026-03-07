@@ -22,12 +22,9 @@ public class UserRepository {
             rs.getLong("id"),
             rs.getString("email"),
             rs.getString("password"),
-            rs.getString("security_question"),
-            rs.getString("security_answer"),
             rs.getString("tracker_id"),
             rs.getString("role"),
-            rs.getBoolean("account_locked"),
-            rs.getInt("failed_security_attempts")
+            rs.getBoolean("account_locked")
     );
 
     public Optional<GolfUser> findByEmail(String email) {
@@ -65,43 +62,24 @@ public class UserRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO golf_user (email, password, security_question, security_answer, tracker_id, role, account_locked, failed_security_attempts) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO golf_user (email, password, tracker_id, role, account_locked) VALUES (?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, user.email());
             ps.setString(2, user.password());
-            ps.setString(3, user.securityQuestion());
-            ps.setString(4, user.securityAnswer());
-            ps.setString(5, user.trackerId());
-            ps.setString(6, user.role());
-            ps.setBoolean(7, user.accountLocked());
-            ps.setInt(8, user.failedSecurityAttempts());
+            ps.setString(3, user.trackerId());
+            ps.setString(4, user.role());
+            ps.setBoolean(5, user.accountLocked());
             return ps;
         }, keyHolder);
         long id = keyHolder.getKey().longValue();
-        return new GolfUser(id, user.email(), user.password(), user.securityQuestion(),
-                user.securityAnswer(), user.trackerId(), user.role(), user.accountLocked(),
-                user.failedSecurityAttempts());
-    }
-
-    public void updateFailedSecurityAttempts(Long userId, int attempts) {
-        jdbc.update(
-                "UPDATE golf_user SET failed_security_attempts = ? WHERE id = ?",
-                attempts, userId
-        );
+        return new GolfUser(id, user.email(), user.password(), user.trackerId(), user.role(), user.accountLocked());
     }
 
     public void updateAccountLocked(Long userId, boolean locked) {
         jdbc.update(
                 "UPDATE golf_user SET account_locked = ? WHERE id = ?",
                 locked, userId
-        );
-    }
-
-    public void resetFailedSecurityAttempts(Long userId) {
-        jdbc.update(
-                "UPDATE golf_user SET failed_security_attempts = 0, account_locked = FALSE WHERE id = ?",
-                userId
         );
     }
 
