@@ -917,6 +917,79 @@ img {
   border-radius: var(--ygl-radius-lg) !important;
 }
 
+/* ---------- Next 100 full-width sections ---------- */
+.ygl-next100-section {
+  border-bottom: 1px solid var(--ygl-color-border);
+}
+
+.ygl-next100-section:nth-child(even) .ygl-next100-section__inner {
+  flex-direction: row-reverse;
+}
+
+.ygl-next100-section__inner {
+  display: flex;
+  min-height: 420px;
+}
+
+.ygl-next100-section__image {
+  flex: 0 0 55%;
+  overflow: hidden;
+}
+
+.ygl-next100-section__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ygl-next100-section__image--placeholder {
+  background: var(--ygl-color-bg-alt);
+}
+
+.ygl-next100-section__content {
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 4rem;
+  background: var(--ygl-color-bg-white);
+}
+
+.ygl-next100-section__rank {
+  font-family: var(--ygl-font-heading);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--ygl-color-accent);
+  line-height: 1;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.ygl-next100-section__title {
+  font-family: var(--ygl-font-heading);
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--ygl-color-primary);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.ygl-next100-section__meta {
+  font-size: 0.875rem;
+  color: var(--ygl-color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.ygl-next100-section__region {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ygl-color-green-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.75rem;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 767.98px) {
   .ygl-hero {
@@ -954,6 +1027,24 @@ img {
   }
   .ygl-card--stat .ygl-card__number {
     font-size: 2rem;
+  }
+  .ygl-next100-section__inner {
+    flex-direction: column !important;
+    min-height: auto;
+  }
+  .ygl-next100-section__image {
+    flex: none;
+    height: 260px;
+  }
+  .ygl-next100-section__content {
+    flex: none;
+    padding: 2rem 1.5rem;
+  }
+  .ygl-next100-section__rank {
+    font-size: 2.75rem;
+  }
+  .ygl-next100-section__title {
+    font-size: 1.5rem;
   }
 }
 

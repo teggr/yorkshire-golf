@@ -8,5 +8,6 @@ public record Course(String name,
 					 @Nullable String mainImageUrl,
 					 @Nullable String stayImageUrl,
 					 boolean closed,
-					 boolean playAndStay) {
+					 boolean playAndStay,
+					 @Nullable Integer next100) {
 }

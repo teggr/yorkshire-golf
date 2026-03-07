@@ -70,6 +70,14 @@ public class Courses {
                 .toList();
     }
 
+    public List<Course> getNext100Courses() {
+        return courses.stream()
+                .filter(course -> !course.closed())
+                .filter(course -> course.next100() != null)
+                .sorted(java.util.Comparator.comparingInt(Course::next100))
+                .toList();
+    }
+
     public Map<Region, Long> getCourseRegionCountGroupByRegion() {
         return courses.stream()
                 .filter(course -> !course.closed())
