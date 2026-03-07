@@ -346,8 +346,19 @@ public class CourseAudit {
         if (regionObj instanceof Map) {
             region = (String) ((Map<?, ?>) regionObj).get("name");
         }
+
+        // Parse next100 field
+        Integer next100 = null;
+        Object next100Obj = data.get("next100");
+        if (next100Obj instanceof Integer) {
+            next100 = (Integer) next100Obj;
+        } else if (next100Obj instanceof String) {
+            try {
+                next100 = Integer.parseInt((String) next100Obj);
+            } catch (NumberFormatException ignored) {}
+        }
         
-        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay);
+        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, next100);
     }
     
     private static String renderHTML(String fileName, String yamlContent, CourseData course,
@@ -1303,7 +1314,7 @@ public class CourseAudit {
     }
     
     // Data classes
-    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay) {}
+    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, Integer next100) {}
     
     record ValidationResult(ValidationStatus status, String message, String dimensions) {}
     

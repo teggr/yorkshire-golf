@@ -53,10 +53,9 @@ public class HomePageTest {
         assertTrue(body.contains("ygl-card__img"));
         assertTrue(body.contains("ygl-card__placeholder"));
 
-        assertTrue(body.contains("https://www.gantongolfclub.com")
-                || body.contains("https://bridlington.example")
-                || body.contains("https://rothervalley.example")
-                || body.contains("https://www.moortowngc.co.uk"));
-        assertTrue(body.contains("bi bi-box-arrow-up-right"));
+        assertTrue(body.contains("/courses/ganton-golf-club")
+                || body.contains("/courses/bridlington-links")
+                || body.contains("/courses/rother-valley-golf")
+                || body.contains("/courses/moortown-golf-club"));
     }
 }

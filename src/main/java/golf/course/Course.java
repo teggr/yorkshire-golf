@@ -9,5 +9,6 @@ public record Course(String name,
 					 @Nullable String stayImageUrl,
 					 boolean closed,
 					 boolean playAndStay,
-					 @Nullable Integer top100) {
+					 @Nullable Integer top100,
+					 @Nullable Integer next100) {
 }
