@@ -65,6 +65,9 @@ public class YorkshireGolfPageTemplate {
                                 div().withClass("collapse navbar-collapse justify-content-end").withId("navbarNav").with(
                                         ul().withClass("navbar-nav ygl-navbar__nav").with(
                                                 li().withClass("nav-item").with(
+                                                        a("Top 100").withClass("nav-link ygl-navbar__link").withHref("/top-100")
+                                                ),
+                                                li().withClass("nav-item").with(
                                                         a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
                                                 ),
                                                 li().withClass("nav-item").with(
@@ -72,6 +75,12 @@ public class YorkshireGolfPageTemplate {
                                                 ),
                                                 li().withClass("nav-item").with(
                                                         a("Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
+                                                ),
+                                                li().withClass("nav-item").with(
+                                                        a("My Rounds").withClass("nav-link ygl-navbar__link").withHref("/rounds")
+                                                ),
+                                                li().withClass("nav-item").with(
+                                                        a("Next 100").withClass("nav-link ygl-navbar__link").withHref("/next-100")
                                                 ),
                                                 loggedIn
                                                         ? li().withClass("nav-item").with(
@@ -90,6 +99,7 @@ public class YorkshireGolfPageTemplate {
                                                                 )
                                                           )
                                                         : text("")
+                                                
                                         )
                                 )
                         )
@@ -111,8 +121,10 @@ public class YorkshireGolfPageTemplate {
                                                         div().withClass("ygl-footer__heading").with(text("Explore")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(a("Home").withHref("/")),
+                                                                li().with(a("Top 100").withHref("/top-100")),
                                                                 li().with(a("Courses").withHref("/courses")),
-                                                                li().with(a("Play & Stay").withHref("/play-and-stay"))
+                                                                li().with(a("Play & Stay").withHref("/play-and-stay")),
+                                                                li().with(a("Next 100").withHref("/next-100"))
                                                         )
                                                 ),
                                                 div().withClass("col-6 col-lg-2").with(
