@@ -58,6 +58,9 @@ public class Top100Page implements View {
     }
 
     static j2html.tags.DomContent top100Section(Course course) {
+        if (course.top100() == null) {
+            return span();
+        }
         return div().withClass("ygl-top100-entry").with(
                 div().withClass("ygl-top100-entry__rank").with(
                         span("#" + course.top100()).withClass("ygl-top100-entry__rank-number"),
