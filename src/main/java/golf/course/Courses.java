@@ -56,6 +56,14 @@ public class Courses {
                 .toList();
     }
 
+    public List<Course> getTop100Courses() {
+        return courses.stream()
+                .filter(course -> !course.closed())
+                .filter(course -> course.top100() != null)
+                .sorted(java.util.Comparator.comparingInt(Course::top100))
+                .toList();
+    }
+
     public Map<Region, Long> getCourseRegionCountGroupByRegion() {
         return courses.stream()
                 .filter(course -> !course.closed())
