@@ -7,6 +7,7 @@
 //JAVA 21
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import io.javalin.Javalin;
@@ -19,6 +20,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,6 +75,8 @@ public class CourseAudit {
         app.post("/download-image", CourseAudit::handleDownloadImage);
         app.post("/jump-to-letter", CourseAudit::handleJumpToLetter);
         app.post("/search-course", CourseAudit::handleSearchCourse);
+        app.post("/geocode-all", CourseAudit::handleGeocodeAll);
+        app.post("/compute-nearby", CourseAudit::handleComputeNearby);
         app.get("/courses-list", CourseAudit::handleCoursesList);
         
         System.out.println("\n===========================================");
@@ -335,6 +341,217 @@ public class CourseAudit {
             ctx.status(500).json(Map.of("error", e.getMessage()));
         }
     }
+
+    private static void handleGeocodeAll(Context ctx) {
+        Path coursesDir = Paths.get(COURSES_PATH);
+        HttpClient httpClient = HttpClient.newHttpClient();
+        ObjectMapper jsonMapper = new ObjectMapper();
+
+        int skipped = 0;
+        int geocoded = 0;
+        int failed = 0;
+        int noAddress = 0;
+        List<String> warnings = new ArrayList<>();
+
+        try {
+            List<Path> courseFiles = Files.list(coursesDir)
+                    .filter(p -> p.toString().endsWith(".yaml"))
+                    .sorted()
+                    .collect(Collectors.toList());
+
+            for (Path courseFile : courseFiles) {
+                String yamlContent = Files.readString(courseFile);
+                CourseData course;
+                try {
+                    course = parseCourse(yamlContent);
+                } catch (Exception e) {
+                    warnings.add("Parse error for " + courseFile.getFileName() + ": " + e.getMessage());
+                    failed++;
+                    continue;
+                }
+
+                // Skip if already has lat/lng
+                if (course.lat() != null && course.lng() != null) {
+                    skipped++;
+                    continue;
+                }
+
+                // Skip if no address
+                if (course.address() == null || course.address().isBlank()) {
+                    noAddress++;
+                    continue;
+                }
+
+                // Respect Nominatim 1 req/sec rate limit
+                try {
+                    Thread.sleep(1100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    warnings.add("Geocoding interrupted");
+                    break;
+                }
+
+                // Call Nominatim
+                try {
+                    String encodedAddress = java.net.URLEncoder.encode(course.address(), java.nio.charset.StandardCharsets.UTF_8);
+                    String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedAddress + "&format=json&limit=1";
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(URI.create(nominatimUrl))
+                            .header("User-Agent", "YorkshireGolfCourseAudit/1.0")
+                            .GET()
+                            .build();
+                    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                    String body = response.body();
+
+                    JsonNode results = jsonMapper.readTree(body);
+                    if (!results.isArray() || results.isEmpty()) {
+                        warnings.add("No geocoding result for '" + course.name() + "' (address: " + course.address() + ")");
+                        failed++;
+                        continue;
+                    }
+
+                    JsonNode first = results.get(0);
+                    double lat = first.get("lat").asDouble();
+                    double lng = first.get("lon").asDouble();
+
+                    // Write lat/lng back to YAML file
+                    String updatedYaml = updateLatLngInYaml(yamlContent, lat, lng);
+                    Files.writeString(courseFile, updatedYaml);
+                    geocoded++;
+
+                } catch (Exception e) {
+                    warnings.add("Geocoding failed for '" + course.name() + "': " + e.getMessage());
+                    failed++;
+                }
+            }
+
+        } catch (Exception e) {
+            ctx.html(renderError("Geocoding error", e.getMessage()));
+            return;
+        }
+
+        // Build summary message
+        StringBuilder summary = new StringBuilder();
+        summary.append("✅ Geocoding complete: ")
+               .append(geocoded).append(" geocoded, ")
+               .append(skipped).append(" already had coordinates, ")
+               .append(noAddress).append(" had no address, ")
+               .append(failed).append(" failed.");
+        if (!warnings.isEmpty()) {
+            summary.append("<br><br>⚠️ Warnings:<br>");
+            for (String w : warnings) {
+                summary.append("• ").append(escapeHtml(w)).append("<br>");
+            }
+        }
+
+        // Re-render current course page with summary
+        try {
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+            String fileName = currentFile.getFileName().toString();
+            CourseData course = parseCourse(yamlContent);
+            ValidationResult websiteValidation = validator.validateWebsite(course.website);
+            ValidationResult imageValidation = validator.validateImage(course.mainImageUrl);
+            ValidationResult stayImageValidation = validator.validateImage(course.stayImageUrl);
+            ctx.html(renderHTML(fileName, yamlContent, course, websiteValidation, imageValidation, stayImageValidation, summary.toString()));
+        } catch (Exception e) {
+            ctx.html(renderError("Geocoding complete but page render failed", e.getMessage()));
+        }
+    }
+    
+    private static void handleComputeNearby(Context ctx) {
+        Path coursesDir = Paths.get(COURSES_PATH);
+        ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+
+        // Build list of all courses that have lat/lng
+        record GeoEntry(Path file, String name, double lat, double lng) {}
+        List<GeoEntry> geoEntries = new ArrayList<>();
+        int noCoords = 0;
+        List<String> warnings = new ArrayList<>();
+
+        try {
+            List<Path> courseFiles = Files.list(coursesDir)
+                    .filter(p -> p.toString().endsWith(".yaml"))
+                    .sorted()
+                    .collect(Collectors.toList());
+
+            for (Path file : courseFiles) {
+                String yamlContent = Files.readString(file);
+                CourseData course;
+                try {
+                    course = parseCourse(yamlContent);
+                } catch (Exception e) {
+                    warnings.add("Parse error for " + file.getFileName() + ": " + e.getMessage());
+                    continue;
+                }
+                if (course.lat() == null || course.lng() == null) {
+                    noCoords++;
+                    continue;
+                }
+                geoEntries.add(new GeoEntry(file, course.name(), course.lat(), course.lng()));
+            }
+
+            // For each geo-entry, compute the 3 nearest and write back to YAML
+            int computed = 0;
+            for (GeoEntry entry : geoEntries) {
+                List<String> nearest = geoEntries.stream()
+                        .filter(other -> !other.file().equals(entry.file()))
+                        .sorted(java.util.Comparator.comparingDouble(
+                                other -> haversineKm(entry.lat(), entry.lng(), other.lat(), other.lng())))
+                        .limit(3)
+                        .map(GeoEntry::name)
+                        .collect(Collectors.toList());
+
+                String nearby1 = !nearest.isEmpty() ? nearest.get(0) : null;
+                String nearby2 = nearest.size() >= 2 ? nearest.get(1) : null;
+                String nearby3 = nearest.size() >= 3 ? nearest.get(2) : null;
+
+                try {
+                    String yamlContent = Files.readString(entry.file());
+                    String updated = updateNearbyInYaml(yamlContent, nearby1, nearby2, nearby3);
+                    Files.writeString(entry.file(), updated);
+                    computed++;
+                } catch (Exception e) {
+                    warnings.add("Failed to write nearby for '" + entry.name() + "': " + e.getMessage());
+                }
+            }
+
+            // Build summary
+            StringBuilder summary = new StringBuilder();
+            summary.append("✅ Nearby courses computed: ")
+                   .append(computed).append(" updated, ")
+                   .append(noCoords).append(" skipped (no lat/lng).");
+            if (!warnings.isEmpty()) {
+                summary.append("<br><br>⚠️ Warnings:<br>");
+                for (String w : warnings) {
+                    summary.append("• ").append(escapeHtml(w)).append("<br>");
+                }
+            }
+
+            // Re-render current course page with summary
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+            String fileName = currentFile.getFileName().toString();
+            CourseData course = parseCourse(yamlContent);
+            ValidationResult websiteValidation = validator.validateWebsite(course.website);
+            ValidationResult imageValidation = validator.validateImage(course.mainImageUrl);
+            ValidationResult stayImageValidation = validator.validateImage(course.stayImageUrl);
+            ctx.html(renderHTML(fileName, yamlContent, course, websiteValidation, imageValidation, stayImageValidation, summary.toString()));
+
+        } catch (Exception e) {
+            ctx.html(renderError("Nearby computation error", e.getMessage()));
+        }
+    }
+
+    private static double haversineKm(double lat1, double lng1, double lat2, double lng2) {
+        final double R = 6371;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
     
     private static CourseData parseCourse(String yaml) throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -370,6 +587,27 @@ public class CourseAudit {
         }
 
         String address = (String) data.get("address");
+
+        // Parse lat/lng fields
+        Double lat = null;
+        Double lng = null;
+        Object latObj = data.get("lat");
+        Object lngObj = data.get("lng");
+        if (latObj instanceof Number) {
+            lat = ((Number) latObj).doubleValue();
+        } else if (latObj instanceof String) {
+            try { lat = Double.parseDouble((String) latObj); } catch (NumberFormatException ignored) {}
+        }
+        if (lngObj instanceof Number) {
+            lng = ((Number) lngObj).doubleValue();
+        } else if (lngObj instanceof String) {
+            try { lng = Double.parseDouble((String) lngObj); } catch (NumberFormatException ignored) {}
+        }
+
+        // Parse nearby fields
+        String nearby1 = (String) data.get("nearby1");
+        String nearby2 = (String) data.get("nearby2");
+        String nearby3 = (String) data.get("nearby3");
         
         // Parse next100 field
         Integer next100 = null;
@@ -382,7 +620,7 @@ public class CourseAudit {
             } catch (NumberFormatException ignored) {}
         }
         
-        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, next100);
+        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, lat, lng, nearby1, nearby2, nearby3, next100);
     }
     
     private static String renderHTML(String fileName, String yamlContent, CourseData course,
@@ -870,6 +1108,10 @@ public class CourseAudit {
                             <div style="margin-bottom: 10px;"><strong>Region:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Play & Stay:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Address:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Lat/Lng:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Nearby 1:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Nearby 2:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Nearby 3:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Status:</strong> <span style="color: %s; font-weight: bold;">%s</span></div>
                             <div><strong>File:</strong> <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 12px;">%s</code></div>
                         </div>
@@ -882,6 +1124,8 @@ public class CourseAudit {
                     <button type="submit" formaction="/previous" class="btn-secondary" %s>← Previous</button>
                 </div>
                 <div class="button-group">
+                    <button type="submit" formaction="/geocode-all" class="btn-primary" onclick="this.textContent='⏳ Geocoding…'; this.disabled=true;">🌍 Generate Lat/Lng</button>
+                    <button type="submit" formaction="/compute-nearby" class="btn-primary" onclick="this.textContent='⏳ Computing…'; this.disabled=true;" title="Run after Generate Lat/Lng to calculate the 3 nearest courses for each course">📍 Calculate Nearby Courses</button>
                     <button type="submit" formaction="/next" class="btn-success" %s>Next →</button>
                 </div>
             </div>
@@ -911,6 +1155,12 @@ public class CourseAudit {
             escapeHtml(course.region != null ? course.region : "N/A"),
             course.playAndStay ? "Yes" : "No",
             escapeHtml(course.address != null ? course.address : "—"),
+            course.lat != null && course.lng != null
+                ? course.lat + ", " + course.lng
+                : "<span style='color:#999'>—</span>",
+            course.nearby1 != null ? escapeHtml(course.nearby1) : "<span style='color:#999'>—</span>",
+            course.nearby2 != null ? escapeHtml(course.nearby2) : "<span style='color:#999'>—</span>",
+            course.nearby3 != null ? escapeHtml(course.nearby3) : "<span style='color:#999'>—</span>",
             course.closed ? "#ef5350" : "#4caf50",
             course.closed ? "CLOSED" : "OPEN",
             fileName,
@@ -1387,9 +1637,76 @@ public class CourseAudit {
 
         return result.toString();
     }
+
+    private static String updateLatLngInYaml(String yamlContent, double lat, double lng) {
+        // Remove any existing lat/lng lines and insert new coordinates after the address line
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean addedCoords = false;
+
+        for (String line : lines) {
+            if (line.trim().startsWith("lat:") || line.trim().startsWith("lng:")) {
+                continue; // remove old values
+            }
+            result.append(line).append("\n");
+            // Insert coordinates immediately after the address line
+            if (!addedCoords && line.trim().startsWith("address:")) {
+                // Calculate indentation from the number of leading characters before the trimmed content
+                int indentLen = line.length() - line.stripLeading().length();
+                String indent = line.substring(0, indentLen);
+                result.append(indent).append("lat: ").append(lat).append("\n");
+                result.append(indent).append("lng: ").append(lng).append("\n");
+                addedCoords = true;
+            }
+        }
+
+        // If no address line was present, append at the end of the file
+        if (!addedCoords) {
+            result.append("lat: ").append(lat).append("\n");
+            result.append("lng: ").append(lng).append("\n");
+        }
+
+        return result.toString();
+    }
+
+    private static String updateNearbyInYaml(String yamlContent, String nearby1, String nearby2, String nearby3) {
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean addedNearby = false;
+
+        for (String line : lines) {
+            String trimmed = line.trim();
+            // Remove existing nearby lines — will re-insert in the right place
+            if (trimmed.startsWith("nearby1:") || trimmed.startsWith("nearby2:") || trimmed.startsWith("nearby3:")) {
+                continue;
+            }
+            result.append(line).append("\n");
+            // Insert after the lng: line
+            if (!addedNearby && trimmed.startsWith("lng:")) {
+                int indentLen = line.length() - line.stripLeading().length();
+                String indent = line.substring(0, indentLen);
+                appendNearbyLines(result, indent, nearby1, nearby2, nearby3);
+                addedNearby = true;
+            }
+        }
+
+        // If there was no lng: line, append at the end
+        if (!addedNearby) {
+            appendNearbyLines(result, "", nearby1, nearby2, nearby3);
+        }
+
+        return result.toString();
+    }
+
+    private static void appendNearbyLines(StringBuilder sb, String indent,
+                                          String nearby1, String nearby2, String nearby3) {
+        if (nearby1 != null) sb.append(indent).append("nearby1: \"").append(nearby1).append("\"\n");
+        if (nearby2 != null) sb.append(indent).append("nearby2: \"").append(nearby2).append("\"\n");
+        if (nearby3 != null) sb.append(indent).append("nearby3: \"").append(nearby3).append("\"\n");
+    }
     
     // Data classes
-    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Integer next100) {}
+    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Double lat, Double lng, String nearby1, String nearby2, String nearby3, Integer next100) {}
     
     record ValidationResult(ValidationStatus status, String message, String dimensions) {}
     
