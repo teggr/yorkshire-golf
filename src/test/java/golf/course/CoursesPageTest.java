@@ -70,14 +70,12 @@ public class CoursesPageTest {
         // When - render course card
         var result = CoursesPage.courseCard(courseWithWebsite);
 
-        // Then - should render successfully
+        // Then - should render successfully and link to course detail page
         assertNotNull(result);
         String html = result.render();
         assertTrue(html.contains("Ganton Golf Club"));
-        assertTrue(html.contains("https://www.gantongolfclub.com"));
         assertTrue(html.contains("ygl-card--course"));
-        assertTrue(html.contains("Visit website"));
-        assertTrue(html.contains("bi bi-box-arrow-up-right"));
+        assertTrue(html.contains("/courses/ganton-golf-club"));
 
         return result;
     }
@@ -99,14 +97,16 @@ public class CoursesPageTest {
         // When - render course card
         var result = CoursesPage.courseCard(courseWithoutWebsite);
 
-        // Then - should render successfully
+        // Then - should render successfully and always link to the course detail page,
+        // even when no external website is available
         assertNotNull(result);
         String html = result.render();
         assertTrue(html.contains("Sand Moor Golf Club"));
         assertTrue(html.contains("ygl-card--course"));
         assertTrue(html.contains("ygl-card__media"));
         assertTrue(html.contains("ygl-card__placeholder"));
-        assertFalse(html.contains("href"));
+        assertTrue(html.contains("/courses/sand-moor-golf-club"));
+        assertFalse(html.contains("Visit website"));
 
         return result;
     }
@@ -128,7 +128,7 @@ public class CoursesPageTest {
         // When - render course card
         var result = CoursesPage.courseCard(courseWithImage);
 
-        // Then - should render successfully with image
+        // Then - should render successfully with image and link to course detail page
         assertNotNull(result);
         String html = result.render();
         assertTrue(html.contains("Rudding Park Golf Club"));
@@ -136,7 +136,7 @@ public class CoursesPageTest {
         assertTrue(html.contains("ygl-card__media"));
         assertTrue(html.contains("ygl-card__img"));
         assertTrue(html.contains("/images/courses/rudding-park-golf-club.jpg"));
-                assertTrue(html.contains("Visit website"));
+        assertTrue(html.contains("/courses/rudding-park-golf-club"));
 
         return result;
     }

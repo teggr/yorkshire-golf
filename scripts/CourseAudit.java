@@ -371,7 +371,18 @@ public class CourseAudit {
 
         String address = (String) data.get("address");
         
-        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address);
+        // Parse next100 field
+        Integer next100 = null;
+        Object next100Obj = data.get("next100");
+        if (next100Obj instanceof Integer) {
+            next100 = (Integer) next100Obj;
+        } else if (next100Obj instanceof String) {
+            try {
+                next100 = Integer.parseInt((String) next100Obj);
+            } catch (NumberFormatException ignored) {}
+        }
+        
+        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, next100);
     }
     
     private static String renderHTML(String fileName, String yamlContent, CourseData course,
@@ -1378,7 +1389,7 @@ public class CourseAudit {
     }
     
     // Data classes
-    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address) {}
+    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Integer next100) {}
     
     record ValidationResult(ValidationStatus status, String message, String dimensions) {}
     
