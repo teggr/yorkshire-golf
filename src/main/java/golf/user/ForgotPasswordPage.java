@@ -25,11 +25,7 @@ public class ForgotPasswordPage implements View {
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String step = model.get("step") != null ? (String) model.get("step") : "email";
         String errorMessage = (String) model.get("error");
-        String successMessage = (String) model.get("success");
-        String email = model.get("email") != null ? (String) model.get("email") : "";
-        String securityQuestion = (String) model.get("securityQuestion");
-        int remainingAttempts = model.containsKey("remainingAttempts")
-                ? (Integer) model.get("remainingAttempts") : 3;
+        String token = (String) model.get("token");
         j2html.tags.DomContent csrfField = CsrfUtil.csrfInput(request);
 
         new YorkshireGolfPageTemplate().withRequest(request)
@@ -38,7 +34,7 @@ public class ForgotPasswordPage implements View {
                         div().withClass("ygl-page-header").with(
                                 div().withClass("container").with(
                                         h1("Forgot Password").withClass("ygl-page-header__title"),
-                                        p("Answer your security question to reset your password.").withClass("ygl-page-header__lead")
+                                        p("Reset your password via email.").withClass("ygl-page-header__lead")
                                 )
                         ),
                         div().withClass("container ygl-page").with(
@@ -47,10 +43,7 @@ public class ForgotPasswordPage implements View {
                                                 errorMessage != null
                                                         ? div(errorMessage).withClass("alert alert-danger")
                                                         : text(""),
-                                                successMessage != null
-                                                        ? div(successMessage).withClass("alert alert-success")
-                                                        : text(""),
-                                                buildStepContent(step, email, securityQuestion, remainingAttempts, csrfField)
+                                                buildStepContent(step, token, csrfField)
                                         )
                                 )
                         )
@@ -58,9 +51,10 @@ public class ForgotPasswordPage implements View {
                 .render(response.getWriter());
     }
 
-    private static j2html.tags.DomContent buildStepContent(String step, String email, String securityQuestion, int remainingAttempts, j2html.tags.DomContent csrfField) {
+    private static j2html.tags.DomContent buildStepContent(String step, String token, j2html.tags.DomContent csrfField) {
         return switch (step) {
-            case "question" -> buildQuestionStep(email, securityQuestion, remainingAttempts, csrfField);
+            case "sent" -> buildSentStep();
+            case "reset" -> buildResetStep(token, csrfField);
             case "done" -> buildDoneStep();
             default -> buildEmailStep(csrfField);
         };
@@ -75,38 +69,33 @@ public class ForgotPasswordPage implements View {
                         input().withType("email").withId("email").withName("email")
                                 .withClass("form-control").attr("required", "")
                 ),
-                button("Continue").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
+                button("Send Reset Link").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
         );
     }
 
-    private static j2html.tags.DomContent buildQuestionStep(String email, String securityQuestion, int remainingAttempts, j2html.tags.DomContent csrfField) {
-        return div().with(
-                p("Security question for: ").withClass("text-muted small").with(strong(email)),
-                div().withClass("alert alert-info mb-3").with(
-                        strong(securityQuestion != null ? securityQuestion : "")
+    private static j2html.tags.DomContent buildSentStep() {
+        return div().withClass("alert alert-success").with(
+                p("If that email address is registered, you will receive a password reset link shortly.").withClass("mb-0"),
+                p("The link is valid for 1 hour.").withClass("mb-0 mt-2 text-muted small")
+        );
+    }
+
+    private static j2html.tags.DomContent buildResetStep(String token, j2html.tags.DomContent csrfField) {
+        return form().withMethod("post").withAction("/forgot-password").with(
+                csrfField,
+                input().withType("hidden").withName("step").withValue("reset"),
+                input().withType("hidden").withName("token").withValue(token != null ? token : ""),
+                div().withClass("mb-3").with(
+                        label("New Password").withFor("newPassword").withClass("form-label"),
+                        input().withType("password").withId("newPassword").withName("newPassword")
+                                .withClass("form-control").attr("required", "").attr("minlength", "8")
                 ),
-                p("You have " + remainingAttempts + " attempt(s) remaining.").withClass("text-muted small"),
-                form().withMethod("post").withAction("/forgot-password").with(
-                        csrfField,
-                        input().withType("hidden").withName("step").withValue("answer"),
-                        input().withType("hidden").withName("email").withValue(email),
-                        div().withClass("mb-3").with(
-                                label("Your answer").withFor("answer").withClass("form-label"),
-                                input().withType("text").withId("answer").withName("answer")
-                                        .withClass("form-control").attr("required", "")
-                        ),
-                        div().withClass("mb-3").with(
-                                label("New Password").withFor("newPassword").withClass("form-label"),
-                                input().withType("password").withId("newPassword").withName("newPassword")
-                                        .withClass("form-control").attr("required", "").attr("minlength", "8")
-                        ),
-                        div().withClass("mb-3").with(
-                                label("Confirm New Password").withFor("confirmPassword").withClass("form-label"),
-                                input().withType("password").withId("confirmPassword").withName("confirmPassword")
-                                        .withClass("form-control").attr("required", "")
-                        ),
-                        button("Reset Password").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
-                )
+                div().withClass("mb-3").with(
+                        label("Confirm New Password").withFor("confirmPassword").withClass("form-label"),
+                        input().withType("password").withId("confirmPassword").withName("confirmPassword")
+                                .withClass("form-control").attr("required", "")
+                ),
+                button("Reset Password").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
         );
     }
 

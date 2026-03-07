@@ -4,11 +4,18 @@ servers:
   web:
     hosts:
       - 46.224.198.56
+    options:
+      add-host: host.docker.internal:host-gateway
     labels:
       traefik.http.routers.golf-tracker.rule: "Host(`yorkshiregolf.life`) || Host(`www.yorkshiregolf.life`)"
       traefik.http.routers.golf-tracker.entrypoints: "websecure"
       traefik.http.routers.golf-tracker.tls: "true"
       traefik.http.routers.golf-tracker.tls.certresolver: "letsencrypt"
+env:
+  clear:
+    MAIL_HOST: host.docker.internal
+    MAIL_PORT: 25
+    APP_BASE_URL: https://yorkshiregolf.life
 registry:
   username:
     - DOCKER_USERNAME
@@ -36,3 +43,8 @@ traefik:
     certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
     certificatesResolvers.letsencrypt.acme.httpchallenge: true
     certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: "web"
+accessories:
+  smtp:
+    image: namshi/smtp
+    host: 46.224.198.56
+    port: "127.0.0.1:25:25"

@@ -1,29 +1,34 @@
 package golf.user;
 
+import golf.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HexFormat;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private static final int MAX_SECURITY_ATTEMPTS = 3;
     private static final String TRACKER_ID_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
     private static final int TRACKER_ID_LENGTH = 12;
+    private static final long RESET_TOKEN_EXPIRY_HOURS = 1;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
 
-    public GolfUser register(String email, String rawPassword, String securityQuestion, String rawSecurityAnswer) {
+    public GolfUser register(String email, String rawPassword) {
         String encodedPassword = passwordEncoder.encode(rawPassword);
-        String encodedAnswer = passwordEncoder.encode(rawSecurityAnswer.toLowerCase().trim());
         String trackerId = generateTrackerId();
         GolfUser user = new GolfUser(null, email.toLowerCase().trim(), encodedPassword,
-                securityQuestion, encodedAnswer, trackerId, "USER", false, 0);
+                trackerId, "USER", false);
         return userRepository.save(user);
     }
 
@@ -44,41 +49,55 @@ public class UserService {
     }
 
     /**
-     * Attempt to answer the security question.
-     * Returns true if the answer is correct and the password has been reset.
-     * Returns false if the answer is incorrect.
-     * Throws AccountLockedException if the account is now locked.
+     * Generates a password reset token for the given email address and sends a reset link.
+     * Does nothing (silently) when the email is not registered, to avoid user enumeration.
      */
-    public SecurityAnswerResult attemptSecurityAnswer(GolfUser user, String rawAnswer, String newRawPassword) {
+    public void sendPasswordResetEmail(String email, String resetBaseUrl) {
+        Optional<GolfUser> userOpt = findByEmail(email);
+        if (userOpt.isEmpty()) {
+            return;
+        }
+        GolfUser user = userOpt.get();
         if (user.accountLocked()) {
-            return SecurityAnswerResult.ACCOUNT_LOCKED;
+            return;
         }
-
-        boolean correct = passwordEncoder.matches(rawAnswer.toLowerCase().trim(), user.securityAnswer());
-        if (correct) {
-            String encodedPassword = passwordEncoder.encode(newRawPassword);
-            userRepository.updatePassword(user.id(), encodedPassword);
-            userRepository.resetFailedSecurityAttempts(user.id());
-            return SecurityAnswerResult.SUCCESS;
-        }
-
-        int newAttempts = user.failedSecurityAttempts() + 1;
-        if (newAttempts >= MAX_SECURITY_ATTEMPTS) {
-            userRepository.updateFailedSecurityAttempts(user.id(), newAttempts);
-            userRepository.updateAccountLocked(user.id(), true);
-            return SecurityAnswerResult.ACCOUNT_LOCKED;
-        }
-
-        userRepository.updateFailedSecurityAttempts(user.id(), newAttempts);
-        return SecurityAnswerResult.WRONG_ANSWER;
+        String token = generateSecureToken();
+        passwordResetTokenRepository.save(user.id(), token);
+        String resetLink = resetBaseUrl + "?token=" + token;
+        String body = "Hello,\n\n"
+                + "You requested a password reset for your Yorkshire Golf Life account.\n\n"
+                + "Click the link below to reset your password (valid for " + RESET_TOKEN_EXPIRY_HOURS + " hour):\n\n"
+                + resetLink + "\n\n"
+                + "If you did not request this, you can safely ignore this email.\n\n"
+                + "Yorkshire Golf Life";
+        emailService.sendEmail(email, "Reset your Yorkshire Golf Life password", body);
     }
 
-    public int remainingSecurityAttempts(GolfUser user) {
-        return MAX_SECURITY_ATTEMPTS - user.failedSecurityAttempts();
+    /**
+     * Validates the reset token and resets the password if the token is valid and unexpired.
+     */
+    public PasswordResetResult resetPassword(String token, String newRawPassword) {
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findByToken(token);
+        if (tokenOpt.isEmpty()) {
+            return PasswordResetResult.INVALID_TOKEN;
+        }
+        PasswordResetToken resetToken = tokenOpt.get();
+        if (resetToken.used()) {
+            return PasswordResetResult.INVALID_TOKEN;
+        }
+        Instant expiry = resetToken.createdAt().plus(RESET_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS);
+        if (Instant.now().isAfter(expiry)) {
+            return PasswordResetResult.EXPIRED_TOKEN;
+        }
+        String encodedPassword = passwordEncoder.encode(newRawPassword);
+        userRepository.updatePassword(resetToken.userId(), encodedPassword);
+        passwordResetTokenRepository.markUsed(resetToken.id());
+        return PasswordResetResult.SUCCESS;
     }
 
     public void unlockAccount(Long userId) {
-        userRepository.resetFailedSecurityAttempts(userId);
+        userRepository.updateAccountLocked(userId, false);
+        passwordResetTokenRepository.invalidateAllForUser(userId);
     }
 
     private String generateTrackerId() {
@@ -96,10 +115,16 @@ public class UserService {
         throw new IllegalStateException("Unable to generate a unique tracker ID after 10 attempts");
     }
 
-    public enum SecurityAnswerResult {
+    private String generateSecureToken() {
+        byte[] bytes = new byte[32];
+        new SecureRandom().nextBytes(bytes);
+        return HexFormat.of().formatHex(bytes);
+    }
+
+    public enum PasswordResetResult {
         SUCCESS,
-        WRONG_ANSWER,
-        ACCOUNT_LOCKED
+        INVALID_TOKEN,
+        EXPIRED_TOKEN
     }
 
 }
