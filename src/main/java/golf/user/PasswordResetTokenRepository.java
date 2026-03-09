@@ -1,6 +1,5 @@
 package golf.user;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,16 +31,6 @@ public class PasswordResetTokenRepository {
             rs.getTimestamp("created_at").toInstant(),
             rs.getBoolean("used")
     );
-
-    @PostConstruct
-    void initializeSchemaUpgrades() {
-        jdbc.execute("ALTER TABLE password_reset_token ADD COLUMN IF NOT EXISTS token_hash VARCHAR(255)");
-        jdbc.execute("ALTER TABLE password_reset_token ALTER COLUMN token DROP NOT NULL");
-        jdbc.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_password_reset_token_hash ON password_reset_token(token_hash)");
-
-        // Invalidate any legacy plaintext tokens during rollout.
-        jdbc.update("UPDATE password_reset_token SET used = TRUE WHERE token_hash IS NULL AND used = FALSE");
-    }
 
     public PasswordResetToken save(Long userId, String token) {
         KeyHolder keyHolder = new GeneratedKeyHolder();

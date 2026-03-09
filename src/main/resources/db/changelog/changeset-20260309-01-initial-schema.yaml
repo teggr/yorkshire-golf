@@ -1,0 +1,140 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260309-01-initial-schema
+      author: copilot
+      changes:
+        - createTable:
+            tableName: golf_user
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tracker_id
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(50)
+                  defaultValue: USER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_locked
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: golf_user
+            columnNames: email
+            constraintName: uk_golf_user_email
+
+        - addUniqueConstraint:
+            tableName: golf_user
+            columnNames: tracker_id
+            constraintName: uk_golf_user_tracker_id
+
+        - createTable:
+            tableName: password_reset_token
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token
+                  type: VARCHAR(255)
+              - column:
+                  name: token_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: used
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: password_reset_token
+            baseColumnNames: user_id
+            referencedTableName: golf_user
+            referencedColumnNames: id
+            constraintName: fk_password_reset_token_user
+
+        - createIndex:
+            tableName: password_reset_token
+            indexName: idx_password_reset_token_hash
+            unique: true
+            columns:
+              - column:
+                  name: token_hash
+
+        - createTable:
+            tableName: user_round
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: course_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: user_round
+            baseColumnNames: user_id
+            referencedTableName: golf_user
+            referencedColumnNames: id
+            constraintName: fk_user_round_user
+
+        - addUniqueConstraint:
+            tableName: user_round
+            columnNames: user_id, course_name
+            constraintName: uk_user_round_user_course
