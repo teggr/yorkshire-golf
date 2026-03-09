@@ -769,6 +769,34 @@ img {
   border: 1px solid var(--ygl-color-border-light);
 }
 
+/* ---------- ygl-map-page ---------- */
+.ygl-map-page {
+  width: 100%;
+}
+
+.ygl-map-page__map {
+  width: 100%;
+  height: 70vh;
+  min-height: 420px;
+  border-radius: var(--ygl-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--ygl-shadow-xs);
+  border: 1px solid var(--ygl-color-border-light);
+}
+
+.ygl-map-page__popup-link {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-weight: 600;
+  color: var(--ygl-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ygl-map-page__popup-link:hover {
+  color: var(--ygl-color-secondary);
+}
+
 /* ---------- ygl-chart ---------- */
 .ygl-chart {
   background: var(--ygl-color-bg-white);
@@ -1093,6 +1121,10 @@ img {
   }
   .ygl-course-map {
     margin-top: 1.5rem;
+  }
+  .ygl-map-page__map {
+    height: 60vh;
+    min-height: 360px;
   }
   .ygl-footer__top {
     padding: 2.5rem 0 2rem;

@@ -23,6 +23,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/", "/courses/**", "/play-and-stay/**",
+                    "/map/**",
                     "/top-100/**", "/next-100/**",
                     "/rounds/**",
                     "/my-rounds/**",
