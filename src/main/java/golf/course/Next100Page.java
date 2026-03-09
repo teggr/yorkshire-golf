@@ -33,6 +33,8 @@ public class Next100Page implements View {
         List<Course> courses = (List<Course>) model.get("courses");
 
         new YorkshireGolfPageTemplate()
+                .withRequest(request)
+                .withCurrentPageBasePath("/next-100")
                 .withTitle("Next 100 – Yorkshire Golf")
                 .withBody(
                         // Page header

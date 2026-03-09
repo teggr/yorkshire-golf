@@ -160,6 +160,14 @@ img {
   color: #fff !important;
 }
 
+.ygl-navbar__link--active {
+  color: #fff !important;
+}
+
+.ygl-navbar__link--active::after {
+  transform: scaleX(1);
+}
+
 .ygl-navbar__link:hover::after {
   transform: scaleX(1);
 }
@@ -445,10 +453,18 @@ img {
   box-shadow: var(--ygl-shadow-sm);
   border-radius: var(--ygl-radius-lg);
   border-top: 3px solid var(--ygl-color-accent);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
 .ygl-card--stat:hover {
   box-shadow: var(--ygl-shadow-md);
+}
+
+.ygl-card--stat:focus-visible {
+  outline: 2px solid var(--ygl-color-primary-light);
+  outline-offset: 2px;
 }
 
 .ygl-card--stat .ygl-card__body {
@@ -731,6 +747,26 @@ img {
 
 .ygl-course-details dd {
   margin-bottom: 0.5rem;
+}
+
+/* ---------- ygl-course-map ---------- */
+.ygl-course-map {
+  margin-top: 2rem;
+}
+
+.ygl-course-map__title {
+  font-family: var(--ygl-font-heading);
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--ygl-color-primary);
+  margin-bottom: 0.75rem;
+}
+
+.ygl-course-map__embed {
+  border-radius: var(--ygl-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--ygl-shadow-xs);
+  border: 1px solid var(--ygl-color-border-light);
 }
 
 /* ---------- ygl-chart ---------- */
@@ -1054,6 +1090,9 @@ img {
   .ygl-article {
     padding: 1.5rem;
     border-radius: var(--ygl-radius-lg);
+  }
+  .ygl-course-map {
+    margin-top: 1.5rem;
   }
   .ygl-footer__top {
     padding: 2.5rem 0 2rem;

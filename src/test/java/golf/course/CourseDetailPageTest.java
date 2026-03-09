@@ -12,6 +12,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CourseDetailPageTest {
 
     @Test
+    void renderHighlightsCoursesNavItemForCourseDetailPath() throws Exception {
+        CourseDetailPage page = new CourseDetailPage();
+
+        Course course = new Course(
+                "Alwoodley Golf Club",
+                Regions.WestYorkshire,
+                "https://alwoodleygolfclub.com/",
+                "/images/courses/alwoodley-golf-club.jpg",
+                null,
+                false,
+                false,
+                "Alwoodley Ln, Leeds LS17 7DJ",
+                53.85665,
+                -1.50115,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        var request = new org.springframework.mock.web.MockHttpServletRequest();
+        request.setRequestURI("/courses/alwoodley-golf-club");
+        var response = new org.springframework.mock.web.MockHttpServletResponse();
+
+        page.render(java.util.Map.of("course", course), request, response);
+
+        String html = response.getContentAsString();
+        assertTrue(
+            html.contains("href=\"/courses\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\"")
+                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/courses\"")
+        );
+        assertFalse(
+            html.contains("href=\"/challenge\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\"")
+                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/challenge\"")
+        );
+    }
+
+    @Test
     void toCourseSlugConvertsNameToUrlSlug() {
         assertEquals("alwoodley-golf-club", Courses.toCourseSlug("Alwoodley Golf Club"));
         assertEquals("ganton-golf-club", Courses.toCourseSlug("Ganton Golf Club"));
@@ -20,7 +59,7 @@ public class CourseDetailPageTest {
     }
 
     @Test
-    void courseDetailRendersNameRegionAndWebsite() {
+    void courseDetailRendersNameRegionWebsiteAddressAndMapWidget() {
         Course course = new Course(
                 "Alwoodley Golf Club",
                 Regions.WestYorkshire,
@@ -29,9 +68,9 @@ public class CourseDetailPageTest {
                 null,
                 false,
             false,
-            null,
-            null,
-            null,
+            "Alwoodley Ln, Leeds LS17 7DJ",
+            53.85665,
+            -1.50115,
             null,
             null,
             null,
@@ -47,6 +86,13 @@ public class CourseDetailPageTest {
         assertTrue(html.contains("West Yorkshire"));
         assertTrue(html.contains("https://alwoodleygolfclub.com/"));
         assertTrue(html.contains("Visit website"));
+        assertTrue(html.contains("Address"));
+        assertTrue(html.contains("Alwoodley Ln, Leeds LS17 7DJ"));
+        assertTrue(html.contains("Google Maps"));
+        assertTrue(html.contains("iframe"));
+        assertTrue(html.contains("ygl-course-map"));
+        assertTrue(html.contains("Alwoodley+Golf+Club%2C+Alwoodley+Ln%2C+Leeds+LS17+7DJ"));
+        assertTrue(html.contains("output=embed") || html.contains("maps/embed/v1/place"));
         assertTrue(html.contains("ygl-article"));
     }
 

@@ -16,6 +16,36 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CoursesPageTest {
 
+        @Test
+        void renderHighlightsCoursesNavItem() throws Exception {
+                CoursesPage page = new CoursesPage();
+
+                var request = new org.springframework.mock.web.MockHttpServletRequest();
+                request.setRequestURI("/courses");
+                var response = new org.springframework.mock.web.MockHttpServletResponse();
+
+                page.render(Map.of(
+                                "courses", List.of(
+                                                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null)
+                                )
+                ), request, response);
+
+                String html = response.getContentAsString();
+                assertTrue(
+                        html.contains("href=\"/courses\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\"")
+                                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/courses\"")
+                );
+                assertTrue(
+                        html.contains("href=\"/courses\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" aria-current=\"page\"")
+                                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/courses\" aria-current=\"page\"")
+                                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" aria-current=\"page\" href=\"/courses\"")
+                );
+                assertFalse(
+                        html.contains("href=\"/challenge\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\"")
+                                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/challenge\"")
+                );
+        }
+
     @Test
     @Preview
     public DomContent coursesListExample() {

@@ -116,7 +116,7 @@ public class HomePage implements View {
             div().withClass("row g-3 row-cols-2 row-cols-lg-4").with(
               regionOrder.stream().map(region ->
                 div().withClass("col").with(
-                  div().withClass("ygl-card ygl-card--stat").with(
+                  a().withHref("/courses#" + toRegionSlug(region)).withClass("ygl-card ygl-card--stat").with(
                     div().withClass("ygl-card__body").with(
                       span(String.valueOf(courseCountByRegion.getOrDefault(region, 0L))).withClass("ygl-card__number"),
                       p(region.displayName()).withClass("ygl-card__label")

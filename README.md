@@ -38,6 +38,8 @@ Push to Docker Hub (ensure you are logged in with `docker login`):
 ./mvnw docker:push
 ```
 
+Set `GOOGLE_MAPS_API_KEY` in the runtime environment to enable Google Maps embeds on course pages.
+
 # Usage
 
 Go to https://www.yorkshiregolf.life

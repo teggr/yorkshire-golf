@@ -32,6 +32,7 @@ public class ChallengeLandingPage implements View {
 
         new YorkshireGolfPageTemplate()
                 .withRequest(request)
+                .withCurrentPageBasePath("/challenge")
                 .withTitle("Challenge Tracker — Yorkshire Golf Life")
                 .withBody(
                         div().withClass("ygl-page-header").with(

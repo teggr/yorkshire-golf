@@ -44,6 +44,7 @@ public class CoursesPage implements View {
         );
 
         new YorkshireGolfPageTemplate().withRequest(request)
+                .withCurrentPageBasePath("/courses")
                 .withTitle("Yorkshire Golf Courses")
                 .withBody(
                         // Page header

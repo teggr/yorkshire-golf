@@ -33,6 +33,7 @@ public class PlayAndStayPage implements View {
         List<Course> courses = (List<Course>) model.get("courses");
 
         new YorkshireGolfPageTemplate().withRequest(request)
+                .withCurrentPageBasePath("/play-and-stay")
                 .withTitle("Play & Stay – Yorkshire Golf")
                 .withBody(
                         // Page header

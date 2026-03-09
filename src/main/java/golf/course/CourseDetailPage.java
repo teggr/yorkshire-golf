@@ -4,12 +4,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
 
 import golf.web.YorkshireGolfPageTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static j2html.TagCreator.*;
@@ -17,6 +20,9 @@ import static j2html.TagCreator.*;
 @Component
 @Slf4j
 public class CourseDetailPage implements View {
+
+        @Value("${golf.google-maps.api-key:}")
+        private String googleMapsApiKey;
 
     @Override
     public @Nullable String getContentType() {
@@ -31,6 +37,8 @@ public class CourseDetailPage implements View {
         Course course = (Course) model.get("course");
 
         new YorkshireGolfPageTemplate()
+                .withRequest(request)
+                .withCurrentPageBasePath("/courses")
                 .withTitle(course.name() + " - Yorkshire Golf Life")
                 .withBody(
                         // Hero image
@@ -48,7 +56,7 @@ public class CourseDetailPage implements View {
                                         a("← Back to Courses").withHref("/courses").withClass("ygl-back-link"),
                                         div().withClass("row justify-content-center").with(
                                                 div().withClass("col-lg-8").with(
-                                                        courseDetail(course)
+                                                        courseDetail(course, googleMapsApiKey)
                                                 )
                                         )
                                 )
@@ -60,6 +68,10 @@ public class CourseDetailPage implements View {
     }
 
     static j2html.tags.DomContent courseDetail(Course course) {
+        return courseDetail(course, "");
+    }
+
+    static j2html.tags.DomContent courseDetail(Course course, String googleMapsApiKey) {
         return article().withClass("ygl-article").with(
                 h1(course.name()).withClass("ygl-article__title"),
                 p().withClass("ygl-article__meta").with(
@@ -71,11 +83,11 @@ public class CourseDetailPage implements View {
                                   )
                                 : span()
                 ),
-                courseInfoSection(course)
+                                                                courseInfoSection(course, googleMapsApiKey)
         );
     }
 
-    private static j2html.tags.DomContent courseInfoSection(Course course) {
+                private static j2html.tags.DomContent courseInfoSection(Course course, String googleMapsApiKey) {
         return div().withClass("ygl-article__content").with(
                 // Website link
                 course.website() != null && !course.website().isEmpty()
@@ -96,6 +108,13 @@ public class CourseDetailPage implements View {
                         dl().withClass("row").with(
                                 dt().withClass("col-sm-4").with(text("Region")),
                                 dd().withClass("col-sm-8").with(text(course.region().displayName())),
+
+                                course.address() != null && !course.address().isEmpty()
+                                        ? join(
+                                        dt().withClass("col-sm-4").with(text("Address")),
+                                        dd().withClass("col-sm-8").with(text(course.address()))
+                                )
+                                        : text(""),
 
                                 course.playAndStay()
                                         ? join(
@@ -119,8 +138,38 @@ public class CourseDetailPage implements View {
                                           )
                                         : text("")
                         )
-                )
+                ),
+
+                course.lat() != null && course.lng() != null
+                        ? div().withClass("ygl-course-map").with(
+                                h2("Google Maps").withClass("ygl-course-map__title"),
+                                div().withClass("ratio ratio-16x9 ygl-course-map__embed").with(
+                                        iframe()
+                                                .withSrc(googleMapsEmbedUrl(course, googleMapsApiKey))
+                                                .withTitle(course.name() + " map")
+                                                .attr("style", "border:0;")
+                                                .attr("loading", "lazy")
+                                                .attr("referrerpolicy", "no-referrer-when-downgrade")
+                                                .attr("allowfullscreen", "")
+                                )
+                        )
+                        : text("")
         );
+    }
+
+    private static String googleMapsEmbedUrl(Course course, String googleMapsApiKey) {
+        String query = course.address() != null && !course.address().isBlank()
+                ? course.name() + ", " + course.address()
+                : course.lat() + "," + course.lng();
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+
+        if (googleMapsApiKey == null || googleMapsApiKey.isBlank()) {
+            return "https://maps.google.com/maps?q=" + encodedQuery + "&z=14&output=embed";
+        }
+
+        return "https://www.google.com/maps/embed/v1/place?key=" +
+               URLEncoder.encode(googleMapsApiKey, StandardCharsets.UTF_8) +
+               "&q=" + encodedQuery;
     }
 
 }

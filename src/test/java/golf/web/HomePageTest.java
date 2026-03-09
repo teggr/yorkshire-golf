@@ -64,12 +64,29 @@ public class HomePageTest {
         assertTrue(body.contains("/courses#east-yorkshire"));
         assertTrue(body.contains("/courses#south-yorkshire"));
         assertTrue(body.contains("/courses#west-yorkshire"));
+        assertTrue(body.contains("href=\"/courses#north-yorkshire\" class=\"ygl-card ygl-card--stat\""));
+        assertTrue(body.contains("href=\"/courses#east-yorkshire\" class=\"ygl-card ygl-card--stat\""));
+        assertTrue(body.contains("href=\"/courses#south-yorkshire\" class=\"ygl-card ygl-card--stat\""));
+        assertTrue(body.contains("href=\"/courses#west-yorkshire\" class=\"ygl-card ygl-card--stat\""));
         assertTrue(body.contains("ygl-card__media"));
         assertTrue(body.contains("ygl-card__img"));
         assertTrue(body.contains("ygl-card__placeholder"));
+        assertTrue(body.contains("row g-4"));
+        assertTrue(body.contains("col-6 col-lg-3"));
         assertFalse(body.contains("Sign in to track your challenge"));
         assertFalse(body.contains("Create an account"));
         assertFalse(body.contains("Forgot password?"));
+
+        assertTrue(
+                body.contains("href=\"/courses\" class=\"nav-link ygl-navbar__link\"")
+                        || body.contains("class=\"nav-link ygl-navbar__link\" href=\"/courses\"")
+        );
+        assertTrue(
+                body.contains("href=\"/challenge\" class=\"nav-link ygl-navbar__link\"")
+                        || body.contains("class=\"nav-link ygl-navbar__link\" href=\"/challenge\"")
+        );
+        assertFalse(body.contains("ygl-navbar__link--active"));
+        assertFalse(body.contains("aria-current=\"page\""));
 
         assertTrue(body.contains("/courses/ganton-golf-club")
                 || body.contains("/courses/bridlington-links")

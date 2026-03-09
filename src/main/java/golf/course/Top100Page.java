@@ -33,6 +33,8 @@ public class Top100Page implements View {
         List<Course> courses = (List<Course>) model.get("courses");
 
         new YorkshireGolfPageTemplate()
+                .withRequest(request)
+                .withCurrentPageBasePath("/top-100")
                 .withTitle("Top 100 Golf Courses – Yorkshire Golf Life")
                 .withBody(
                         // Page header

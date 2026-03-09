@@ -71,6 +71,7 @@ public class RegionTrackerPage implements View {
 
     YorkshireGolfPageTemplate pageTemplate = new YorkshireGolfPageTemplate()
       .withRequest(request)
+      .withCurrentPageBasePath("/challenge")
       .withTitle("Yorkshire Challenge Tracker")
       .withPageScripts(
         chartJsLibScript(),

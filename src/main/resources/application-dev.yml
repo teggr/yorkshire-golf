@@ -10,3 +10,5 @@ spring:
 golf:
   app:
     base-url: http://localhost:8080
+  google-maps:
+    api-key: ${GOOGLE_MAPS_API_KEY:}

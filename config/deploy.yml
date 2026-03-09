@@ -16,6 +16,8 @@ env:
     MAIL_HOST: host.docker.internal
     MAIL_PORT: 25
     APP_BASE_URL: https://yorkshiregolf.life
+  secret:
+    GOOGLE_MAPS_API_KEY: GOOGLE_MAPS_API_KEY
 registry:
   username:
     - DOCKER_USERNAME

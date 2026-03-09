@@ -19,6 +19,7 @@ public class YorkshireGolfPageTemplate {
     private DomContent[] pageScripts = new DomContent[0];
     private DomContent[] body = new DomContent[0];
     private HttpServletRequest request;
+        private String currentPageBasePath;
 
     public YorkshireGolfPageTemplate withTitle(String title) {
         this.title = title;
@@ -39,6 +40,44 @@ public class YorkshireGolfPageTemplate {
         this.request = request;
         return this;
     }
+
+        public YorkshireGolfPageTemplate withCurrentPageBasePath(String currentPageBasePath) {
+                this.currentPageBasePath = currentPageBasePath;
+                return this;
+        }
+
+        private boolean requestPathMatchesCurrentPage() {
+                if (request == null || currentPageBasePath == null || currentPageBasePath.isBlank()) {
+                        return false;
+                }
+
+                String requestPath = request.getRequestURI();
+                if (requestPath == null || requestPath.isBlank()) {
+                        return false;
+                }
+
+                if ("/".equals(currentPageBasePath)) {
+                        return "/".equals(requestPath);
+                }
+
+                return requestPath.equals(currentPageBasePath) || requestPath.startsWith(currentPageBasePath + "/");
+        }
+
+        private String navbarLinkClass(String linkPath) {
+                String baseClass = "nav-link ygl-navbar__link";
+                if (requestPathMatchesCurrentPage() && linkPath.equals(currentPageBasePath)) {
+                        return baseClass + " ygl-navbar__link--active";
+                }
+                return baseClass;
+        }
+
+        private DomContent navbarLink(String label, String linkPath) {
+                var link = a(label).withClass(navbarLinkClass(linkPath)).withHref(linkPath);
+                if (requestPathMatchesCurrentPage() && linkPath.equals(currentPageBasePath)) {
+                        link.attr("aria-current", "page");
+                }
+                return link;
+        }
 
     private static boolean isAuthenticated() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -66,19 +105,19 @@ public class YorkshireGolfPageTemplate {
                                         ul().withClass("navbar-nav ygl-navbar__nav").with(
                                                 
                                                 li().withClass("nav-item").with(
-                                                        a("Courses").withClass("nav-link ygl-navbar__link").withHref("/courses")
+                                                        navbarLink("Courses", "/courses")
                                                 ),
                                                 li().withClass("nav-item").with(
-                                                        a("Top 100").withClass("nav-link ygl-navbar__link").withHref("/top-100")
+                                                        navbarLink("Top 100", "/top-100")
                                                 ),
                                                 li().withClass("nav-item").with(
-                                                        a("Next 100").withClass("nav-link ygl-navbar__link").withHref("/next-100")
+                                                        navbarLink("Next 100", "/next-100")
                                                 ),
                                                 li().withClass("nav-item").with(
-                                                        a("Play & Stay").withClass("nav-link ygl-navbar__link").withHref("/play-and-stay")
+                                                        navbarLink("Play & Stay", "/play-and-stay")
                                                 ),
                                                 li().withClass("nav-item").with(
-                                                        a("Yorkshire Challenge").withClass("nav-link ygl-navbar__link").withHref("/challenge")
+                                                        navbarLink("Yorkshire Challenge", "/challenge")
                                                 ),
                                                 iffElse(!loggedIn,
                                                         li().withClass("nav-item").with(
@@ -125,13 +164,13 @@ public class YorkshireGolfPageTemplate {
                                                                 
                                                         )
                                                 ),
-                                                div().withClass("col-6 col-lg-2").with(
+                                                div().withClass("col-6 col-lg-3").with(
                                                         div().withClass("ygl-footer__heading").with(text("Challenge")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(a("#yorkshiregolfchallenge").withHref("/challenge"))
                                                         )
                                                 ),
-                                                div().withClass("col-6 col-lg-2").with(
+                                                div().withClass("col-6 col-lg-3").with(
                                                         div().withClass("ygl-footer__heading").with(text("Socials")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,6 +15,7 @@ class ChallengeLandingPageTest {
         ChallengeLandingPage page = new ChallengeLandingPage();
 
         var request = new org.springframework.mock.web.MockHttpServletRequest();
+        request.setRequestURI("/challenge");
         var response = new org.springframework.mock.web.MockHttpServletResponse();
 
         page.render(Map.of("totalCourseCount", 194), request, response);
@@ -31,5 +33,18 @@ class ChallengeLandingPageTest {
         assertTrue(html.contains("register your rounds"));
         assertTrue(html.contains("/register"));
         assertTrue(html.contains("/images/challenge/challenge-tracker-landing.svg"));
+        assertTrue(
+            html.contains("href=\"/challenge\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\"")
+                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/challenge\"")
+        );
+        assertTrue(
+            html.contains("href=\"/challenge\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" aria-current=\"page\"")
+                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/challenge\" aria-current=\"page\"")
+                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" aria-current=\"page\" href=\"/challenge\"")
+        );
+        assertFalse(
+            html.contains("href=\"/courses\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\"")
+                || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/courses\"")
+        );
     }
 }
