@@ -89,9 +89,11 @@ public class UserService {
         if (Instant.now().isAfter(expiry)) {
             return PasswordResetResult.EXPIRED_TOKEN;
         }
+        if (!passwordResetTokenRepository.markUsedIfUnused(resetToken.id())) {
+            return PasswordResetResult.INVALID_TOKEN;
+        }
         String encodedPassword = passwordEncoder.encode(newRawPassword);
         userRepository.updatePassword(resetToken.userId(), encodedPassword);
-        passwordResetTokenRepository.markUsed(resetToken.id());
         return PasswordResetResult.SUCCESS;
     }
 

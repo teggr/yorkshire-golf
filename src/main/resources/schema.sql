@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS golf_user (
 CREATE TABLE IF NOT EXISTS password_reset_token (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id    BIGINT       NOT NULL,
-    token      VARCHAR(255) NOT NULL UNIQUE,
+    token      VARCHAR(255),
+    token_hash VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP    NOT NULL,
     used       BOOLEAN      NOT NULL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES golf_user(id)

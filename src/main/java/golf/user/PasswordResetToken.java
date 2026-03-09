@@ -5,7 +5,7 @@ import java.time.Instant;
 public record PasswordResetToken(
         Long id,
         Long userId,
-        String token,
+        String tokenHash,
         Instant createdAt,
         boolean used
 ) {

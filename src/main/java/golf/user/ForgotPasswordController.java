@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ForgotPasswordController {
 
     private final UserService userService;
+    private final ForgotPasswordRateLimiter forgotPasswordRateLimiter;
 
     @Value("${golf.app.base-url}")
     private String appBaseUrl;
@@ -44,8 +45,10 @@ public class ForgotPasswordController {
     ) {
         if ("email".equals(step)) {
             if (email != null && !email.isBlank()) {
-                String resetBaseUrl = appBaseUrl + "/forgot-password";
-                userService.sendPasswordResetEmail(email, resetBaseUrl);
+                if (forgotPasswordRateLimiter.allow(email)) {
+                    String resetBaseUrl = appBaseUrl + "/forgot-password";
+                    userService.sendPasswordResetEmail(email, resetBaseUrl);
+                }
             }
             model.addAttribute("step", "sent");
             return "forgotPasswordPage";
