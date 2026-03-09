@@ -1,4 +1,7 @@
 name: "Kilnwick Percy Golf Club"
+address: "Kilnwick Percy Resort Golf Club Pocklington Kilnwick Percy York YO42 1UF"
+lat: 53.9399632
+lng: -0.7531602
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

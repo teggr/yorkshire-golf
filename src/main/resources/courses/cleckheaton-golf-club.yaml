@@ -1,4 +1,7 @@
 name: "Cleckheaton Golf Club"
+address: "Cleckheaton Golf Club, 483 Bradford Road, Cleckheaton, West Yorkshire BD19 6BU"
+lat: 53.7415
+lng: -1.73291
 region:
   name: "WEST_YORKSHIRE"
 website: "https://cleckheatongolfclub.co.uk/"

@@ -1,4 +1,7 @@
 name: "Boothferry Golf Club"
+address: "Boothferry Golf Club Spaldington Lane Howden DN14 7NG"
+lat: 53.7836127
+lng: -0.861555
 region:
   name: "EAST_YORKSHIRE"
 website: "http://boothferrygolfclub.co.uk/"

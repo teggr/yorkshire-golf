@@ -1,4 +1,7 @@
 name: "Wakefield Golf Club"
+address: "Woodthorpe Lane, Wakefield, West Yorks, WF2 6JH"
+lat: 53.6487439
+lng: -1.4891696
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.wakefieldgolfclub.co.uk/"

@@ -1,4 +1,7 @@
 name: "Elland Golf Club"
+address: "Hammerstone Leach Lane, Elland, West Yorkshire, HX5 0TA"
+lat: 53.6793683
+lng: -1.8537684
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.ellandgolfclub.co.uk/"

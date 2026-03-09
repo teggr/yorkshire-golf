@@ -1,4 +1,7 @@
 name: "Headingley Golf Club"
+address: "Headingley Golf Club, Back Church Lane, Adel, Leeds, LS16 8DW"
+lat: 53.8581256
+lng: -1.5812176
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.headingleygolfclub.co.uk/"

@@ -1,4 +1,7 @@
 name: "Malton and Norton Golf Club"
+address: "Malton Norton Golf Club Welham Park, Malton, North Yorkshire, YO17 9QE"
+lat: 54.1222904
+lng: -0.8010142
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.maltonandnortongolfclub.co.uk/"

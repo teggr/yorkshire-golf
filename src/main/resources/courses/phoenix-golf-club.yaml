@@ -1,4 +1,7 @@
 name: "Phoenix Golf Club"
+address: "Phoenix Golf Club Phoenix Pavilion Pavilion Lane Brinsworth Rotherham S60 5PA"
+lat: 53.4122352
+lng: -1.3742327
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.phoenixgolfclub.co.uk/"

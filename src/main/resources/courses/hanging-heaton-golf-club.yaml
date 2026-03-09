@@ -1,4 +1,7 @@
 name: "Hanging Heaton Golf Club"
+address: "Hanging Heaton Golf Club White Cross Road, Dewsbury, WF12 7DT"
+lat: 53.69832
+lng: -1.61565
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.hhgc.org/"

@@ -1,4 +1,7 @@
 name: "Ben Rhydding Golf Club"
+address: "Ben Rhydding Golf Club, High Wood, Ben Rhydding, Ilkley, LS29 8SB"
+lat: 53.917683
+lng: -1.7947439
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.benrhyddinggolfclub.com/"

@@ -1,4 +1,7 @@
 name: "Roundwood Golf Club"
+address: "Roundwood Pavilion, Off Green Lane, Rawmarsh, Rotherham, S62 6LA"
+lat: 53.4557995
+lng: -1.3302992
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.roundwoodgolfclub.co.uk/"

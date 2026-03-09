@@ -1,4 +1,7 @@
 name: "Stocksbridge Golf Club"
+address: "30 Royd Lane, Deepcar, Sheffield S36 2RZ"
+lat: 53.4686703
+lng: -1.5771748
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.stocksbridgegolfclub.co.uk/"

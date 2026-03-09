@@ -1,4 +1,7 @@
 name: "Calverley Golf Club"
+address: "Calverley Golf Club Woodhall Lane Pudsey Leeds LS28 5QY"
+lat: 53.813747
+lng: -1.6966162
 region:
   name: "WEST_YORKSHIRE"
 website: "http://www.calverleygolf.co.uk/"

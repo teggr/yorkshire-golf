@@ -1,4 +1,7 @@
 name: "Rudding Park Golf Club"
+address: "Rudding Park Hotel, Follifoot, Harrogate, North Yorkshire HG3 1JH"
+lat: 53.9735239
+lng: -1.4935078
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

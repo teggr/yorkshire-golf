@@ -1,4 +1,7 @@
 name: "Grange Park (Yorkshire) Golf Club"
+address: "The Grange Upper Wortley Road Kimberworth Rotherham S61 2SJ"
+lat: 53.44297
+lng: -1.42557
 website: "https://www.grangeparkgolfclub.org/"
 region:
   name: "SOUTH_YORKSHIRE"

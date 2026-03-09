@@ -1,4 +1,7 @@
 name: "Garforth Golf Club"
+address: "Garforth Golf Club, Long Lane, Garforth, Leeds, LS25 2DS"
+lat: 53.8127725
+lng: -1.3884498
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.garforthgolfclub.co.uk/"

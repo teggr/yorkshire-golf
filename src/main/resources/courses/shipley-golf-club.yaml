@@ -1,4 +1,7 @@
 name: "Shipley Golf Club"
+address: "Beckfoot Lane, Bingley, West Yorkshire, BD16 1LX"
+lat: 53.8419719
+lng: -1.8410486
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.shipleygolf.co.uk/"

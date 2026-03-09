@@ -1,4 +1,7 @@
 name: "Beauchief Golf Club"
+address: "Abbey Lane, Beauchief, Sheffield, S8 0DB"
+lat: 53.3356096
+lng: -1.5074908
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.beauchiefgolfclub.co.uk/"

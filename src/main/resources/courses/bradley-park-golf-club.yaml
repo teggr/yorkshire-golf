@@ -1,4 +1,7 @@
 name: "Bradley Park Golf Club"
+address: "Bradley Park Golf Club, Bradley Road, Huddersfield, United Kingdom, HD2 1PZ"
+lat: 53.6809946
+lng: -1.7610964
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.bradleyparkgc.co.uk/"

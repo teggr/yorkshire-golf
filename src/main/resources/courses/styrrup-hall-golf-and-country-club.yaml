@@ -1,4 +1,7 @@
 name: "Styrrup Hall Golf and Country Club"
+address: "Main Street, Styrrup, Doncaster DN11 8NB"
+lat: 53.4077127
+lng: -1.0901367
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://styrruphall.co.uk/"

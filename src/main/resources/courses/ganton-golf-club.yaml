@@ -1,4 +1,7 @@
 name: "Ganton Golf Club"
+address: "YO12 4PA"
+lat: 54.1861552
+lng: -0.4952782
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.gantongolfclub.com/"

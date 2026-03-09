@@ -1,4 +1,7 @@
 name: "Kirkbymoorside Golf Club"
+address: "Kirkbymoorside Golf Course Manor Vale, Kirkbymoorside, North Yorkshire, YO62 6EG"
+lat: 54.2823549
+lng: -0.9438785
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.kirkbymoorsidegolf.co.uk/"

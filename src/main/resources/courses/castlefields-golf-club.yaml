@@ -1,4 +1,7 @@
 name: "Castlefields Golf Club"
+address: "Castlefields Golf Club Rastrick Common, Brighouse, West Yorkshire, HD6 3HL"
+lat: 53.6921985
+lng: -1.788801
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.castlefieldsgolfclub.co.uk/"

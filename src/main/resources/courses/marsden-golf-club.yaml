@@ -1,4 +1,7 @@
 name: "Marsden Golf Club"
+address: "Marsden Golf Club Mount Road Hemplow Huddersfield HD7 6NN"
+lat: 53.5904623
+lng: -1.9375071
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.marsdengolfclub.co.uk/"

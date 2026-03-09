@@ -1,4 +1,7 @@
 name: "Halifax West End Golf Club"
+address: "Halifax West End Golf Club Ltd The Racecourse, Paddock Lane, Halifax, England, HX2 0NT"
+lat: 53.7259868
+lng: -1.9033839
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.halifaxwestend.golf/"

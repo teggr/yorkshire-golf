@@ -1,4 +1,7 @@
 name: "Lightcliffe Golf Club"
+address: "LIGHTCLIFFE GOLF CLUB Knowle Top Road, Lightcliffe, Halifax, HX3 8SW"
+lat: 53.7289243
+lng: -1.7958528
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.lightcliffegolfclub.co.uk/"

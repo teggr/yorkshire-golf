@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
  * and populates the 'address' field in each course YAML file.
  *
  * Run from repo root with: jbang scripts/FetchAddresses.java
+ * Validation run (no writes): jbang scripts/FetchAddresses.java --dry-run --limit 5
+ * Cleanup existing noisy addresses: jbang scripts/FetchAddresses.java --cleanup-existing
+ * Apply to all eligible courses: jbang scripts/FetchAddresses.java
  *
  * Only processes courses that:
  * - Are not marked as closed
@@ -44,6 +47,7 @@ public class FetchAddresses {
 
     // Maximum characters of address context to extract before a postcode
     private static final int MAX_ADDRESS_CONTEXT_LENGTH = 100;
+    private static final int TRAILING_ADDRESS_WINDOW = 90;
 
     // Common contact/location page path fragments to try in addition to the homepage
     private static final List<String> CONTACT_PATHS = List.of(
@@ -51,7 +55,11 @@ public class FetchAddresses {
         "/visit-us", "/getting-here", "/directions"
     );
 
+    record Config(boolean dryRun, int limit, boolean cleanupExisting) {}
+
     public static void main(String[] args) throws IOException {
+        Config config = parseArgs(args);
+
         Path coursesDir = Paths.get(COURSES_PATH);
         if (!Files.exists(coursesDir)) {
             System.err.println("ERROR: Courses directory not found: " + coursesDir.toAbsolutePath());
@@ -63,12 +71,24 @@ public class FetchAddresses {
             .sorted()
             .collect(Collectors.toList());
 
+        if (config.cleanupExisting()) {
+            runAddressCleanup(courseFiles, config);
+            return;
+        }
+
         System.out.println("Found " + courseFiles.size() + " course files");
+        if (config.dryRun()) {
+            System.out.println("Mode: DRY RUN (no files will be changed)");
+        }
+        if (config.limit() > 0) {
+            System.out.println("Limit: " + config.limit() + " eligible courses");
+        }
 
         int fileIndex = 0;
         int updated = 0;
         int skipped = 0;
         int failed = 0;
+        int processedEligible = 0;
 
         for (Path file : courseFiles) {
             fileIndex++;
@@ -93,6 +113,12 @@ public class FetchAddresses {
                 continue;
             }
 
+            if (config.limit() > 0 && processedEligible >= config.limit()) {
+                break;
+            }
+
+            processedEligible++;
+
             System.out.printf("[%d/%d] %s%n", fileIndex, courseFiles.size(), info.name);
             System.out.println("  Website: " + info.website);
 
@@ -100,8 +126,10 @@ public class FetchAddresses {
 
             if (foundAddress != null) {
                 System.out.println("  Found address: " + foundAddress);
-                String updatedYaml = updateAddressInYaml(yaml, foundAddress);
-                Files.writeString(file, updatedYaml);
+                if (!config.dryRun()) {
+                    String updatedYaml = updateAddressInYaml(yaml, foundAddress);
+                    Files.writeString(file, updatedYaml);
+                }
                 updated++;
             } else {
                 System.out.println("  No address found");
@@ -117,9 +145,183 @@ public class FetchAddresses {
         }
 
         System.out.println("\n=== Summary ===");
+        System.out.println("Eligible processed: " + processedEligible);
         System.out.println("Updated: " + updated);
         System.out.println("Skipped (closed/no website/already has address): " + skipped);
         System.out.println("No address found: " + failed);
+    }
+
+    private static Config parseArgs(String[] args) {
+        boolean dryRun = false;
+        int limit = 0;
+        boolean cleanupExisting = false;
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+
+            if ("--dry-run".equals(arg)) {
+                dryRun = true;
+                continue;
+            }
+
+            if ("--cleanup-existing".equals(arg)) {
+                cleanupExisting = true;
+                continue;
+            }
+
+            if ("--limit".equals(arg)) {
+                if (i + 1 >= args.length) {
+                    printUsageAndExit("Missing value for --limit");
+                }
+                String limitValue = args[++i];
+                try {
+                    limit = Integer.parseInt(limitValue);
+                } catch (NumberFormatException ex) {
+                    printUsageAndExit("Invalid integer for --limit: " + limitValue);
+                }
+                if (limit < 1) {
+                    printUsageAndExit("--limit must be >= 1");
+                }
+                continue;
+            }
+
+            if ("--help".equals(arg) || "-h".equals(arg)) {
+                printUsageAndExit(null);
+            }
+
+            printUsageAndExit("Unknown argument: " + arg);
+        }
+
+        return new Config(dryRun, limit, cleanupExisting);
+    }
+
+    private static void printUsageAndExit(String error) {
+        if (error != null && !error.isBlank()) {
+            System.err.println("ERROR: " + error);
+        }
+        System.out.println("Usage: jbang scripts/FetchAddresses.java [--dry-run] [--limit <n>] [--cleanup-existing]");
+        System.out.println("  --dry-run   Validate extraction without writing YAML changes");
+        System.out.println("  --limit n   Process up to n eligible courses");
+        System.out.println("  --cleanup-existing   Clean noisy text in existing address fields");
+        System.out.println("  --help      Show this help message");
+        System.exit(error == null ? 0 : 1);
+    }
+
+    private static void runAddressCleanup(List<Path> courseFiles, Config config) throws IOException {
+        System.out.println("Found " + courseFiles.size() + " course files");
+        System.out.println("Mode: CLEANUP EXISTING ADDRESSES" + (config.dryRun() ? " (dry-run)" : ""));
+        if (config.limit() > 0) {
+            System.out.println("Limit: " + config.limit() + " address fields");
+        }
+
+        int processed = 0;
+        int updated = 0;
+        int unchanged = 0;
+
+        for (Path file : courseFiles) {
+            String yaml = Files.readString(file);
+            CourseInfo info = parseCourse(yaml);
+
+            if (info.address == null || info.address.isBlank()) {
+                continue;
+            }
+
+            if (config.limit() > 0 && processed >= config.limit()) {
+                break;
+            }
+            processed++;
+
+            String cleaned = cleanupExistingAddress(info.address);
+            if (cleaned.equals(info.address)) {
+                unchanged++;
+                continue;
+            }
+
+            System.out.println("Cleaned: " + info.name);
+            System.out.println("  Old: " + info.address);
+            System.out.println("  New: " + cleaned);
+
+            if (!config.dryRun()) {
+                String updatedYaml = updateAddressInYaml(yaml, cleaned);
+                Files.writeString(file, updatedYaml);
+            }
+            updated++;
+        }
+
+        System.out.println("\n=== Cleanup Summary ===");
+        System.out.println("Address fields processed: " + processed);
+        System.out.println("Updated: " + updated);
+        System.out.println("Unchanged: " + unchanged);
+    }
+
+    private static String cleanupExistingAddress(String address) {
+        if (address == null || address.isBlank()) {
+            return address;
+        }
+
+        if (!containsNoiseMarker(address)) {
+            return normalizeAddressText(address);
+        }
+
+        String cleaned = address
+            .replaceAll("(?i)\\bnbsp\\b", " ")
+            .replaceAll("(?i)\\bprotected\\b", " ")
+            .replaceAll("(?i)\\bselect\\s+page\\b", " ")
+            .replaceAll("(?i)\\bcurrent\\s+slide\\b", " ")
+            .replaceAll("(?i)\\bslide\\s+\\d+\\b", " ")
+            .replaceAll("(?i)\\blogin\\s+home\\b", " ")
+            .replaceAll("(?i)\\bclick\\s+here\\s+for\\s+visitor\\s+booking\\b", " ")
+            .replaceAll("(?i)\\bclick\\s+here\\s+for\\s+more\\s+information\\b", " ")
+            .replaceAll("(?i)\\bclick\\s+for\\s+more\\b", " ")
+            .replaceAll("(?i)\\bnavigation\\s+find\\s+a\\s+centre\\s+home\\b", " ")
+            .replaceAll("(?i)\\bopen\\s+today\\s+\\d+am\\s*-\\s*\\d+pm\\b", " ")
+            .replaceAll("(?i)\\bfind\\s+out\\s+more\\b", " ")
+            .replaceAll("(?i)\\bjoin\\s+become\\s+a\\s+member\\b", " ")
+            .replaceAll("(?i)\\bfollow\\s+us\\s+on\\s+facebook\\b", " ")
+            .replaceAll("(?i)\\bvisitors\\s+pro\\s+coaching\\s+academy\\s+policies\\b", " ")
+            .replaceAll("(?i)\\bread\\s+more\\s+footer\\s+visit\\s+us\\b", " ")
+            .replaceAll("(?i)\\bact\\s+us\\b", " ")
+            .replaceAll("(?i)\\baddress\\b", " ")
+            .replaceAll("(?i)\\bpostcode\\b", " ");
+
+        Matcher matcher = POSTCODE_PATTERN.matcher(cleaned);
+        if (matcher.find()) {
+            int start = Math.max(0, matcher.start() - MAX_ADDRESS_CONTEXT_LENGTH);
+            cleaned = cleaned.substring(start, matcher.end());
+        }
+
+        cleaned = cleaned
+            .replaceAll("(?i)^(?:\\d+\\s+)+", "")
+            .replaceAll("(?i)^(?:the\\s+)?(?:world\\s+handicap\\s+system\\s+for\\s+details\\s+)", "")
+            .replaceAll("(?i)^(?:fri\\s+\\d+\\s+)", "")
+            .replaceAll("(?i)^(?:t\\s+head\\s+chef\\s+)", "")
+            .replaceAll("(?i)^(?:con)?tact\\s+us\\s+", "")
+            .replaceAll("(?i)^now\\s+", "")
+            .replaceAll("(?i)^close\\s+", "")
+            .replaceAll("(?i)^confirm\\s+", "")
+            .replaceAll("(?i)^info\\s+", "")
+            .replaceAll("(?i)^directions\\s+", "")
+            .replaceAll("(?i)^entry\\s+short\\s+game\\s+area\\s+", "")
+            .replaceAll("(?i)^to\\s+the\\s+course\\s+info\\s+", "")
+            .replaceAll("(?i)^details\\s+and\\s+we\\s+will\\s+aim\\s+to\\s+respond\\s+as\\s+soon\\s+as\\s+possible\\s+", "")
+            .replaceAll("(?i)^book\\s+simulator\\s+where\\s+we\\s+are\\s+", "")
+            .replaceAll("(?i)^refreshments\\s+available\\s+in\\s+the\\s+clubhouse\\s+book\\s+now\\s+where\\s+we\\s+are\\s+", "")
+            .replaceAll("(?i)^(?:tyn\\s+gee\\s+seniors\\s+geoff\\s+carswell\\s+)", "");
+
+        return normalizeAddressText(cleaned);
+    }
+
+    private static boolean containsNoiseMarker(String address) {
+        return address.matches("(?is).*(login|click|select\\s+page|slide|nbsp|protected|navigation\\s+find\\s+a\\s+centre|open\\s+today|postcode|act\\s+us|tact\\s+us|book\\s+simulator\\s+where\\s+we\\s+are|find\\s+out\\s+more|join\\s+become\\s+a\\s+member|follow\\s+us\\s+on\\s+facebook|visitors\\s+pro\\s+coaching\\s+academy\\s+policies|read\\s+more\\s+footer\\s+visit\\s+us|^\\s*(now|close|confirm|info|directions|entry\\s+short\\s+game\\s+area|to\\s+the\\s+course\\s+info)\\b|details\\s+and\\s+we\\s+will\\s+aim\\s+to\\s+respond\\s+as\\s+soon\\s+as\\s+possible).*" );
+    }
+
+    private static String normalizeAddressText(String value) {
+        return value
+            .replaceAll("[^A-Za-z0-9,\\-\\s]", " ")
+            .replaceAll("\\s+,", ",")
+            .replaceAll(",\\s+", ", ")
+            .replaceAll("\\s+", " ")
+            .trim();
     }
 
     /**
@@ -186,29 +388,52 @@ public class FetchAddresses {
      * Extracts a clean address string from the text immediately before a postcode.
      */
     private static String extractAddressContext(String before, String postcode) {
-        // Split by common separators and take the most relevant trailing portion
-        String[] parts = before.split("[|•·\\n\\r]");
-        String lastPart = parts[parts.length - 1].trim();
+        String cleaned = before
+            .replaceAll("&[A-Za-z#0-9]+;", " ")
+            .replaceAll("(?i)\\b[\\w.%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b", " ")
+            .replaceAll("(?i)\\b(click\\s*to\\s*call|click\\s*to\\s*email|email\\s*us|get\\s*in\\s*touch|find\\s*us|contact\\s*us|contact|email|tel|phone)\\b[:\\s]*", " ")
+            .replaceAll("\\b\\+?\\d[\\d\\s()\\-]{6,}\\b", " ")
+            .replaceAll("©", " ")
+            .replaceAll("(?i)\\bcopyright\\b", " ")
+            .replaceAll("\\s+", " ")
+            .trim();
 
-        // Remove leading/trailing non-address chars
-        lastPart = lastPart.replaceAll("^[^A-Za-z0-9]+", "").trim();
-
-        if (lastPart.isEmpty()) {
-            return postcode;
-        }
-
-        // Limit to a reasonable address length
-        if (lastPart.length() > MAX_ADDRESS_CONTEXT_LENGTH) {
-            // Take only the last MAX_ADDRESS_CONTEXT_LENGTH characters
-            lastPart = lastPart.substring(lastPart.length() - MAX_ADDRESS_CONTEXT_LENGTH).trim();
-            // Try to start at a sensible word boundary
-            int comma = lastPart.indexOf(',');
-            if (comma > 0 && comma < 30) {
-                lastPart = lastPart.substring(comma + 1).trim();
+        if (cleaned.length() > TRAILING_ADDRESS_WINDOW) {
+            cleaned = cleaned.substring(cleaned.length() - TRAILING_ADDRESS_WINDOW).trim();
+            int firstSpace = cleaned.indexOf(' ');
+            if (firstSpace > 0 && firstSpace < 15) {
+                cleaned = cleaned.substring(firstSpace + 1).trim();
             }
         }
 
-        return lastPart + " " + postcode;
+        if (cleaned.matches("(?i)^.*\\b(ltd|limited)\\b,\\s*.*$")) {
+            int commaIndex = cleaned.indexOf(',');
+            if (commaIndex > 0 && commaIndex < 35 && commaIndex < cleaned.length() - 1) {
+                cleaned = cleaned.substring(commaIndex + 1).trim();
+            }
+        }
+
+        cleaned = cleaned
+            .replaceAll("^[^A-Za-z0-9]+", "")
+            .replaceAll("[^A-Za-z0-9,\\-\\s]", " ")
+            .replaceAll("\\s+,", ",")
+            .replaceAll(",\\s+", ", ")
+            .replaceAll("\\s+", " ")
+            .trim();
+
+        if (cleaned.isEmpty()) {
+            return postcode;
+        }
+
+        if (cleaned.length() > MAX_ADDRESS_CONTEXT_LENGTH) {
+            cleaned = cleaned.substring(cleaned.length() - MAX_ADDRESS_CONTEXT_LENGTH).trim();
+            int comma = cleaned.indexOf(',');
+            if (comma > 0 && comma < 30) {
+                cleaned = cleaned.substring(comma + 1).trim();
+            }
+        }
+
+        return cleaned + " " + postcode;
     }
 
     /**

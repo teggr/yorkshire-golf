@@ -12,6 +12,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.Desktop;
@@ -23,6 +25,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,15 +34,31 @@ import java.util.stream.Collectors;
 
 public class CourseAudit {
 
+    private static final Logger log = LoggerFactory.getLogger(CourseAudit.class);
+
     private static final int PORT = 7070;
     private static final String COURSES_PATH = "src/main/resources/courses";
     private static final String IMAGES_PATH = "src/main/resources/static/images/courses";
     private static final String PLACEHOLDER_IMAGE = "/images/courses/placeholder-course.jpg";
+    private static final Duration GEOCODE_CONNECT_TIMEOUT = Duration.ofSeconds(10);
+    private static final Duration GEOCODE_REQUEST_TIMEOUT = Duration.ofSeconds(20);
+    private static final String SHOW_CLOSED_OPTION = "--show-closed";
     
     private static final FileNavigator fileNavigator = new FileNavigator();
     private static final Validator validator = new Validator();
 
     public static void main(String[] args) throws IOException {
+        boolean showClosed = false;
+        for (String arg : args) {
+            if (SHOW_CLOSED_OPTION.equals(arg)) {
+                showClosed = true;
+            } else {
+                System.err.println("Unknown option: " + arg);
+                System.err.println("Usage: jbang scripts/CourseAudit.java [--show-closed]");
+                System.exit(1);
+            }
+        }
+
         // Verify directories exist
         Path coursesDir = Paths.get(COURSES_PATH);
         Path imagesDir = Paths.get(IMAGES_PATH);
@@ -54,8 +73,12 @@ public class CourseAudit {
         }
         
         // Load course files
-        fileNavigator.loadCourseFiles(coursesDir);
-        System.out.println("Loaded " + fileNavigator.getTotalFiles() + " course YAML files");
+        fileNavigator.loadCourseFiles(coursesDir, showClosed);
+        if (showClosed) {
+            System.out.println("Loaded " + fileNavigator.getTotalFiles() + " course YAML files (including closed)");
+        } else {
+            System.out.println("Loaded " + fileNavigator.getTotalFiles() + " open course YAML files (" + fileNavigator.getClosedFilteredOutCount() + " closed hidden; use --show-closed to include)");
+        }
         
         // Create Javalin app
         Javalin app = Javalin.create(config -> {
@@ -75,7 +98,9 @@ public class CourseAudit {
         app.post("/download-image", CourseAudit::handleDownloadImage);
         app.post("/jump-to-letter", CourseAudit::handleJumpToLetter);
         app.post("/search-course", CourseAudit::handleSearchCourse);
+        app.post("/geocode-current", CourseAudit::handleGeocodeCurrent);
         app.post("/geocode-all", CourseAudit::handleGeocodeAll);
+        app.post("/compute-nearby-current", CourseAudit::handleComputeNearbyCurrent);
         app.post("/compute-nearby", CourseAudit::handleComputeNearby);
         app.get("/courses-list", CourseAudit::handleCoursesList);
         
@@ -342,9 +367,69 @@ public class CourseAudit {
         }
     }
 
+    private static void handleGeocodeCurrent(Context ctx) {
+        HttpClient httpClient = HttpClient.newBuilder()
+                .connectTimeout(GEOCODE_CONNECT_TIMEOUT)
+                .build();
+        ObjectMapper jsonMapper = new ObjectMapper();
+
+        try {
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+            String fileName = currentFile.getFileName().toString();
+            CourseData course = parseCourse(yamlContent);
+
+            log.info("[geocode-current] start file={} course='{}' address='{}' existingLatLng={}",
+                    fileName,
+                    course.name(),
+                    truncateForLog(course.address(), 160),
+                    course.lat() != null && course.lng() != null);
+
+            String message;
+            Double existingLat = course.lat();
+            Double existingLng = course.lng();
+            if (course.address() == null || course.address().isBlank()) {
+                message = "⚠️ Cannot geocode: this course has no address.";
+                log.warn("[geocode-current] skipped file={} reason=no_address", fileName);
+            } else {
+                Optional<LatLng> maybeLatLng = geocodeWithFallback(httpClient, jsonMapper, fileName, course.name(), course.address(), "[geocode-current]");
+
+                if (maybeLatLng.isEmpty()) {
+                    message = "⚠️ No geocoding result found for this course address.";
+                    log.warn("[geocode-current] no-results file={} address='{}'", fileName, truncateForLog(course.address(), 160));
+                } else {
+                    LatLng latLng = maybeLatLng.get();
+                    double lat = latLng.lat();
+                    double lng = latLng.lng();
+                    log.info("[geocode-current] parsed file={} lat={} lng={}", fileName, lat, lng);
+                    String updatedYaml = updateLatLngInYaml(yamlContent, lat, lng);
+                    Files.writeString(currentFile, updatedYaml);
+                    log.info("[geocode-current] wrote file={} lat={} lng={}", fileName, lat, lng);
+                    yamlContent = updatedYaml;
+                    course = parseCourse(yamlContent);
+                    if (existingLat != null && existingLng != null) {
+                        message = "✅ Geocoded current course and replaced coordinates: " + existingLat + ", " + existingLng + " → " + lat + ", " + lng;
+                    } else {
+                        message = "✅ Geocoded current course: " + lat + ", " + lng;
+                    }
+                }
+            }
+
+            ValidationResult websiteValidation = validator.validateWebsite(course.website);
+            ValidationResult imageValidation = validator.validateImage(course.mainImageUrl);
+            ValidationResult stayImageValidation = validator.validateImage(course.stayImageUrl);
+            ctx.html(renderHTML(fileName, yamlContent, course, websiteValidation, imageValidation, stayImageValidation, message));
+        } catch (Exception e) {
+            log.error("[geocode-current] error", e);
+            ctx.html(renderError("Geocoding error", e.getMessage()));
+        }
+    }
+
     private static void handleGeocodeAll(Context ctx) {
         Path coursesDir = Paths.get(COURSES_PATH);
-        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpClient httpClient = HttpClient.newBuilder()
+                .connectTimeout(GEOCODE_CONNECT_TIMEOUT)
+                .build();
         ObjectMapper jsonMapper = new ObjectMapper();
 
         int skipped = 0;
@@ -393,34 +478,35 @@ public class CourseAudit {
 
                 // Call Nominatim
                 try {
-                    String encodedAddress = java.net.URLEncoder.encode(course.address(), java.nio.charset.StandardCharsets.UTF_8);
-                    String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedAddress + "&format=json&limit=1";
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create(nominatimUrl))
-                            .header("User-Agent", "YorkshireGolfCourseAudit/1.0")
-                            .GET()
-                            .build();
-                    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                    String body = response.body();
+                    Optional<LatLng> maybeLatLng = geocodeWithFallback(
+                        httpClient,
+                        jsonMapper,
+                        courseFile.getFileName().toString(),
+                        course.name(),
+                        course.address(),
+                        "[geocode-all]");
 
-                    JsonNode results = jsonMapper.readTree(body);
-                    if (!results.isArray() || results.isEmpty()) {
+                    if (maybeLatLng.isEmpty()) {
                         warnings.add("No geocoding result for '" + course.name() + "' (address: " + course.address() + ")");
+                        log.warn("[geocode-all] no-results file={} course='{}'", courseFile.getFileName(), course.name());
                         failed++;
                         continue;
                     }
 
-                    JsonNode first = results.get(0);
-                    double lat = first.get("lat").asDouble();
-                    double lng = first.get("lon").asDouble();
+                    LatLng latLng = maybeLatLng.get();
+                    double lat = latLng.lat();
+                    double lng = latLng.lng();
+                    log.info("[geocode-all] parsed file={} course='{}' lat={} lng={}", courseFile.getFileName(), course.name(), lat, lng);
 
                     // Write lat/lng back to YAML file
                     String updatedYaml = updateLatLngInYaml(yamlContent, lat, lng);
                     Files.writeString(courseFile, updatedYaml);
+                    log.info("[geocode-all] wrote file={} lat={} lng={}", courseFile.getFileName(), lat, lng);
                     geocoded++;
 
                 } catch (Exception e) {
                     warnings.add("Geocoding failed for '" + course.name() + "': " + e.getMessage());
+                    log.error("[geocode-all] error file={} course='{}'", courseFile.getFileName(), course.name(), e);
                     failed++;
                 }
             }
@@ -457,6 +543,132 @@ public class CourseAudit {
         } catch (Exception e) {
             ctx.html(renderError("Geocoding complete but page render failed", e.getMessage()));
         }
+    }
+
+    private record LatLng(double lat, double lng) {}
+
+    private static Optional<LatLng> geocodeWithFallback(
+            HttpClient httpClient,
+            ObjectMapper jsonMapper,
+            String fileName,
+            String courseName,
+            String address,
+            String logPrefix) throws IOException, InterruptedException {
+
+        String normalizedAddress = address == null ? "" : address.trim();
+        String cleanedAddress = normalizedAddress
+                .replaceAll("(?i)^hire\\s+", "")
+                .replaceAll("\\s+", " ")
+                .trim();
+        String normalizedCourseName = courseName == null ? "" : courseName
+                .replaceAll("(?i)\\s+previously\\b.*$", "")
+                .replaceAll("\\s+", " ")
+                .trim();
+
+        LinkedHashSet<String> queryVariants = new LinkedHashSet<>();
+        if (!normalizedAddress.isBlank()) {
+            queryVariants.add(normalizedAddress);
+            queryVariants.add(normalizedAddress + ", United Kingdom");
+        }
+        if (!cleanedAddress.isBlank()) {
+            queryVariants.add(cleanedAddress);
+            queryVariants.add(cleanedAddress + ", United Kingdom");
+        }
+        if (!normalizedCourseName.isBlank() && !cleanedAddress.isBlank()) {
+            queryVariants.add(normalizedCourseName + ", " + cleanedAddress + ", United Kingdom");
+        }
+
+        Optional<String> postcode = extractUkPostcode(normalizedAddress);
+        postcode.ifPresent(pc -> {
+            queryVariants.add(pc);
+            queryVariants.add(pc + ", United Kingdom");
+            if (!normalizedCourseName.isBlank()) {
+                queryVariants.add(normalizedCourseName + ", " + pc + ", United Kingdom");
+            }
+        });
+
+        int attempt = 0;
+        for (String query : queryVariants) {
+            for (boolean useCountryCodeFilter : new boolean[]{true, false}) {
+                attempt++;
+                String encodedQuery = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
+                String nominatimUrl = "https://nominatim.openstreetmap.org/search?q=" + encodedQuery + "&format=json&limit=1";
+                if (useCountryCodeFilter) {
+                    nominatimUrl += "&countrycodes=gb";
+                }
+
+                log.info("{} attempt={} file={} countryFilter={} query='{}' url={}",
+                        logPrefix,
+                        attempt,
+                        fileName,
+                        useCountryCodeFilter,
+                        truncateForLog(query, 180),
+                        nominatimUrl);
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(nominatimUrl))
+                        .timeout(GEOCODE_REQUEST_TIMEOUT)
+                        .header("User-Agent", "YorkshireGolfCourseAudit/1.0")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                String body = response.body();
+
+                log.info("{} attempt={} file={} status={} bodyPreview={}",
+                        logPrefix,
+                        attempt,
+                        fileName,
+                        response.statusCode(),
+                        truncateForLog(body, 500));
+
+                if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                    continue;
+                }
+
+                JsonNode results = jsonMapper.readTree(body);
+                if (!results.isArray() || results.isEmpty()) {
+                    continue;
+                }
+
+                JsonNode first = results.get(0);
+                JsonNode latNode = first.get("lat");
+                JsonNode lonNode = first.get("lon");
+                if (latNode == null || lonNode == null) {
+                    continue;
+                }
+
+                return Optional.of(new LatLng(latNode.asDouble(), lonNode.asDouble()));
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private static Optional<String> extractUkPostcode(String text) {
+        if (text == null || text.isBlank()) {
+            return Optional.empty();
+        }
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(?i)\\b([A-Z]{1,2}\\d[A-Z\\d]?\\s*\\d[A-Z]{2})\\b");
+        java.util.regex.Matcher matcher = pattern.matcher(text);
+        if (!matcher.find()) {
+            return Optional.empty();
+        }
+        String postcode = matcher.group(1).toUpperCase().replaceAll("\\s+", "");
+        if (postcode.length() > 3) {
+            postcode = postcode.substring(0, postcode.length() - 3) + " " + postcode.substring(postcode.length() - 3);
+        }
+        return Optional.of(postcode);
+    }
+
+    private static String truncateForLog(String value, int maxLength) {
+        if (value == null) {
+            return "null";
+        }
+        if (value.length() <= maxLength) {
+            return value;
+        }
+        return value.substring(0, maxLength) + "...";
     }
     
     private static void handleComputeNearby(Context ctx) {
@@ -538,6 +750,72 @@ public class CourseAudit {
             ValidationResult stayImageValidation = validator.validateImage(course.stayImageUrl);
             ctx.html(renderHTML(fileName, yamlContent, course, websiteValidation, imageValidation, stayImageValidation, summary.toString()));
 
+        } catch (Exception e) {
+            ctx.html(renderError("Nearby computation error", e.getMessage()));
+        }
+    }
+
+    private static void handleComputeNearbyCurrent(Context ctx) {
+        Path coursesDir = Paths.get(COURSES_PATH);
+
+        record GeoEntry(Path file, String name, double lat, double lng) {}
+        List<GeoEntry> geoEntries = new ArrayList<>();
+
+        try {
+            Path currentFile = fileNavigator.getCurrentFile();
+            String currentYaml = Files.readString(currentFile);
+            String fileName = currentFile.getFileName().toString();
+            CourseData currentCourse = parseCourse(currentYaml);
+
+            if (currentCourse.lat() == null || currentCourse.lng() == null) {
+                ValidationResult websiteValidation = validator.validateWebsite(currentCourse.website);
+                ValidationResult imageValidation = validator.validateImage(currentCourse.mainImageUrl);
+                ValidationResult stayImageValidation = validator.validateImage(currentCourse.stayImageUrl);
+                ctx.html(renderHTML(fileName, currentYaml, currentCourse, websiteValidation, imageValidation, stayImageValidation,
+                        "⚠️ Cannot compute nearby: current course has no lat/lng."));
+                return;
+            }
+
+            List<Path> courseFiles = Files.list(coursesDir)
+                    .filter(p -> p.toString().endsWith(".yaml"))
+                    .sorted()
+                    .collect(Collectors.toList());
+
+            for (Path file : courseFiles) {
+                String yamlContent = Files.readString(file);
+                CourseData course;
+                try {
+                    course = parseCourse(yamlContent);
+                } catch (Exception ignored) {
+                    continue;
+                }
+                if (course.lat() == null || course.lng() == null) {
+                    continue;
+                }
+                geoEntries.add(new GeoEntry(file, course.name(), course.lat(), course.lng()));
+            }
+
+            List<String> nearest = geoEntries.stream()
+                    .filter(other -> !other.file().equals(currentFile))
+                    .sorted(java.util.Comparator.comparingDouble(
+                            other -> haversineKm(currentCourse.lat(), currentCourse.lng(), other.lat(), other.lng())))
+                    .limit(3)
+                    .map(GeoEntry::name)
+                    .collect(Collectors.toList());
+
+            String nearby1 = !nearest.isEmpty() ? nearest.get(0) : null;
+            String nearby2 = nearest.size() >= 2 ? nearest.get(1) : null;
+            String nearby3 = nearest.size() >= 3 ? nearest.get(2) : null;
+
+            String updated = updateNearbyInYaml(currentYaml, nearby1, nearby2, nearby3);
+            Files.writeString(currentFile, updated);
+
+            CourseData updatedCourse = parseCourse(updated);
+            ValidationResult websiteValidation = validator.validateWebsite(updatedCourse.website);
+            ValidationResult imageValidation = validator.validateImage(updatedCourse.mainImageUrl);
+            ValidationResult stayImageValidation = validator.validateImage(updatedCourse.stayImageUrl);
+            ctx.html(renderHTML(fileName, updated, updatedCourse, websiteValidation, imageValidation, stayImageValidation,
+                    "✅ Nearby courses updated for current course only."));
         } catch (Exception e) {
             ctx.html(renderError("Nearby computation error", e.getMessage()));
         }
@@ -662,6 +940,9 @@ public class CourseAudit {
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .container.closed-course {
+            border: 4px solid #ef5350;
         }
         .header {
             border-bottom: 2px solid #e0e0e0;
@@ -1000,7 +1281,7 @@ public class CourseAudit {
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container%s">
         <div class="header">
             <h1>Course Audit: %s%s</h1>
             <div class="progress">File %d of %d</div>
@@ -1083,7 +1364,7 @@ public class CourseAudit {
                                 <label style="display: flex; align-items: center; cursor: pointer;">
                                     <input type="hidden" name="closed" value="false">
                                     <input type="checkbox" name="closed" value="true" %s 
-                                           onchange="this.form.action='/update-closed'; this.form.submit();" 
+                                         onchange="this.form.noValidate=true; this.form.action='/update-closed'; this.form.submit();" 
                                            style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;">
                                     <span style="font-size: 14px;"><strong>Mark as CLOSED</strong></span>
                                 </label>
@@ -1092,7 +1373,7 @@ public class CourseAudit {
                                 <label style="display: flex; align-items: center; cursor: pointer;">
                                     <input type="hidden" name="playAndStay" value="false">
                                     <input type="checkbox" name="playAndStay" value="true" %s
-                                           onchange="this.form.action='/update-play-and-stay'; this.form.submit();"
+                                         onchange="this.form.noValidate=true; this.form.action='/update-play-and-stay'; this.form.submit();"
                                            style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;">
                                     <span style="font-size: 14px;"><strong>Play & Stay</strong></span>
                                 </label>
@@ -1121,12 +1402,12 @@ public class CourseAudit {
             
             <div class="button-row">
                 <div class="button-group">
-                    <button type="submit" formaction="/previous" class="btn-secondary" %s>← Previous</button>
+                    <button type="submit" formaction="/previous" formnovalidate class="btn-secondary" %s>← Previous</button>
                 </div>
                 <div class="button-group">
-                    <button type="submit" formaction="/geocode-all" class="btn-primary" onclick="this.textContent='⏳ Geocoding…'; this.disabled=true;">🌍 Generate Lat/Lng</button>
-                    <button type="submit" formaction="/compute-nearby" class="btn-primary" onclick="this.textContent='⏳ Computing…'; this.disabled=true;" title="Run after Generate Lat/Lng to calculate the 3 nearest courses for each course">📍 Calculate Nearby Courses</button>
-                    <button type="submit" formaction="/next" class="btn-success" %s>Next →</button>
+                    <button type="submit" formaction="/geocode-current" formnovalidate class="btn-primary" onclick="this.textContent='⏳ Geocoding…'; const btn=this; setTimeout(() => { btn.disabled = true; }, 0);">🌍 Geocode Current Course (Overwrite Lat/Lng)</button>
+                    <button type="submit" formaction="/compute-nearby-current" formnovalidate class="btn-primary" onclick="this.textContent='⏳ Computing…'; const btn=this; setTimeout(() => { btn.disabled = true; }, 0);" title="Run after Geocode Current Course to calculate the 3 nearest courses for this course">📍 Calculate Nearby (Current Course)</button>
+                    <button type="submit" formaction="/next" formnovalidate class="btn-success" %s>Next →</button>
                 </div>
             </div>
         </form>
@@ -1135,6 +1416,7 @@ public class CourseAudit {
 </html>
         """.formatted(
             fileName,
+            course.closed ? " closed-course" : "",
             fileName,  // Add fileName again for h1
             course.closed ? "<span class='closed-badge'>⚠️ CLOSED</span>" : "",
             current, 
@@ -1718,16 +2000,46 @@ public class CourseAudit {
     static class FileNavigator {
         private List<Path> courseFiles = new ArrayList<>();
         private int currentIndex = 0;
+        private int closedFilteredOutCount = 0;
         
-        public void loadCourseFiles(Path coursesDir) throws IOException {
-            courseFiles = Files.list(coursesDir)
+        public void loadCourseFiles(Path coursesDir, boolean showClosed) throws IOException {
+            List<Path> allCourseFiles = Files.list(coursesDir)
                 .filter(p -> p.toString().endsWith(".yaml"))
                 .sorted()
                 .collect(Collectors.toList());
+
+            closedFilteredOutCount = 0;
+            if (showClosed) {
+                courseFiles = allCourseFiles;
+            } else {
+                courseFiles = new ArrayList<>();
+                for (Path courseFile : allCourseFiles) {
+                    try {
+                        String yamlContent = Files.readString(courseFile);
+                        CourseData course = parseCourse(yamlContent);
+                        if (course.closed()) {
+                            closedFilteredOutCount++;
+                            continue;
+                        }
+                    } catch (Exception e) {
+                        log.warn("[load-course-files] keeping file={} due_to=parse_error while filtering closed: {}", courseFile.getFileName(), e.getMessage());
+                    }
+                    courseFiles.add(courseFile);
+                }
+            }
+
+            currentIndex = 0;
             
             if (courseFiles.isEmpty()) {
-                throw new IOException("No YAML files found in " + coursesDir);
+                if (showClosed) {
+                    throw new IOException("No YAML files found in " + coursesDir);
+                }
+                throw new IOException("No open YAML files found in " + coursesDir + " (use --show-closed to include closed courses)");
             }
+        }
+
+        public int getClosedFilteredOutCount() {
+            return closedFilteredOutCount;
         }
         
         public Path getCurrentFile() {

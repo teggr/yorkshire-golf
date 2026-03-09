@@ -1,4 +1,7 @@
 name: "City of Wakefield Golf Club"
+address: "CITY OF WAKEFIELD GOLF CLUB Gaskell Sports Pavilion Horbury Road Wakefield WF2 8LG"
+lat: 53.6677204
+lng: -1.5271667
 website: "https://www.cowgc.co.uk/"
 region:
   name: "WEST_YORKSHIRE"

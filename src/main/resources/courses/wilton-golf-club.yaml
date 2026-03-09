@@ -1,4 +1,7 @@
 name: "Wilton Golf Club"
+address: "WILTON GOLF CLUB Wilton Golf Club, Wilton, Redcar, TS10 4QY"
+lat: 54.5689528
+lng: -1.1046886
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.wiltongolfclub.co.uk/"

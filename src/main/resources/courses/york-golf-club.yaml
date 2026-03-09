@@ -1,4 +1,7 @@
 name: "York Golf Club"
+address: "Lords Moor Lane, Strensall, York, YO32 5XF"
+lat: 54.039153
+lng: -1.0179762
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.yorkgolfclub.co.uk/"

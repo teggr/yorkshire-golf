@@ -1,4 +1,7 @@
 name: "Thornhurst Park Golf Course"
+address: "Holme Ln, Doncaster DN5 0LR"
+lat: 53.5917305
+lng: -1.1451103
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://thornhurstmanor.co.uk/golf/"

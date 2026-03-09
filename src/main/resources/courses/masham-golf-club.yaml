@@ -1,4 +1,7 @@
 name: "Masham Golf Club"
+address: "Masham Golf Club, Burnholme, Swinton Road, Masham, Ripon HG4 4NS"
+lat: 54.2168918
+lng: -1.6704649
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://mashamgolfclub.co.uk/"

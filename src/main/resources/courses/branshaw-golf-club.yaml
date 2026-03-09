@@ -1,4 +1,7 @@
 name: "Branshaw Golf Club"
+address: "Branshaw Moor, Sykes Head, Keighley, BD22 7ES"
+lat: 53.84815
+lng: -1.94342
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.branshawgolfclub.co.uk/"

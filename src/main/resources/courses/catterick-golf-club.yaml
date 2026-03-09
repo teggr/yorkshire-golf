@@ -1,4 +1,7 @@
 name: "Catterick Golf Club"
+address: "Catterick Golf Club, Leyburn Road, Catterick Garrison, United Kingdom, DL9 3QE"
+lat: 54.37215
+lng: -1.73649
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.catterickgolfclub.co.uk/"

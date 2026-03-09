@@ -1,4 +1,7 @@
 name: "City Golf (Kirkstall)"
+address: "City Golf Leeds  Redcoat Lane  Off Kirkstall Road  Leeds, LS4 2AW"
+lat: 53.8053543
+lng: -1.5901169
 website: "https://citygolfleeds.co.uk/"
 region:
   name: "WEST_YORKSHIRE"

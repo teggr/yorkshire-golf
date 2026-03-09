@@ -1,4 +1,7 @@
 name: "Outlane Golf Club"
+address: "Outlane Golf Club Slack Lane, off New Hey Road, Huddersfield HD3 3FQ"
+lat: 53.65393
+lng: -1.874455
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.outlanegolfclub.co.uk/"

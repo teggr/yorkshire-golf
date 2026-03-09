@@ -1,4 +1,7 @@
 name: "Pannal Golf Club"
+address: "Follifoot Rd, Pannal, Harrogate, HG3 1ES"
+lat: 53.9579028
+lng: -1.5199477
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.pannalgc.co.uk/"

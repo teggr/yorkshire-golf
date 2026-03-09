@@ -1,4 +1,7 @@
 name: "Hessle Golf Club"
+address: "Hessle Golf Club, Westfield Road, Raywell, Cottingham, E Yorks HU16 5ZA"
+lat: 53.76602
+lng: -0.48862
 region:
   name: "EAST_YORKSHIRE"
 website: "https://hesslegolfclub.co.uk/"

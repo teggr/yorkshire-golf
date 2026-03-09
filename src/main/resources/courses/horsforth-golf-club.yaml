@@ -1,4 +1,7 @@
 name: "Horsforth Golf Club"
+address: "Horsforth Golf Club LS18 5EX"
+lat: 53.8508707
+lng: -1.6574037
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.horsforthgolfclub.co.uk/"

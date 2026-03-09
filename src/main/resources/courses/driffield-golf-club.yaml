@@ -1,4 +1,7 @@
 name: "Driffield Golf Club"
+address: "DRIFFIELD GOLF CLUB Sunderlandwick, Driffield, YO25 9AD"
+lat: 53.9868386
+lng: -0.45024
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.driffieldgolfclub.co.uk/"

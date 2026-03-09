@@ -1,4 +1,7 @@
 name: "Moor Allerton Golf Club"
+address: "The Club House, Wike, Leeds, West Yorkshire, United Kingdom, LS17 9NH"
+lat: 53.8699828
+lng: -1.4803432
 region:
   name: "WEST_YORKSHIRE"
 website: "https://moorallertongolfclub.co.uk/"

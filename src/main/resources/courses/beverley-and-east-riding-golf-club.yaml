@@ -1,5 +1,9 @@
 name: "Beverley and East Riding Golf Club"
+address: "BEVERLEY AND EAST RIDING GOLF CLUB ANTI MILL, WESTWOOD, BEVERLEY, EAST YORKSHIRE, HU17 8RG"
+lat: 53.8335504
+lng: -0.4423923
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.beverleygolfclub.co.uk/"
 mainImageUrl: "/images/courses/beverley-and-east-riding-golf-club.jpg"
+stayImageUrl:

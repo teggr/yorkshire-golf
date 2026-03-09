@@ -1,4 +1,7 @@
 name: "Forest Park Golf Club"
+address: "Forest Park Golf Club, Stockton-on-the-Forest, York, YO32 9UF"
+lat: 53.996861
+lng: -1.0121627
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.forestparkgolfclub.co.uk/"

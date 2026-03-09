@@ -1,4 +1,7 @@
 name: "Wheatley Golf Club"
+address: "Armthorpe Road, Doncaster, South Yorkshire, DN2 5QB, United Kingdom"
+lat: 53.5334162
+lng: -1.0842357
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.wheatleygolfclub.co.uk/"

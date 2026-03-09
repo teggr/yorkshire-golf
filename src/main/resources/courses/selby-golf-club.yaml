@@ -1,4 +1,7 @@
 name: "Selby Golf Club"
+address: "Selby Golf Club, Gateforth New Road, Brayton, Selby, YO89BF"
+lat: 53.76043
+lng: -1.11909
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.selbygolfclub.co.uk/"

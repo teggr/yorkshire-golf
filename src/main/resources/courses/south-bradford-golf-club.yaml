@@ -1,4 +1,7 @@
 name: "South Bradford Golf Club"
+address: "South Bradford Golf Club Pearson Road Odsal BD6 1BJ"
+lat: 53.76382
+lng: -1.75959
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.southbradfordgolfclub.co.uk/"

@@ -1,4 +1,7 @@
 name: "Woodsome Hall Golf Club"
+address: "Woodsome Hall Golf Club Ltd Fenay Bridge, Huddersfield, HD8 0LQ"
+lat: 53.6256604
+lng: -1.7240857
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.woodsome.co.uk/"

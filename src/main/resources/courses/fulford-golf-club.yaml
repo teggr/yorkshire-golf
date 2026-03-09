@@ -1,4 +1,7 @@
 name: "Fulford Golf Club"
+address: "Heslington Lane, York, Yorkshire, YO10 5DY"
+lat: 53.9427079
+lng: -1.0546508
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.fulfordgolfclub.co.uk/"

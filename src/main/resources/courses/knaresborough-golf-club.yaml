@@ -1,4 +1,7 @@
 name: "Knaresborough Golf Club"
+address: "Knaresborough Golf Club, Boroughbridge Road, Knaresborough, North Yorkshire HG5 0QQ"
+lat: 54.027887
+lng: -1.446785
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.knaresboroughgolfclub.co.uk/"

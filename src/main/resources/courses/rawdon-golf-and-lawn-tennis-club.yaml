@@ -1,4 +1,7 @@
 name: "Rawdon Golf and Lawn Tennis Club"
+address: "Rawdon Golf, Lawn Tennis and Padel Club Club, Buckstone Drive, Rawdon, Leeds, England, LS19 6BB"
+lat: 53.8510725
+lng: -1.6875988
 region:
   name: "WEST_YORKSHIRE"
 website: "https://rgltpc.com/"

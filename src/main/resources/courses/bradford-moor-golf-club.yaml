@@ -1,4 +1,7 @@
 name: "Bradford Moor Golf Club"
+address: "Scarr Hall, Pollard Lane, Bradford BD2 4RW"
+lat: 53.802498
+lng: -1.7267992
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.bradfordmoorgolfclub.co.uk/"

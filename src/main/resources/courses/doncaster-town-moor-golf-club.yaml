@@ -1,4 +1,7 @@
 name: "Doncaster Town Moor Golf Club"
+address: "Bawtry Road, Belle Vue, Doncaster, DN4 5HU"
+lat: 53.5182953
+lng: -1.1056873
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.doncastertownmoorgc.co.uk/"

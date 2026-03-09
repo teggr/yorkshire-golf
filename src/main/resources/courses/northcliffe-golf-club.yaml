@@ -1,4 +1,7 @@
 name: "Northcliffe Golf Club"
+address: "High Bank Lane, Shipley, West Yorkshire, BD18 4LJ"
+lat: 53.8269714
+lng: -1.8024471
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.northcliffegolfclub.co.uk/"

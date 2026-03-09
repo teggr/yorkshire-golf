@@ -1,4 +1,7 @@
 name: "Cookridge Hall Golf Club"
+address: "Cookridge Hall Golf Club Limited, Cookridge Lane, Leeds LS16 7NL"
+lat: 53.8620091
+lng: -1.6105543
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.cookridgehall.co.uk/"

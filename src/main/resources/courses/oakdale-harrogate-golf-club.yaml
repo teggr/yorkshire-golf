@@ -1,4 +1,7 @@
 name: "Oakdale (Harrogate) Golf Club"
+address: "Oakdale Golf Club, Oakdale Glen, Harrogate, North Yorkshire HG1 2LN"
+lat: 53.9982552
+lng: -1.5559338
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.oakdalegolfclub.co.uk/"

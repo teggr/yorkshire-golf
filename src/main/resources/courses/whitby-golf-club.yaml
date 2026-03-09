@@ -1,4 +1,7 @@
 name: "Whitby Golf Club"
+address: "WHITBY GOLF CLUB SANDSEND ROAD, LOW STRAGGLETON, WHITBY, YO21 3SR"
+lat: 54.4924312
+lng: -0.6483411
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.whitbygolfclub.co.uk/"

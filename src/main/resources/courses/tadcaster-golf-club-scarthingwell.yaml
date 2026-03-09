@@ -1,4 +1,7 @@
 name: "Tadcaster Golf Club (Scarthingwell)"
+address: "Scarthingwell, Tadcaster, LS24 9PF"
+lat: 53.8287668
+lng: -1.254926
 website: "https://www.tadcastergolf.co.uk/"
 region:
   name: "NORTH_YORKSHIRE"

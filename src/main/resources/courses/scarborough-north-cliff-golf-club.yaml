@@ -1,4 +1,7 @@
 name: "Scarborough North Cliff Golf Club"
+address: "North Cliff Avenue, SCARBOROUGH, North Yorkshire, YO12 6PP"
+lat: 54.2984165
+lng: -0.4152085
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://northcliffgolfclub.co.uk/"

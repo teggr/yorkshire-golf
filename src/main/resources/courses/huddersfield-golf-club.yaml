@@ -1,4 +1,7 @@
 name: "Huddersfield Golf Club"
+address: "Huddersfield Golf Club Fixby Hall Lightridge Road HD2 2EP"
+lat: 53.672353
+lng: -1.7991144
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.huddersfield-golf.co.uk/"

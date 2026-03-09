@@ -1,4 +1,7 @@
 name: "Ferrybridge Golf Club"
+address: "West Yorkshire WF11 8EP"
+lat: 53.70754
+lng: -1.2506
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.ferrybridgegolf.co.uk/"

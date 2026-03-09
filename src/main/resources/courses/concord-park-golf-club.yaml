@@ -1,4 +1,7 @@
 name: "Concord Park Golf Club"
+address: "Concord Park Golf Club  Shiregreen Ln  Sheffield  S5 6AE"
+lat: 53.4275222
+lng: -1.4269391
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.robcalderbankgolf.com/"

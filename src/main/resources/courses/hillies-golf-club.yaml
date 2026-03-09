@@ -1,4 +1,7 @@
 name: "Hillies Golf Club"
+address: "Hillies Golf Course, Wentworth View, Wombwell, Barnsley, S73 0LA"
+lat: 53.5143396
+lng: -1.4011479
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.bplgolf.co.uk/hillies-golf-course/"

@@ -42,6 +42,22 @@ Push to Docker Hub (ensure you are logged in with `docker login`):
 
 Go to https://www.yorkshiregolf.life
 
+# Course Audit
+
+Run from repo root:
+
+```shell
+jbang scripts/CourseAudit.java
+```
+
+By default, closed courses are hidden.
+
+To include closed courses for editing:
+
+```shell
+jbang scripts/CourseAudit.java --show-closed
+```
+
 
 # Useful References
 

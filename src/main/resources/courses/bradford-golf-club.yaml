@@ -1,4 +1,7 @@
 name: "Bradford Golf Club"
+address: "Hawksworth Lane, Guiseley Leeds LS20 8NP"
+lat: 53.8697126
+lng: -1.7377077
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.bradfordgolfclub.co.uk/"

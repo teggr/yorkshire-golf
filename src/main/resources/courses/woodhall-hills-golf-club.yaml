@@ -1,4 +1,7 @@
 name: "Woodhall Hills Golf Club"
+address: "Woodhall Road, Pudsey, Calverley, West Yorkshire, LS28 5UN"
+lat: 53.8244188
+lng: -1.6902395
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.woodhallhillsgolfclub.com/"

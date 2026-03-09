@@ -1,4 +1,7 @@
 name: "Rotherham Golf Club"
+address: "Doncaster Road, Thrybergh, Rotherham, South Yorkshire, S65 4NU"
+lat: 53.4575249
+lng: -1.2955807
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.rotherhamgolfclub.com/"

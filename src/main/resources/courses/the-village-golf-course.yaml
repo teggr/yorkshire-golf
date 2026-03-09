@@ -1,4 +1,7 @@
 name: "The Village Golf Course"
+address: "The Village Golf Course Backstonegill Lane Wike Leeds, LS17 9JS"
+lat: 53.87359
+lng: -1.48647
 region:
   name: "WEST_YORKSHIRE"
 website: "https://brandonandthevillagegolfcourses.co.uk/village-course-and-facilities/"

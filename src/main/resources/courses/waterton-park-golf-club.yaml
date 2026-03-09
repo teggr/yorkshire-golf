@@ -1,4 +1,7 @@
 name: "Waterton Park Golf Club"
+address: "Waterton Park Golf Club The Balk Walton Wakefield WF2 6QL"
+lat: 53.6443907
+lng: -1.4559816
 region:
   name: "WEST_YORKSHIRE"
 website: "https://watertonparkgc.co.uk/"

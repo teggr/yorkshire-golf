@@ -1,4 +1,7 @@
 name: "Crow Nest Park Golf Club"
+address: "Crow Nest Park Golf Club, Coach Road, Hove Edge, Brighouse, HD6 2LN"
+lat: 53.7203588
+lng: -1.7948546
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.crownestgolf.co.uk/"

@@ -1,4 +1,7 @@
 name: "QHotels Oulton Hall Golf Club"
+address: "Oulton Hall, 2 Rothwell Lane, Leeds, LS26 8HN"
+lat: 53.7446275
+lng: -1.4601838
 playAndStay: true
 region:
   name: "WEST_YORKSHIRE"

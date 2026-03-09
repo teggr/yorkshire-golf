@@ -1,4 +1,7 @@
 name: "Leeds Golf Club (Cobble Hall)"
+address: "LEEDS GOLF CLUB Elmete Lane, Leeds, United Kingdom, LS8 2LJ"
+lat: 53.8350893
+lng: -1.4864922
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.leedsgolfclub.co.uk/"

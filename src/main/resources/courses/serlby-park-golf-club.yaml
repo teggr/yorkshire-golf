@@ -1,4 +1,7 @@
 name: "Serlby Park Golf Club"
+address: "Serlby Park, Serlby, Doncaster, DN10 6BA"
+lat: 53.4229791
+lng: -1.053476
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.serlbypark.co.uk/"

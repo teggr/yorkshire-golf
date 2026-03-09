@@ -1,4 +1,7 @@
 name: "Keighley Golf Club"
+address: "Keighley Golf Club, Howden Park, Utley, Keighley, West Yorkshire, BD20 6DH"
+lat: 53.8877103
+lng: -1.9166733
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.keighleygolfclub.com/"

@@ -1,4 +1,7 @@
 name: "Owston Park Golf Course"
+address: "Owston Lane, Carcroft, Doncaster, South Yorkshire, DN6 8EF"
+lat: 53.5888627
+lng: -1.1776844
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.golfshake.com/course/view/67894/Owston_Park_Golf_Course.html"

@@ -1,4 +1,7 @@
 name: "Meltham Golf Club"
+address: "HD9 4DQ"
+lat: 53.5879344
+lng: -1.8391304
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.meltham-golf.co.uk/"

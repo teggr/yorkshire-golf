@@ -1,4 +1,7 @@
 name: "Sandburn Hall"
+address: "SANDBURN HALL Flaxton, York YO60 7RB"
+lat: 54.0361359
+lng: -0.9707249
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

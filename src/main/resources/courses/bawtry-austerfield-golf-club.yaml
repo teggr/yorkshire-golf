@@ -1,4 +1,7 @@
 name: "Bawtry (Austerfield) Golf Club"
+address: "Doncaster Bawtry Golf Club Cross Lane, Austerfield, Doncaster DN10 6RF"
+lat: 53.4581186
+lng: -0.9939219
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.bawtrygolfclub.co.uk/"

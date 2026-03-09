@@ -1,4 +1,7 @@
 name: "Ingleby Barwick Golf Academy"
+address: "Ingleby Barwick Golf Academy Lullingstone Cresent, Ingleby Barwick, Stockton on Tees, TS17 5GJ"
+lat: 54.5327711
+lng: -1.3332789
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.inglebygolf.co.uk/"

@@ -1,4 +1,7 @@
 name: "Scarborough South Cliff Golf Club"
+address: "Deepdale Avenue, Scarborough, YO11 2UE"
+lat: 54.2625125
+lng: -0.4012297
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.southcliffgolfclub.com/"

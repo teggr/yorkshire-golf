@@ -1,4 +1,7 @@
 name: "Headley Golf Club"
+address: "Headley Golf Club Headley Lane, Thornton, BD13 3LX"
+lat: 53.78628
+lng: -1.8475
 region:
   name: "WEST_YORKSHIRE"
 website: "https://headleygolf.co.uk/"

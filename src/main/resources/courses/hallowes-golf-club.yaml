@@ -1,4 +1,7 @@
 name: "Hallowes Golf Club"
+address: "Hallowes Golf Club, Hallowes Lane, Dronfield, England, S18 1UR"
+lat: 53.2872993
+lng: -1.4693474
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.hallowesgolfclub.co.uk/"

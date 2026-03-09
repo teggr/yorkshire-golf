@@ -1,4 +1,7 @@
 name: "Barnsley Golf Club (The Limes)"
+address: "Barnsley Golf Club Wakefield Road Staincross Barnsley South Yorkshire S75 6JZ"
+lat: 53.5966552
+lng: -1.4941126
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://barnsleygolfclub.co.uk/"

@@ -1,4 +1,7 @@
 name: "Woolley Park Golf Club"
+address: "Woolley Park Golf Club New Road, Woolley, Wakefield, WF4 2JJ"
+lat: 53.6121984
+lng: -1.5048972
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.woolleyparkgolfclub.co.uk/"

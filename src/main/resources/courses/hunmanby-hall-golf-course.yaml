@@ -1,4 +1,7 @@
 name: "Hunmanby Hall Golf Course"
+address: "Hall Park Road Hunmanby North Yorkshire YO14 0HZ"
+lat: 54.1767288
+lng: -0.3238983
 website: "https://www.activeyorkshirecoast.co.uk/facilities/hunmanby-hall-sports-and-leisure/"
 region:
   name: "NORTH_YORKSHIRE"

@@ -1,4 +1,7 @@
 name: "Queensbury Golf Club"
+address: "Queensbury Golf Club BD13 1QF"
+lat: 53.7624853
+lng: -1.8356072
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.queensburygc.co.uk/"

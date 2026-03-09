@@ -1,4 +1,7 @@
 name: "Kingswood Golf Club"
+address: "Thorne Rd, Hatfield, Thorne, Doncaster DN7 6EP"
+lat: 53.5873114
+lng: -0.9827244
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.kingswoodgolf.co.uk/"

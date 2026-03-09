@@ -1,4 +1,7 @@
 name: "Silkstone Golf Club"
+address: "Field Head, Elmhirst Lane, Silkstone, Barnsley S75 4LD"
+lat: 53.5494536
+lng: -1.5417305
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.silkstonegolfclub.co.uk/"

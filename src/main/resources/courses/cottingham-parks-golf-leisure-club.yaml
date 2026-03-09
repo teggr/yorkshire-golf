@@ -1,4 +1,7 @@
 name: "Cottingham Parks Golf & Leisure Club"
+address: "Cottingham Parks Golf Leisure Club, Woodhill Way, Cottingham, East Yorkshire, HU16 5SW"
+lat: 53.7908852
+lng: -0.4442523
 website: "https://www.cottinghamparks.co.uk/"
 region:
   name: "EAST_YORKSHIRE"

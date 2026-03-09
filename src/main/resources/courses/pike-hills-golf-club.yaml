@@ -1,4 +1,7 @@
 name: "Pike Hills Golf Club"
+address: "Pike Hills Golf Club Tadcaster Road, Askham Bryan York YO23 3UW"
+lat: 53.9243439
+lng: -1.1437494
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.pikehillsgolfclub.co.uk/"

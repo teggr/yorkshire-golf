@@ -1,4 +1,7 @@
 name: "Heworth Golf Club"
+address: "HEWORTH GOLF CLUB Muncaster House, Muncastergate, York, England, YO31 9JY"
+lat: 53.9727494
+lng: -1.0645617
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://heworthgolfclubyork.co.uk/"

@@ -1,4 +1,7 @@
 name: "Ampleforth College Golf Club"
+address: "Castle Drive, Gilling East, York, North Yorkshire, YO62 4HP, United Kingdom"
+lat: 54.182814
+lng: -1.0673498
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.ampleforthgolf.co.uk/"

@@ -1,4 +1,7 @@
 name: "Ilkley Golf Club"
+address: "Ilkley Golf Club, Nesfield Road, Myddleton, Ilkley LS29 0BE"
+lat: 53.9344744
+lng: -1.8532676
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.ilkleygolfclub.co.uk/"

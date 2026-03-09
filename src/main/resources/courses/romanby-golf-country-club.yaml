@@ -1,4 +1,7 @@
 name: "Romanby Golf & Country Club"
+address: "Romanby Golf Course Ltd, Yafforth Road, Northallerton, North Yorkshire, DL7 0PE"
+lat: 54.33877
+lng: -1.46634
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.romanby.com/"

@@ -1,4 +1,7 @@
 name: "Otley Golf Club"
+address: "OTLEY GOLF CLUB LIMITED West Busk Lane, Otley, Leeds, LS21 3NG"
+lat: 53.8996539
+lng: -1.7255847
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.otleygolfclub.co.uk/"

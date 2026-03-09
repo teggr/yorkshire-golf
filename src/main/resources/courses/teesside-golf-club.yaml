@@ -1,4 +1,7 @@
 name: "Teesside Golf Club"
+address: "89 Acklam Rd, Thornaby, Stockton-on-Tees TS17 7JS"
+lat: 54.5530498
+lng: -1.2916078
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.teessidegolfclub.com/"

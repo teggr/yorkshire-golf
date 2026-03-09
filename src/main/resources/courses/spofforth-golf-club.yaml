@@ -1,4 +1,7 @@
 name: "Spofforth Golf Club"
+address: "Haggs Road Harrogate HG3 1EQ"
+lat: 53.9547
+lng: -1.4620895
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.spofforthgolf.uk/"

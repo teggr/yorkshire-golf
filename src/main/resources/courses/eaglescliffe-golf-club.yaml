@@ -1,4 +1,7 @@
 name: "Eaglescliffe Golf Club"
+address: "Eaglescliffe Golf Club, Yarm Road, Eaglescliffe, TS16 0DQ"
+lat: 54.5271725
+lng: -1.348933
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.eaglescliffegolfclub.co.uk/"

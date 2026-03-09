@@ -1,4 +1,7 @@
 name: "Tinsley Park Golf Club"
+address: "High Hazels Park, Darnall, Sheffield S9 4PE"
+lat: 53.3867743
+lng: -1.3999377
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://everyonegolf.com/venues/tinsley-park-golf-course/"

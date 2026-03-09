@@ -1,4 +1,7 @@
 name: "Knotty Hill Golf Centre"
+address: "KNOTTY HILL GOLF CENTRE  Sedgefield, TS21 2BB"
+lat: 54.6652694
+lng: -1.466192
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.knottyhill.com/"

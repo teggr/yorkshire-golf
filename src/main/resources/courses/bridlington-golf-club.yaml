@@ -1,4 +1,7 @@
 name: "Bridlington Golf Club"
+address: "Belvedere Road, Bridlington, YO15 3NA"
+lat: 54.0720346
+lng: -0.205525
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.bridlingtongolfclub.co.uk/"

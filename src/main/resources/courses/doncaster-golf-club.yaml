@@ -1,4 +1,7 @@
 name: "Doncaster Golf Club"
+address: "278 Bawtry Road, Bessacarr, Doncaster, DN4 7NX"
+lat: 53.495869
+lng: -1.06654
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://doncastergolfclub.co.uk/"

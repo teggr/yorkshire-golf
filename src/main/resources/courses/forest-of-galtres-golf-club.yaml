@@ -1,4 +1,7 @@
 name: "Forest of Galtres Golf Club"
+address: "Forest of Galtres Golf Club Skelton Lane, Wigginton, York YO32 2RF"
+lat: 54.0137835
+lng: -1.1183344
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.forestofgaltres.co.uk/"

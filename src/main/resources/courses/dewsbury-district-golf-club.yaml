@@ -1,4 +1,7 @@
 name: "Dewsbury District Golf Club"
+address: "DEWSBURY DISTRICT GOLF CLUB The Pinnacle, Sands Lane, Mirfield, England, WF14 8HJ"
+lat: 53.66956
+lng: -1.67143
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.dewsburygolf.co.uk/"

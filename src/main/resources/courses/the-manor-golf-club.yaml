@@ -1,4 +1,7 @@
 name: "The Manor Golf Club"
+address: "The Manor Bradford Road, Drighlington Bradford, West Yorkshire BD11 1AB"
+lat: 53.7601713
+lng: -1.6683473
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.themanorgolfclub.co.uk/"

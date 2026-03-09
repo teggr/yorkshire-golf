@@ -1,4 +1,7 @@
 name: "Rother Valley Golf Centre"
+address: "Rother Valley Golf Centre Mansfield Road, Wales Bar, Sheffield S26 5PQ"
+lat: 53.3377295
+lng: -1.3189013
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.rothervalleygolfcentre.co.uk/"

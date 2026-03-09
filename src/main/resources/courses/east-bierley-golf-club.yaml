@@ -1,4 +1,7 @@
 name: "East Bierley Golf Club"
+address: "EAST BIERLEY GOLF CLUB South View Road, East Bierley, Bradford, BD4 6PP"
+lat: 53.7613742
+lng: -1.7061724
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.eastbierleygolfclub.co.uk/"

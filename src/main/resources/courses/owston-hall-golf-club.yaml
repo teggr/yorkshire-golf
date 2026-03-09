@@ -1,4 +1,7 @@
 name: "Owston Hall Golf Club"
+address: "Owston Lane, Doncaster DN5 0LP"
+lat: 53.5895742
+lng: -1.1686553
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.owstonhall.com/"

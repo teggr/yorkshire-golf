@@ -1,4 +1,7 @@
 name: "Todmorden Golf Club"
+address: "Todmorden Golf Club Rive Rocks Cross Stone Todmorden OL14 8RD"
+lat: 53.720608
+lng: -2.0847519
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.todmordengolfclub.co.uk/"

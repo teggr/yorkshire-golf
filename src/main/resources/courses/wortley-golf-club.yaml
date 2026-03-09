@@ -1,4 +1,7 @@
 name: "Wortley Golf Club"
+address: "Hermit Hill Lane, Wortley, Sheffield, South Yorkshire, S35 7DF"
+lat: 53.4953567
+lng: -1.5341925
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.wortleygolfclub.co.uk/"

@@ -1,4 +1,7 @@
 name: "Thorne Golf Club"
+address: "Thorne Golf Club, Kirton Lane, Thorne, South Yorkshire, DN8 5RJ"
+lat: 53.6064854
+lng: -0.977286
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.thornegolf.co.uk/"
