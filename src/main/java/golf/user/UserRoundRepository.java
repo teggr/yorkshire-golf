@@ -70,15 +70,15 @@ public class UserRoundRepository {
         return new UserRound(String.valueOf(id), userId, null, date, courseName, null, null, null);
     }
 
-    public void updateDate(Long roundId, Long userId, String date) {
-        jdbc.update(
+    public int updateDate(Long roundId, Long userId, String date) {
+        return jdbc.update(
                 "UPDATE user_round SET date = ? WHERE id = ? AND user_id = ?",
                 Date.valueOf(date), roundId, userId
         );
     }
 
-    public void deleteByIdAndUserId(Long roundId, Long userId) {
-        jdbc.update(
+    public int deleteByIdAndUserId(Long roundId, Long userId) {
+        return jdbc.update(
                 "DELETE FROM user_round WHERE id = ? AND user_id = ?",
                 roundId, userId
         );

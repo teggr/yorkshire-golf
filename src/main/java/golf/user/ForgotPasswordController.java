@@ -58,10 +58,11 @@ public class ForgotPasswordController {
                 return "forgotPasswordPage";
             }
 
-            if (newPassword == null || newPassword.length() < 8) {
+            var policyError = PasswordPolicy.validate(newPassword);
+            if (policyError.isPresent()) {
                 model.addAttribute("step", "reset");
                 model.addAttribute("token", token);
-                model.addAttribute("error", "New password must be at least 8 characters.");
+                model.addAttribute("error", policyError.get());
                 return "forgotPasswordPage";
             }
 

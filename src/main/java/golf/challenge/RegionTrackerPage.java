@@ -38,6 +38,9 @@ public class RegionTrackerPage implements View {
     String trackerId = (String) model.get("trackerId");
     boolean canAddRound = Boolean.TRUE.equals(model.get("canAddRound"));
     List<Course> allCourses = model.get("allCourses") != null ? (List<Course>) model.get("allCourses") : List.of();
+    List<String> monthlyProgressLabels = model.get("monthlyProgressLabels") != null ? (List<String>) model.get("monthlyProgressLabels") : List.of();
+    List<Long> monthlyProgressValues = model.get("monthlyProgressValues") != null ? (List<Long>) model.get("monthlyProgressValues") : List.of();
+    long monthlyProgressMax = model.get("monthlyProgressMax") != null ? ((Number) model.get("monthlyProgressMax")).longValue() : tracker.totalCourseCount();
     String errorMessage = (String) model.get("error");
     String successMessage = (String) model.get("success");
     j2html.tags.DomContent csrfField = CsrfUtil.csrfInput(request);
@@ -69,6 +72,11 @@ public class RegionTrackerPage implements View {
       tracker.totalCourseCount(Regions.WestYorkshire)
     ));
 
+    Map<String, Object> monthlyProgressChartData = new HashMap<>();
+    monthlyProgressChartData.put("timeline_labels", monthlyProgressLabels);
+    monthlyProgressChartData.put("timeline_values", monthlyProgressValues);
+    monthlyProgressChartData.put("timeline_max", monthlyProgressMax);
+
     YorkshireGolfPageTemplate pageTemplate = new YorkshireGolfPageTemplate()
       .withRequest(request)
       .withCurrentPageBasePath("/challenge")
@@ -88,62 +96,121 @@ public class RegionTrackerPage implements View {
         ),
         // Chart
         div().withClass("container ygl-page").with(
-          div().withClass("row justify-content-center").with(
-            div().withClass("col-lg-8").with(
+          div().withClass("row g-4 ygl-infographics-row").with(
+            div().withClass("col-12 col-xl-6").with(
               div()
-                .withClass("ygl-chart")
+                .withClass("ygl-chart ygl-chart--full")
                 .with(
                   canvas().withId("myChart")
                 ),
-              chartJsConfigScript("myChart", chartData),
-              iff(canAddRound,
-                div().withClass("mt-4").with(
-                  errorMessage != null ? div(errorMessage).withClass("alert alert-danger") : text(""),
-                  successMessage != null ? div(successMessage).withClass("alert alert-success") : text(""),
-                  div().withClass("card mb-4").with(
-                    div().withClass("card-header").with(strong("Add a Round")),
-                    div().withClass("card-body").with(
-                      form().withMethod("post").withAction("/challenge/" + trackerId + "/add-round").with(
-                        csrfField,
-                        div().withClass("row g-3 align-items-end").with(
-                          div().withClass("col-md-6").with(
-                            label("Course").withFor("courseName").withClass("form-label"),
-                            select().withId("courseName").withName("courseName")
-                              .withClass("form-select").attr("required", "").with(
-                                option("— Select a course —").withValue("").attr("disabled", "").attr("selected", ""),
-                                each(allCourses, course -> option(course.name()).withValue(course.name()))
-                              )
-                          ),
-                          div().withClass("col-md-4").with(
-                            label("Date Played").withFor("date").withClass("form-label"),
-                            input().withType("date").withId("date").withName("date")
-                              .withClass("form-control").attr("required", "")
-                          ),
-                          div().withClass("col-md-2").with(
-                            button("Add").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
-                          )
+              chartJsConfigScript("myChart", chartData)
+            ),
+            div().withClass("col-12 col-xl-6").with(
+              div()
+                .withClass("ygl-chart ygl-chart--full")
+                .with(
+                  canvas().withId("progressLineChart")
+                ),
+              chartJsConfigScript("progressLineChart", monthlyProgressChartData, "/progress-line-chart.js")
+            )
+          ),
+          iff(canAddRound,
+            div().withClass("row mt-4").with(
+              div().withClass("col-12").with(
+                errorMessage != null ? div(errorMessage).withClass("alert alert-danger") : text(""),
+                successMessage != null ? div(successMessage).withClass("alert alert-success") : text(""),
+                div().withClass("card mb-4").with(
+                  div().withClass("card-header").with(strong("Add a Round")),
+                  div().withClass("card-body").with(
+                    form().withMethod("post").withAction("/challenge/" + trackerId + "/add-round").with(
+                      csrfField,
+                      div().withClass("row g-3 align-items-end").with(
+                        div().withClass("col-md-6").with(
+                          label("Course").withFor("courseName").withClass("form-label"),
+                          select().withId("courseName").withName("courseName")
+                            .withClass("form-select").attr("required", "").with(
+                              option("— Select a course —").withValue("").attr("disabled", "").attr("selected", ""),
+                              each(allCourses, course -> option(course.name()).withValue(course.name()))
+                            )
+                        ),
+                        div().withClass("col-md-4").with(
+                          label("Date Played").withFor("date").withClass("form-label"),
+                          input().withType("date").withId("date").withName("date")
+                            .withClass("form-control").attr("required", "")
+                        ),
+                        div().withClass("col-md-2").with(
+                          button("Add").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
                         )
                       )
                     )
-                  ),
-                  div().withClass("card mb-4").with(
-                    div().withClass("card-header").with(strong("Import Rounds from CSV")),
-                    div().withClass("card-body").with(
-                      form().withMethod("post").withAction("/challenge/" + trackerId + "/import-rounds")
-                        .attr("enctype", "multipart/form-data").with(
-                          csrfField,
-                          div().withClass("row g-3 align-items-end").with(
-                            div().withClass("col-md-10").with(
-                              label("CSV File (courseName, date)").withFor("csvFile").withClass("form-label"),
-                              input().withType("file").withId("csvFile").withName("csvFile")
-                                .withClass("form-control").attr("accept", ".csv").attr("required", "")
-                            ),
-                            div().withClass("col-md-2").with(
-                              button("Import").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
-                            )
+                  )
+                ),
+                div().withClass("card mb-4").with(
+                  div().withClass("card-header").with(strong("Import Rounds from CSV")),
+                  div().withClass("card-body").with(
+                    form().withMethod("post").withAction("/challenge/" + trackerId + "/import-rounds")
+                      .attr("enctype", "multipart/form-data").with(
+                        csrfField,
+                        div().withClass("row g-3 align-items-end").with(
+                          div().withClass("col-md-10").with(
+                            label("CSV File (courseName, date)").withFor("csvFile").withClass("form-label"),
+                            input().withType("file").withId("csvFile").withName("csvFile")
+                              .withClass("form-control").attr("accept", ".csv").attr("required", "")
+                          ),
+                          div().withClass("col-md-2").with(
+                            button("Import").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
                           )
                         )
-                    )
+                      )
+                  )
+                )
+              )
+            )
+          ),
+          iff(canAddRound,
+            div().withClass("row").with(
+              div().withClass("col-12").with(
+                div().withClass("card").with(
+                  div().withClass("card-header").with(strong("Your Played Courses")),
+                  div().withClass("card-body").with(
+                    tracker.rounds().isEmpty()
+                      ? p("No rounds logged yet. Add a round above or import a CSV.").withClass("text-muted mb-0")
+                      : div().withClass("table-responsive").with(
+                        table().withClass("table align-middle mb-0").with(
+                          thead().with(
+                            tr().with(
+                              th("Course"),
+                              th("Region"),
+                              th("Date"),
+                              th("Actions")
+                            )
+                          ),
+                          tbody().with(
+                            each(tracker.rounds(), round -> tr().with(
+                              td(round.courseName()),
+                              td(round.course() != null ? round.course().region().displayName() : "-"),
+                              td(round.date()),
+                              td().withClass("ygl-round-actions").with(
+                                form().withMethod("post").withAction("/challenge/" + trackerId + "/update-round-date")
+                                  .withClass("ygl-round-actions__form").with(
+                                    CsrfUtil.csrfInput(request),
+                                    input().withType("hidden").withName("roundId").withValue(round.id()),
+                                    input().withType("date").withName("date").withValue(round.date())
+                                      .withClass("form-control form-control-sm"),
+                                    button("Save date").withType("submit").withClass("btn ygl-btn ygl-btn--outline ygl-btn--sm")
+                                  ),
+                                form().withMethod("post").withAction("/challenge/" + trackerId + "/delete-round")
+                                  .withClass("ygl-round-actions__delete")
+                                  .attr("onsubmit", "return confirm('Are you sure you want to delete this round?');").with(
+                                    CsrfUtil.csrfInput(request),
+                                    input().withType("hidden").withName("roundId").withValue(round.id()),
+                                    button("Delete").withType("submit").withClass("btn ygl-btn ygl-btn--dark ygl-btn--sm")
+                                  )
+                              )
+                            ))
+                          )
+                        )
+                      )
                   )
                 )
               )

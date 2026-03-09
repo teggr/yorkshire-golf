@@ -33,8 +33,13 @@ public class ChartJsCreator {
     // https://www.chartjs.org/docs/latest/charts/doughnut.html
     @SneakyThrows
     public static ScriptTag chartJsConfigScript(String id, Map<String, Object> chartData) {
+        return chartJsConfigScript(id, chartData, "/progress-chart.js");
+    }
 
-        String fileAsString = InlineStaticResource.getFileAsString("/progress-chart.js")
+    @SneakyThrows
+    public static ScriptTag chartJsConfigScript(String id, Map<String, Object> chartData, String resourcePath) {
+
+        String fileAsString = InlineStaticResource.getFileAsString(resourcePath)
                 .replaceAll("myChart", id);
 
         for (Map.Entry<String, Object> e : chartData.entrySet()) {

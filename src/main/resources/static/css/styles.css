@@ -712,6 +712,40 @@ img {
   padding-top: 2.5rem;
 }
 
+.ygl-round-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.ygl-round-actions__form {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.ygl-round-actions__form .form-control {
+  min-width: 155px;
+}
+
+.ygl-round-actions__delete {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .ygl-round-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .ygl-round-actions__form {
+    flex-wrap: wrap;
+  }
+}
+
 /* Legacy — kept for pages without page-header */
 .ygl-page__title {
   font-family: var(--ygl-font-heading);
@@ -889,6 +923,30 @@ img {
   box-shadow: var(--ygl-shadow-sm);
   padding: 2.5rem;
   max-width: 640px;
+}
+
+.ygl-chart--full {
+  max-width: none;
+  width: 100%;
+}
+
+.ygl-infographics-row > [class*="col-"] {
+  display: flex;
+}
+
+.ygl-infographics-row .ygl-chart {
+  height: 100%;
+}
+
+.ygl-infographics-row .ygl-chart canvas {
+  width: 100% !important;
+  height: auto !important;
+}
+
+@media (max-width: 768px) {
+  .ygl-chart {
+    padding: 1.5rem;
+  }
 }
 
 /* ---------- ygl-feature ---------- */

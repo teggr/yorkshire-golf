@@ -33,8 +33,9 @@ public class RegisterController {
             return "registerPage";
         }
 
-        if (password.length() < 8) {
-            model.addAttribute("error", "Password must be at least 8 characters.");
+        var policyError = PasswordPolicy.validate(password);
+        if (policyError.isPresent()) {
+            model.addAttribute("error", policyError.get());
             model.addAttribute("email", email);
             return "registerPage";
         }

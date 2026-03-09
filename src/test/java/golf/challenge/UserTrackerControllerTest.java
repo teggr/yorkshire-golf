@@ -39,19 +39,25 @@ class UserTrackerControllerTest {
     Courses courses = mock(Courses.class);
     UserRoundRepository userRoundRepository = mock(UserRoundRepository.class);
     RegionChallengeTracker tracker = mock(RegionChallengeTracker.class);
+    MonthlyCourseProgress monthlyProgress = new MonthlyCourseProgress(List.of("Jan 2026"), List.of(1L));
     UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
         Model model = new ExtendedModelMap();
 
         when(userService.findByTrackerId("abc123tracker"))
                 .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false)));
         when(yorkshireChallenge.getTrackerForUser(10L)).thenReturn(tracker);
+        when(yorkshireChallenge.getMonthlyCourseProgressForUser(10L)).thenReturn(monthlyProgress);
+        when(tracker.totalCourseCount()).thenReturn(195L);
 
-    String view = controller.tracker("abc123tracker", null, null, null, null, model);
+    String view = controller.tracker("abc123tracker", null, null, null, null, null, null, null, model);
 
         assertEquals("regionTrackerPage", view);
         assertEquals(tracker, model.getAttribute("tracker"));
     assertEquals("abc123tracker", model.getAttribute("trackerId"));
     assertFalse((Boolean) model.getAttribute("canAddRound"));
+    assertEquals(List.of("Jan 2026"), model.getAttribute("monthlyProgressLabels"));
+    assertEquals(List.of(1L), model.getAttribute("monthlyProgressValues"));
+    assertEquals(195L, model.getAttribute("monthlyProgressMax"));
     }
 
     @Test
@@ -61,6 +67,7 @@ class UserTrackerControllerTest {
     Courses courses = mock(Courses.class);
     UserRoundRepository userRoundRepository = mock(UserRoundRepository.class);
     RegionChallengeTracker tracker = mock(RegionChallengeTracker.class);
+    MonthlyCourseProgress monthlyProgress = new MonthlyCourseProgress(List.of("Jan 2026"), List.of(1L));
     UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
     Model model = new ExtendedModelMap();
 
@@ -76,14 +83,19 @@ class UserTrackerControllerTest {
     when(userService.findByEmail("g@example.com"))
         .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false)));
     when(yorkshireChallenge.getTrackerForUser(10L)).thenReturn(tracker);
+    when(yorkshireChallenge.getMonthlyCourseProgressForUser(10L)).thenReturn(monthlyProgress);
+    when(tracker.totalCourseCount()).thenReturn(195L);
     when(courses.getAllCourses()).thenReturn(List.of(course));
 
-    String view = controller.tracker("abc123tracker", userDetails, "true", null, null, model);
+    String view = controller.tracker("abc123tracker", userDetails, "true", null, null, null, null, null, model);
 
     assertEquals("regionTrackerPage", view);
     assertTrue((Boolean) model.getAttribute("canAddRound"));
     assertEquals(List.of(course), model.getAttribute("allCourses"));
-    assertEquals("Round added.", model.getAttribute("success"));
+    assertEquals("Round added successfully.", model.getAttribute("success"));
+    assertEquals(List.of("Jan 2026"), model.getAttribute("monthlyProgressLabels"));
+    assertEquals(List.of(1L), model.getAttribute("monthlyProgressValues"));
+    assertEquals(195L, model.getAttribute("monthlyProgressMax"));
     }
 
     @Test
@@ -152,7 +164,7 @@ class UserTrackerControllerTest {
         when(userService.findByTrackerId("unknown")).thenReturn(Optional.empty());
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
-        () -> controller.tracker("unknown", null, null, null, null, model));
+        () -> controller.tracker("unknown", null, null, null, null, null, null, null, model));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
     }
@@ -237,5 +249,97 @@ class UserTrackerControllerTest {
 
         assertEquals(HttpStatus.FORBIDDEN, ex.getStatusCode());
         verify(userRoundRepository, never()).save(any(), any(), any());
+    }
+
+    @Test
+    void deleteRoundRemovesRoundForTrackerOwnerAndRedirects() {
+        UserService userService = mock(UserService.class);
+        YorkshireChallenge yorkshireChallenge = mock(YorkshireChallenge.class);
+        Courses courses = mock(Courses.class);
+        UserRoundRepository userRoundRepository = mock(UserRoundRepository.class);
+        UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
+
+        UserDetails userDetails = User.withUsername("g@example.com").password("unused").roles("USER").build();
+        RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false);
+
+        when(userService.findByTrackerId("abc123tracker")).thenReturn(Optional.of(owner));
+        when(userService.findByEmail("g@example.com")).thenReturn(Optional.of(owner));
+        when(userRoundRepository.deleteByIdAndUserId(123L, 10L)).thenReturn(1);
+
+        String view = controller.deleteRound("abc123tracker", userDetails, "123", redirectAttributes);
+
+        assertEquals("redirect:/challenge/abc123tracker", view);
+        assertEquals("true", String.valueOf(redirectAttributes.getAttribute("deleted")));
+        verify(userRoundRepository).deleteByIdAndUserId(123L, 10L);
+    }
+
+    @Test
+    void deleteRoundRejectsLoggedInNonOwner() {
+        UserService userService = mock(UserService.class);
+        YorkshireChallenge yorkshireChallenge = mock(YorkshireChallenge.class);
+        Courses courses = mock(Courses.class);
+        UserRoundRepository userRoundRepository = mock(UserRoundRepository.class);
+        UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
+
+        UserDetails userDetails = User.withUsername("other@example.com").password("unused").roles("USER").build();
+        RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+
+        when(userService.findByTrackerId("abc123tracker"))
+                .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false)));
+        when(userService.findByEmail("other@example.com"))
+                .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false)));
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> controller.deleteRound("abc123tracker", userDetails, "123", redirectAttributes));
+
+        assertEquals(HttpStatus.FORBIDDEN, ex.getStatusCode());
+        verify(userRoundRepository, never()).deleteByIdAndUserId(123L, 10L);
+    }
+
+    @Test
+    void updateRoundDateChangesDateForTrackerOwnerAndRedirects() {
+        UserService userService = mock(UserService.class);
+        YorkshireChallenge yorkshireChallenge = mock(YorkshireChallenge.class);
+        Courses courses = mock(Courses.class);
+        UserRoundRepository userRoundRepository = mock(UserRoundRepository.class);
+        UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
+
+        UserDetails userDetails = User.withUsername("g@example.com").password("unused").roles("USER").build();
+        RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false);
+
+        when(userService.findByTrackerId("abc123tracker")).thenReturn(Optional.of(owner));
+        when(userService.findByEmail("g@example.com")).thenReturn(Optional.of(owner));
+        when(userRoundRepository.updateDate(123L, 10L, "2026-03-08")).thenReturn(1);
+
+        String view = controller.updateRoundDate("abc123tracker", userDetails, "123", "2026-03-08", redirectAttributes);
+
+        assertEquals("redirect:/challenge/abc123tracker", view);
+        assertEquals("true", String.valueOf(redirectAttributes.getAttribute("updated")));
+        verify(userRoundRepository).updateDate(123L, 10L, "2026-03-08");
+    }
+
+    @Test
+    void updateRoundDateRejectsLoggedInNonOwner() {
+        UserService userService = mock(UserService.class);
+        YorkshireChallenge yorkshireChallenge = mock(YorkshireChallenge.class);
+        Courses courses = mock(Courses.class);
+        UserRoundRepository userRoundRepository = mock(UserRoundRepository.class);
+        UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
+
+        UserDetails userDetails = User.withUsername("other@example.com").password("unused").roles("USER").build();
+        RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+
+        when(userService.findByTrackerId("abc123tracker"))
+                .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false)));
+        when(userService.findByEmail("other@example.com"))
+                .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false)));
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> controller.updateRoundDate("abc123tracker", userDetails, "123", "2026-03-08", redirectAttributes));
+
+        assertEquals(HttpStatus.FORBIDDEN, ex.getStatusCode());
+        verify(userRoundRepository, never()).updateDate(123L, 10L, "2026-03-08");
     }
 }

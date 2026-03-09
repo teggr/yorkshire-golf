@@ -92,6 +92,9 @@ public class ForgotPasswordPage implements View {
                         label("New Password").withFor("newPassword").withClass("form-label"),
                         input().withType("password").withId("newPassword").withName("newPassword")
                                 .withClass("form-control").attr("required", "").attr("minlength", "8")
+                                        .attr("pattern", "[A-Za-z0-9]+")
+                                        .attr("title", "Letters and numbers only, at least 8 characters"),
+                        div("Must be at least 8 characters, using letters and numbers only.").withClass("form-text")
                 ),
                 div().withClass("mb-3").with(
                         label("Confirm New Password").withFor("confirmPassword").withClass("form-label"),
