@@ -2,6 +2,9 @@ name: "Kilnwick Percy Golf Club"
 address: "Kilnwick Percy Resort Golf Club Pocklington Kilnwick Percy York YO42 1UF"
 lat: 53.9399632
 lng: -0.7531602
+nearby1: "Allerthorpe Golf & Park Retreat"
+nearby2: "The Oaks Golf Club & Spa"
+nearby3: "Swallow Hall Golf Club"
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

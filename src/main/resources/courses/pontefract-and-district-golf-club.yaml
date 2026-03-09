@@ -2,6 +2,9 @@ name: "Pontefract and District Golf Club"
 address: "Pontefract District Golf Club Park Lane, Pontefract WF8 4QS"
 lat: 53.6944426
 lng: -1.3426862
+nearby1: "Whitwood Golf Club"
+nearby2: "Darrington Golf Club"
+nearby3: "Ferrybridge Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.pdgc.co.uk/"

@@ -2,6 +2,9 @@ name: "Middlesbrough Golf Club"
 address: "Middlesbrough Golf Club Brass Castle Lane, Marton Middlesbrough, North Yorkshire TS8 9EE"
 lat: 54.5138551
 lng: -1.1934519
+nearby1: "Middlesbrough Municipal Golf Centre"
+nearby2: "Stokesley Golf Range"
+nearby3: "Teesside Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.middlesbroughgolfclub.co.uk/"

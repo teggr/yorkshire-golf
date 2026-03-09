@@ -2,6 +2,9 @@ name: "Lees Hall Golf Club"
 address: "Lees Hall Golf Club, Hemsworth Road, Sheffield, South Yorkshire, S8 8LL"
 lat: 53.3447434
 lng: -1.4527099
+nearby1: "Birley Wood Golf Club"
+nearby2: "Beauchief Golf Club"
+nearby3: "Abbeydale Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.leeshallgolfclub.co.uk/"

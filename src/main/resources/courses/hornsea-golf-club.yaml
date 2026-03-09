@@ -2,6 +2,9 @@ name: "Hornsea Golf Club"
 address: "Rolston Road Hornsea East Yorkshire HU18 1XG"
 lat: 53.8984855
 lng: -0.166449
+nearby1: "Far Grange Golf Park"
+nearby2: "Hainsworth Park Golf Club"
+nearby3: "Ganstead Park Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.hornseagolfclub.co.uk/"

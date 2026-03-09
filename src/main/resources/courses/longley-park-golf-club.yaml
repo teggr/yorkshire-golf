@@ -2,6 +2,9 @@ name: "Longley Park Golf Club"
 address: "LONGLEY PARK GOLF CLUB Maple Steet, Huddersfield, HD5 9AX"
 lat: 53.6423
 lng: -1.77091
+nearby1: "Woodsome Hall Golf Club"
+nearby2: "Huddersfield Golf Club"
+nearby3: "Bradley Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.longleyparkgc.co.uk/"

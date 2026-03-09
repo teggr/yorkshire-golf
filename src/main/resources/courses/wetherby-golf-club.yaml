@@ -2,6 +2,9 @@ name: "Wetherby Golf Club"
 address: "Linton Lane Linton, Wetherby West Yorkshire LS22 4JF"
 lat: 53.9275974
 lng: -1.4026344
+nearby1: "Spofforth Golf Club"
+nearby2: "Scarcroft Golf Club"
+nearby3: "Rudding Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.wetherbygolfclub.co.uk/"

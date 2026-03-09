@@ -2,6 +2,9 @@ name: "Skipton Golf Club"
 address: "Short Lee Lane, Skipton, BD23 3LF"
 lat: 53.9706087
 lng: -2.0181368
+nearby1: "Bracken Ghyll Golf Club"
+nearby2: "Keighley Golf Club"
+nearby3: "Ilkley Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.skiptongolfclub.co.uk/"

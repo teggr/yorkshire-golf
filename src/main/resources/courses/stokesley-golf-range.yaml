@@ -2,6 +2,9 @@ name: "Stokesley Golf Range"
 address: "Stokesley Golf Range Stokesley Middlesbrough TS9 5JJ"
 lat: 54.4686595
 lng: -1.1726873
+nearby1: "Middlesbrough Golf Club"
+nearby2: "Middlesbrough Municipal Golf Centre"
+nearby3: "Wilton Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.stokesleygolfrange.co.uk/9-hole-golf-course-2/"

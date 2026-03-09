@@ -2,6 +2,9 @@ name: "Thorne Golf Club"
 address: "Thorne Golf Club, Kirton Lane, Thorne, South Yorkshire, DN8 5RJ"
 lat: 53.6064854
 lng: -0.977286
+nearby1: "Kingswood Golf Club"
+nearby2: "Wheatley Golf Club"
+nearby3: "Thornhurst Park Golf Course"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.thornegolf.co.uk/"

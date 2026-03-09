@@ -2,6 +2,9 @@ name: "Whitwood Golf Club"
 address: "Altofts Lane, Castleford WF10 5PZ"
 lat: 53.7162309
 lng: -1.396508
+nearby1: "Pontefract and District Golf Club"
+nearby2: "QHotels Oulton Hall Golf Club"
+nearby3: "Normanton Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.whitwoodgolf.com/"

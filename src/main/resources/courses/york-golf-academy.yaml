@@ -2,6 +2,9 @@ name: "York Golf Academy"
 address: "York Golf Range Towthorpe Moor Lane Towthorpe York YO32 9ST"
 lat: 54.0135471
 lng: -1.0162349
+nearby1: "Forest Park Golf Club"
+nearby2: "York Golf Club"
+nearby3: "Sandburn Hall"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.yorkgolfrange.co.uk/"

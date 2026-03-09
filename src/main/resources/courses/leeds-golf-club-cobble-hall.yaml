@@ -2,6 +2,9 @@ name: "Leeds Golf Club (Cobble Hall)"
 address: "LEEDS GOLF CLUB Elmete Lane, Leeds, United Kingdom, LS8 2LJ"
 lat: 53.8350893
 lng: -1.4864922
+nearby1: "Roundhay Golf Club"
+nearby2: "Brandon Golf Club"
+nearby3: "Moor Allerton Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.leedsgolfclub.co.uk/"

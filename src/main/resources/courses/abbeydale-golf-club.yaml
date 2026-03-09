@@ -2,6 +2,9 @@ name: "Abbeydale Golf Club"
 address: "Twentywell Lane, Dore, Sheffield S17 4QA"
 lat: 53.3255635
 lng: -1.5060165
+nearby1: "Dore & Totley Golf Club"
+nearby2: "Beauchief Golf Club"
+nearby3: "Lees Hall Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.abbeydalegolfclub.co.uk/"

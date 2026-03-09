@@ -2,6 +2,9 @@ name: "Todmorden Golf Club"
 address: "Todmorden Golf Club Rive Rocks Cross Stone Todmorden OL14 8RD"
 lat: 53.720608
 lng: -2.0847519
+nearby1: "Hebden Bridge Golf Club"
+nearby2: "Ryburn Golf Club"
+nearby3: "Halifax West End Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.todmordengolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Low Laithes Golf Club"
 address: "Low Laithes Golf Club Ltd Golf House, Park Mill Lane, Flushdyke, WF5 9AP"
 lat: 53.690048
 lng: -1.5531796
+nearby1: "City of Wakefield Golf Club"
+nearby2: "Midgley Lodge Motel & Golf Course"
+nearby3: "Hanging Heaton Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.lowlaithesgolfclub.co.uk/"

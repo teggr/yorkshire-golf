@@ -2,6 +2,9 @@ name: "Hickleton Golf Club"
 address: "Hickleton Golf Club Lidget Lane, Hickleton, Doncaster, South Yorkshire, DN5 7BE"
 lat: 53.551124
 lng: -1.2880517
+nearby1: "Sandhill Golf Club"
+nearby2: "Waterfront Golf"
+nearby3: "Crookhill Park Municipal Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.hickletongolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Owston Hall Golf Club"
 address: "Owston Lane, Doncaster DN5 0LP"
 lat: 53.5895742
 lng: -1.1686553
+nearby1: "Owston Park Golf Course"
+nearby2: "Thornhurst Park Golf Course"
+nearby3: "Crookhill Park Municipal Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.owstonhall.com/"

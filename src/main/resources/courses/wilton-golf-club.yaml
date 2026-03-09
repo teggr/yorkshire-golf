@@ -2,6 +2,9 @@ name: "Wilton Golf Club"
 address: "WILTON GOLF CLUB Wilton Golf Club, Wilton, Redcar, TS10 4QY"
 lat: 54.5689528
 lng: -1.1046886
+nearby1: "Cleveland Golf Club"
+nearby2: "Saltburn by Sea Golf Club"
+nearby3: "Middlesbrough Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.wiltongolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Settle Golf Club"
 address: "Buckhaw Brow Giggleswick, Settle North Yorkshire BD24 0DH"
 lat: 54.0800974
 lng: -2.2971659
+nearby1: "Bentham Golf Club"
+nearby2: "Skipton Golf Club"
+nearby3: "Bracken Ghyll Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.settlegolfclub.com/"

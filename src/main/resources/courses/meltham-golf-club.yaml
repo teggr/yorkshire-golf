@@ -2,6 +2,9 @@ name: "Meltham Golf Club"
 address: "HD9 4DQ"
 lat: 53.5879344
 lng: -1.8391304
+nearby1: "Crosland Heath Golf Club"
+nearby2: "Marsden Golf Club"
+nearby3: "Longley Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.meltham-golf.co.uk/"

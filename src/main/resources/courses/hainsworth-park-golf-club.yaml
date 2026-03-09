@@ -2,6 +2,9 @@ name: "Hainsworth Park Golf Club"
 address: "Hainsworth Park, Leven Road, Brandesburton, East Yorkshire, YO25 8RT"
 lat: 53.90718
 lng: -0.30514
+nearby1: "Hornsea Golf Club"
+nearby2: "Far Grange Golf Park"
+nearby3: "Beverley and East Riding Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.hainsworthparkgolfclub.co.uk/"

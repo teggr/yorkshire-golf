@@ -2,6 +2,9 @@ name: "Doncaster Town Moor Golf Club"
 address: "Bawtry Road, Belle Vue, Doncaster, DN4 5HU"
 lat: 53.5182953
 lng: -1.1056873
+nearby1: "Wheatley Golf Club"
+nearby2: "Doncaster Golf Club"
+nearby3: "Crookhill Park Municipal Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.doncastertownmoorgc.co.uk/"

@@ -2,6 +2,9 @@ name: "Howley Hall Golf Club"
 address: "Howley Hall Golf Club Scotchman Lane, Morley, Leeds, United Kingdom, LS27 0NX"
 lat: 53.7253302
 lng: -1.6167766
+nearby1: "Hanging Heaton Golf Club"
+nearby2: "The Manor Golf Club"
+nearby3: "South Leeds Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.howleyhall.co.uk/"

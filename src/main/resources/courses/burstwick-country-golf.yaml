@@ -2,6 +2,9 @@ name: "Burstwick Country Golf"
 address: "Burstwick Country Golf Ellifoot Lane Burstwick Hull East Yorkshire HU12 9EF"
 lat: 53.73927
 lng: -0.13737
+nearby1: "Ganstead Park Golf Club"
+nearby2: "Sutton Park Golf Course"
+nearby3: "Withernsea Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.burstwick.golf/"

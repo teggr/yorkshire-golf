@@ -2,6 +2,9 @@ name: "Bingley St Ives Golf Club"
 address: "Bingley St Ives Golf Club St Ives Estate Harden Bingley BD16 1AT"
 lat: 53.8465812
 lng: -1.8628798
+nearby1: "Shipley Golf Club"
+nearby2: "East Morton Golf Club (formally Fardew Golf Club)"
+nearby3: "Northcliffe Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://bingleystivesgc.com/"

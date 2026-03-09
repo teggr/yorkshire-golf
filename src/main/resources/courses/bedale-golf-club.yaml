@@ -2,6 +2,9 @@ name: "Bedale Golf Club"
 address: "Bedale Golf Club, The Club House, Leyburn Road, Bedale, North Yorkshire, DL8 1EZ"
 lat: 54.29182
 lng: -1.59714
+nearby1: "Akebar Park previously Wensleydale Golf Ltd"
+nearby2: "Masham Golf Club"
+nearby3: "Romanby Golf & Country Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.bedalegolfclub.com/"

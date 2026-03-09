@@ -2,6 +2,9 @@ name: "Wath Golf Club"
 address: "WATH GOLF CLUB Wath Golf Club, Abdy, Rotherham, S62 7SJ"
 lat: 53.484518
 lng: -1.3504459
+nearby1: "Waterfront Golf"
+nearby2: "Roundwood Golf Club"
+nearby3: "Rotherham Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.wathgolfclub.co.uk/"

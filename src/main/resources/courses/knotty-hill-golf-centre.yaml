@@ -2,6 +2,9 @@ name: "Knotty Hill Golf Centre"
 address: "KNOTTY HILL GOLF CENTRE  Sedgefield, TS21 2BB"
 lat: 54.6652694
 lng: -1.466192
+nearby1: "Teesside Golf Club"
+nearby2: "Ingleby Barwick Golf Academy"
+nearby3: "Eaglescliffe Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.knottyhill.com/"

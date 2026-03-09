@@ -2,6 +2,9 @@ name: "Sutton Park Golf Course"
 address: "THE LODGE Saltshouse Road, HU8 9HF"
 lat: 53.7772588
 lng: -0.2832499
+nearby1: "Ganstead Park Golf Club"
+nearby2: "Burstwick Country Golf"
+nearby3: "Cottingham Parks Golf & Leisure Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.suttonparkgolfclub.uk/"

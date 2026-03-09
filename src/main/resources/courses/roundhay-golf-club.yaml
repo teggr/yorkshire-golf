@@ -2,6 +2,9 @@ name: "Roundhay Golf Club"
 address: "Roundhay Park public golf course, Park Lane, Leeds, LS8 2EJ"
 lat: 53.8451166
 lng: -1.4998494
+nearby1: "Leeds Golf Club (Cobble Hall)"
+nearby2: "Brandon Golf Club"
+nearby3: "Alwoodley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://active.leeds.gov.uk/classesandactivities/sports/golf"

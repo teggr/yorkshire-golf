@@ -2,6 +2,9 @@ name: "Dore & Totley Golf Club"
 address: "Dore Totley Golf Club Bradway Road Sheffield S17 4QR"
 lat: 53.3197299
 lng: -1.4996063
+nearby1: "Abbeydale Golf Club"
+nearby2: "Beauchief Golf Club"
+nearby3: "Hallowes Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.doreandtotleygolfclub.co.uk/"

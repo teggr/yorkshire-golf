@@ -2,6 +2,9 @@ name: "Spofforth Golf Club"
 address: "Haggs Road Harrogate HG3 1EQ"
 lat: 53.9547
 lng: -1.4620895
+nearby1: "Rudding Park Golf Club"
+nearby2: "Pannal Golf Club"
+nearby3: "Wetherby Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.spofforthgolf.uk/"

@@ -2,6 +2,9 @@ name: "Thirsk and Northallerton Golf Club"
 address: "Thornton-le-Street, Thirsk, North Yorkshire, England, Y07 4AB"
 lat: 54.2704813
 lng: -1.3659644
+nearby1: "Thistle Hill Golf Club"
+nearby2: "Romanby Golf & Country Club"
+nearby3: "Bedale Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.tngc.co.uk/"

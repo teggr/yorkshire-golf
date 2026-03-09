@@ -2,6 +2,9 @@ name: "Hallamshire Golf Club"
 address: "Hallamshire Golf Club, Sandygate, Sheffield S10 4LA"
 lat: 53.3751787
 lng: -1.5569682
+nearby1: "Hillsborough Golf Club"
+nearby2: "Beauchief Golf Club"
+nearby3: "Abbeydale Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.hallamshiregolfclub.co.uk/"

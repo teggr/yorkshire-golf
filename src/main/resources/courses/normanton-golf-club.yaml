@@ -2,6 +2,9 @@ name: "Normanton Golf Club"
 address: "Normanton Golf Club, Hatfeild Hall, Aberford Road, Wakefield, West Yorks. WF3 4JP."
 lat: 53.7065821
 lng: -1.4844491
+nearby1: "Midgley Lodge Motel & Golf Course"
+nearby2: "QHotels Oulton Hall Golf Club"
+nearby3: "Low Laithes Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.normantongolf.co.uk/golf_index.php"

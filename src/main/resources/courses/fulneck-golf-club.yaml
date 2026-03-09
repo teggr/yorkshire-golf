@@ -2,6 +2,9 @@ name: "Fulneck Golf Club"
 address: "Fulneck Golf ClubPudsey LS28 8NT"
 lat: 53.7835389
 lng: -1.6659488
+nearby1: "The Manor Golf Club"
+nearby2: "East Bierley Golf Club"
+nearby3: "Calverley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.fulneckgolfclub.co.uk/"

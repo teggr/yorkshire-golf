@@ -2,6 +2,9 @@ name: "Hull Golf Club"
 address: "Hull Golf Club, The Hall, Packman Lane, Kirk Ella, Hull, HU10 7TJ"
 lat: 53.7545321
 lng: -0.4585213
+nearby1: "Hessle Golf Club"
+nearby2: "Cottingham Parks Golf & Leisure Club"
+nearby3: "Skidby Lakes Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.hullgolfclub.co.uk/"

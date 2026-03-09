@@ -2,6 +2,9 @@ name: "Cleckheaton Golf Club"
 address: "Cleckheaton Golf Club, 483 Bradford Road, Cleckheaton, West Yorkshire BD19 6BU"
 lat: 53.7415
 lng: -1.73291
+nearby1: "East Bierley Golf Club"
+nearby2: "South Bradford Golf Club"
+nearby3: "Willow Valley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://cleckheatongolfclub.co.uk/"

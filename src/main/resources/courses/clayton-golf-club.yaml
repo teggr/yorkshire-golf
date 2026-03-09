@@ -2,6 +2,9 @@ name: "Clayton Golf Club"
 address: "Clayton Golf Club Thornton View Road, Clayton, Bradford, West Yorkshire BD14 6JX"
 lat: 53.778295
 lng: -1.8132908
+nearby1: "Queensbury Golf Club"
+nearby2: "Headley Golf Club"
+nearby3: "West Bradford Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://claytongolfclub.co.uk/"

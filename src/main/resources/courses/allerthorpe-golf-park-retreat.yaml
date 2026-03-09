@@ -2,6 +2,9 @@ name: "Allerthorpe Golf & Park Retreat"
 address: "Waplington Court Melbourne Road, York YO42 4RL"
 lat: 53.90491
 lng: -0.81138
+nearby1: "Kilnwick Percy Golf Club"
+nearby2: "The Oaks Golf Club & Spa"
+nearby3: "Swallow Hall Golf Club"
 playAndStay: true
 website: "https://www.prestigecountryparks.co.uk/allerthorpe"
 region:

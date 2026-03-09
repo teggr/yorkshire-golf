@@ -2,6 +2,9 @@ name: "Aldwark Manor Golf Club"
 address: "Aldwark, Alne, York YO61 1UF"
 lat: 54.0586588
 lng: -1.2917306
+nearby1: "Easingwold Golf Club"
+nearby2: "Knaresborough Golf Club"
+nearby3: "Forest of Galtres Golf Club"
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

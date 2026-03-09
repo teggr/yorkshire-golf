@@ -2,6 +2,9 @@ name: "Outlane Golf Club"
 address: "Outlane Golf Club Slack Lane, off New Hey Road, Huddersfield HD3 3FQ"
 lat: 53.65393
 lng: -1.874455
+nearby1: "Bradley Hall Golf Club"
+nearby2: "Elland Golf Club"
+nearby3: "Crosland Heath Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.outlanegolfclub.co.uk/"

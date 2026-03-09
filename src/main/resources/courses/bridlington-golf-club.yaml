@@ -2,6 +2,9 @@ name: "Bridlington Golf Club"
 address: "Belvedere Road, Bridlington, YO15 3NA"
 lat: 54.0720346
 lng: -0.205525
+nearby1: "Bridlington Links Golf & Leisure Estate"
+nearby2: "Flamborough Head Golf Club"
+nearby3: "Far Grange Golf Park"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.bridlingtongolfclub.co.uk/"

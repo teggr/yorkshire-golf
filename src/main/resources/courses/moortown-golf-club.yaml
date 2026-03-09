@@ -2,6 +2,9 @@ name: "Moortown Golf Club"
 address: "Moortown Golf Club Harrogate Rd A61, Alwoodley, Leeds LS17 7DB"
 lat: 53.8572485
 lng: -1.5346827
+nearby1: "Sand Moor Golf Club"
+nearby2: "Alwoodley Golf Club"
+nearby3: "Roundhay Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.moortown-golf-club.co.uk/"

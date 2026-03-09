@@ -2,6 +2,9 @@ name: "Hessle Golf Club"
 address: "Hessle Golf Club, Westfield Road, Raywell, Cottingham, E Yorks HU16 5ZA"
 lat: 53.76602
 lng: -0.48862
+nearby1: "Hull Golf Club"
+nearby2: "Cottingham Parks Golf & Leisure Club"
+nearby3: "Skidby Lakes Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://hesslegolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Sand Moor Golf Club"
 address: "Sand Moor Golf Club, Alwoodley Lane, Alwoodley, Leeds, England, LS17 7DJ"
 lat: 53.8622602
 lng: -1.5420965
+nearby1: "Moortown Golf Club"
+nearby2: "Alwoodley Golf Club"
+nearby3: "Headingley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.sandmoorgolf.co.uk/"

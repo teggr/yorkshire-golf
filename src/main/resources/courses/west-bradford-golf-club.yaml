@@ -2,6 +2,9 @@ name: "West Bradford Golf Club"
 address: "Golf Avenue, Off Chellow Grange Road, Heaton Village, Bradford, West Yorkshire BD9 6NP"
 lat: 53.8116268
 lng: -1.8215186
+nearby1: "Express Golf Centre"
+nearby2: "Northcliffe Golf Club"
+nearby3: "Headley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.westbradfordgolfclub.co.uk/"

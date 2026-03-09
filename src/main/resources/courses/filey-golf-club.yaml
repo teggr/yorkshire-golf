@@ -2,6 +2,9 @@ name: "Filey Golf Club"
 address: "Filey Golf Club, West Avenue, Filey, North Yorkshire YO14 9BQ"
 lat: 54.1984533
 lng: -0.2884664
+nearby1: "Hunmanby Hall Golf Course"
+nearby2: "Scarborough South Cliff Golf Club"
+nearby3: "Ganton Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.fileygolfclub.com/"

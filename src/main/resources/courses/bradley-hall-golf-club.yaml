@@ -2,6 +2,9 @@ name: "Bradley Hall Golf Club"
 address: "HALIFAX BRADLEY HALL GOLF CLUB LTD Holywell Green, Halifax, West Yorkshire, HX4 9AN"
 lat: 53.6800451
 lng: -1.8744183
+nearby1: "Elland Golf Club"
+nearby2: "Outlane Golf Club"
+nearby3: "Ryburn Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.bradleyhallgolf.co.uk/"

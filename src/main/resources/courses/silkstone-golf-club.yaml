@@ -2,6 +2,9 @@ name: "Silkstone Golf Club"
 address: "Field Head, Elmhirst Lane, Silkstone, Barnsley S75 4LD"
 lat: 53.5494536
 lng: -1.5417305
+nearby1: "Wortley Golf Club"
+nearby2: "Barnsley Golf Club (The Limes)"
+nearby3: "Woolley Park Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.silkstonegolfclub.co.uk/"

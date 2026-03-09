@@ -2,6 +2,9 @@ name: "Ganstead Park Golf Club"
 address: "Longdales Lane, Coniston, Hull, HU11 4LB"
 lat: 53.7896938
 lng: -0.243861
+nearby1: "Sutton Park Golf Course"
+nearby2: "Burstwick Country Golf"
+nearby3: "Hornsea Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.gansteadpark.co.uk/"

@@ -2,6 +2,9 @@ name: "Moor Allerton Golf Club"
 address: "The Club House, Wike, Leeds, West Yorkshire, United Kingdom, LS17 9NH"
 lat: 53.8699828
 lng: -1.4803432
+nearby1: "The Village Golf Course"
+nearby2: "Leeds Golf Centre (Wike Ridge)"
+nearby3: "Brandon Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://moorallertongolfclub.co.uk/"

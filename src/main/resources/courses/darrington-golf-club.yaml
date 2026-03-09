@@ -2,6 +2,9 @@ name: "Darrington Golf Club"
 address: "Darrington Golf Club Havercroft Lane, Darrington, Pontefract, West Yorkshire, WF8 3BP"
 lat: 53.6770761
 lng: -1.2572247
+nearby1: "Ferrybridge Golf Club"
+nearby2: "Pontefract and District Golf Club"
+nearby3: "Whitwood Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.darringtongolfclub.com/"

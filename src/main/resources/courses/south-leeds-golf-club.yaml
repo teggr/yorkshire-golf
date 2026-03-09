@@ -2,6 +2,9 @@ name: "South Leeds Golf Club"
 address: "Gipsy Lane Beeston Leeds LS11 5TU"
 lat: 53.7576129
 lng: -1.558679
+nearby1: "Howley Hall Golf Club"
+nearby2: "City Golf (Kirkstall)"
+nearby3: "Gotts Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://southleedsgolfclub.co.uk/"

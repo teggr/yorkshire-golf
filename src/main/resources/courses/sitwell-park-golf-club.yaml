@@ -2,6 +2,9 @@ name: "Sitwell Park Golf Club"
 address: "Shrogswood Road, Rotherham, S60 4BY"
 lat: 53.4161894
 lng: -1.3118614
+nearby1: "Phoenix Golf Club"
+nearby2: "Roundwood Golf Club"
+nearby3: "Rotherham Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.sitwellgolf.co.uk/"

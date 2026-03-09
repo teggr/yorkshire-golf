@@ -2,6 +2,9 @@ name: "Sandhill Golf Club"
 address: "Sandhill Golf Club Middlecliffe Lane, Little Houghton, Barnsley, S72 0HW"
 lat: 53.5453199
 lng: -1.36056
+nearby1: "Waterfront Golf"
+nearby2: "Hillies Golf Club"
+nearby3: "Hickleton Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.sandhillgolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Catterick Golf Club"
 address: "Catterick Golf Club, Leyburn Road, Catterick Garrison, United Kingdom, DL9 3QE"
 lat: 54.37215
 lng: -1.73649
+nearby1: "Richmond (Yorkshire) Golf Club"
+nearby2: "Akebar Park previously Wensleydale Golf Ltd"
+nearby3: "Bedale Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.catterickgolfclub.co.uk/"

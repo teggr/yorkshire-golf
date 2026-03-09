@@ -2,6 +2,9 @@ name: "Scarborough South Cliff Golf Club"
 address: "Deepdale Avenue, Scarborough, YO11 2UE"
 lat: 54.2625125
 lng: -0.4012297
+nearby1: "Scarborough North Cliff Golf Club"
+nearby2: "Filey Golf Club"
+nearby3: "Ganton Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.southcliffgolfclub.com/"

@@ -2,6 +2,9 @@ name: "Wortley Golf Club"
 address: "Hermit Hill Lane, Wortley, Sheffield, South Yorkshire, S35 7DF"
 lat: 53.4953567
 lng: -1.5341925
+nearby1: "Stocksbridge Golf Club"
+nearby2: "Tankersley Park Golf Club"
+nearby3: "Silkstone Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.wortleygolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Malton and Norton Golf Club"
 address: "Malton Norton Golf Club Welham Park, Malton, North Yorkshire, YO17 9QE"
 lat: 54.1222904
 lng: -0.8010142
+nearby1: "Sandburn Hall"
+nearby2: "York Golf Club"
+nearby3: "York Golf Academy"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.maltonandnortongolfclub.co.uk/"

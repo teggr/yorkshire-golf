@@ -2,6 +2,9 @@ name: "Dewsbury District Golf Club"
 address: "DEWSBURY DISTRICT GOLF CLUB The Pinnacle, Sands Lane, Mirfield, England, WF14 8HJ"
 lat: 53.66956
 lng: -1.67143
+nearby1: "Hanging Heaton Golf Club"
+nearby2: "Woodsome Hall Golf Club"
+nearby3: "Bradley Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.dewsburygolf.co.uk/"

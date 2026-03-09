@@ -2,6 +2,9 @@ name: "Tankersley Park Golf Club"
 address: "Tankersley Park Golf Club Park Lane, High Green, Sheffield S35 4LG"
 lat: 53.4815178
 lng: -1.4737205
+nearby1: "Wortley Golf Club"
+nearby2: "Grange Park (Yorkshire) Golf Club"
+nearby3: "Hillies Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.tankersleyparkgolfclub.org.uk/"

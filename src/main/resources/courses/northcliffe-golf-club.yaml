@@ -2,6 +2,9 @@ name: "Northcliffe Golf Club"
 address: "High Bank Lane, Shipley, West Yorkshire, BD18 4LJ"
 lat: 53.8269714
 lng: -1.8024471
+nearby1: "Express Golf Centre"
+nearby2: "West Bradford Golf Club"
+nearby3: "Shipley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.northcliffegolfclub.co.uk/"

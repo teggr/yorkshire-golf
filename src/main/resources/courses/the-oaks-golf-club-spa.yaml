@@ -2,6 +2,9 @@ name: "The Oaks Golf Club & Spa"
 address: "The Oaks Golf Club, Aughton Common, Aughton, York, YO42 4PW"
 lat: 53.8402
 lng: -0.88422
+nearby1: "Boothferry Golf Club"
+nearby2: "Allerthorpe Golf & Park Retreat"
+nearby3: "Swallow Hall Golf Club"
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

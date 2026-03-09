@@ -2,6 +2,9 @@ name: "Driffield Golf Club"
 address: "DRIFFIELD GOLF CLUB Sunderlandwick, Driffield, YO25 9AD"
 lat: 53.9868386
 lng: -0.45024
+nearby1: "Hainsworth Park Golf Club"
+nearby2: "Far Grange Golf Park"
+nearby3: "Beverley and East Riding Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.driffieldgolfclub.co.uk/"

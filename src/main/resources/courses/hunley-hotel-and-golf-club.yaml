@@ -2,6 +2,9 @@ name: "Hunley Hotel and Golf Club"
 address: "Ings Lane, Saltburn-by-the-Sea, North Yorkshire, TS12 2FT"
 lat: 54.574
 lng: -0.93101
+nearby1: "Saltburn by Sea Golf Club"
+nearby2: "Cleveland Golf Club"
+nearby3: "Wilton Golf Club"
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

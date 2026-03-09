@@ -2,6 +2,9 @@ name: "Halifax Golf Club"
 address: "THE HALIFAX GOLF CLUB Union Lane, Ogden, Halifax, England, HX2 8XR"
 lat: 53.7696431
 lng: -1.9130443
+nearby1: "Headley Golf Club"
+nearby2: "Halifax West End Golf Club"
+nearby3: "Queensbury Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.halifaxgolfclub.co.uk/"

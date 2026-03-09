@@ -2,6 +2,9 @@ name: "Ripon City Golf Club"
 address: "Palace Road, Ripon, North Yorkshire, HG4 3HH"
 lat: 54.1513837
 lng: -1.5318191
+nearby1: "Thistle Hill Golf Club"
+nearby2: "Masham Golf Club"
+nearby3: "Knaresborough Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.riponcitygolfclub.com/"

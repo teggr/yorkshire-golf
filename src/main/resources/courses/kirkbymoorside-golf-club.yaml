@@ -2,6 +2,9 @@ name: "Kirkbymoorside Golf Club"
 address: "Kirkbymoorside Golf Course Manor Vale, Kirkbymoorside, North Yorkshire, YO62 6EG"
 lat: 54.2823549
 lng: -0.9438785
+nearby1: "Ampleforth College Golf Club"
+nearby2: "Malton and Norton Golf Club"
+nearby3: "Easingwold Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.kirkbymoorsidegolf.co.uk/"

@@ -2,6 +2,9 @@ name: "Hollins Hall Hotel & Country Club"
 address: "Hollins Hill, Shipley, Bradford, BD17 7QW, United Kingdom"
 lat: 53.8530645
 lng: -1.7451743
+nearby1: "Baildon Golf Club"
+nearby2: "Bradford Golf Club"
+nearby3: "Rawdon Golf and Lawn Tennis Club"
 playAndStay: true
 website: "https://www.britanniahotels.com/hotels/hollins-hall-hotel-country-club/golf"
 region:

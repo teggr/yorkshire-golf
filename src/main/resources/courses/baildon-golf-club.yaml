@@ -2,6 +2,9 @@ name: "Baildon Golf Club"
 address: "Baildon Golf Club, Moorgate, Baildon, Shipley, BD17 5PP"
 lat: 53.85616
 lng: -1.76993
+nearby1: "Hollins Hall Hotel & Country Club"
+nearby2: "Bradford Golf Club"
+nearby3: "Northcliffe Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.baildongolfclub.com/"

@@ -2,6 +2,9 @@ name: "Drax Golf Club"
 address: "Drax Golf Club 2025 Info Address Main Road, Drax Selby, YO8 8PJ"
 lat: 53.7291
 lng: -0.9946
+nearby1: "Selby Golf Club"
+nearby2: "Boothferry Golf Club"
+nearby3: "Scalm Park Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.draxgolfclub.com/"

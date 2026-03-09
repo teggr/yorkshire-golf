@@ -2,6 +2,9 @@ name: "Gotts Park Golf Club"
 address: "Gotts Park Lodge Armley Ridge Road, Leeds LS12 2QX"
 lat: 53.8050987
 lng: -1.6011929
+nearby1: "City Golf (Kirkstall)"
+nearby2: "Fulneck Golf Club"
+nearby3: "South Leeds Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://gottsparkgolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Midgley Lodge Motel & Golf Course"
 address: "Wakefield, West Yorkshire WF4 4JJ"
 lat: 53.6829541
 lng: -1.4967286
+nearby1: "City of Wakefield Golf Club"
+nearby2: "Normanton Golf Club"
+nearby3: "Low Laithes Golf Club"
 playAndStay: true
 website: "https://www.midgleylodgegolfcourse.co.uk/"
 region:

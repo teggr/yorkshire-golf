@@ -2,6 +2,9 @@ name: "Horsforth Golf Club"
 address: "Horsforth Golf Club LS18 5EX"
 lat: 53.8508707
 lng: -1.6574037
+nearby1: "Rawdon Golf and Lawn Tennis Club"
+nearby2: "Cookridge Hall Golf Club"
+nearby3: "Woodhall Hills Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.horsforthgolfclub.co.uk/"

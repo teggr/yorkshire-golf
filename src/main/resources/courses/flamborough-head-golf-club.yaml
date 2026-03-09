@@ -2,6 +2,9 @@ name: "Flamborough Head Golf Club"
 address: "Lighthouse Road Flamborough Bridlington East Riding of Yorkshire YO15 1AR"
 lat: 54.118146
 lng: -0.1032434
+nearby1: "Bridlington Links Golf & Leisure Estate"
+nearby2: "Bridlington Golf Club"
+nearby3: "Filey Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.flamboroughheadgolfclub.co.uk/"

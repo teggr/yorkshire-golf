@@ -2,6 +2,9 @@ name: "Alwoodley Golf Club"
 address: "holes which test, entice and always entertain Clyde Johnson Archtiect Wigton Lane, Leeds, LS17 8SA"
 lat: 53.8619254
 lng: -1.5254472
+nearby1: "Moortown Golf Club"
+nearby2: "Sand Moor Golf Club"
+nearby3: "Leeds Golf Centre (Wike Ridge)"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://alwoodleygolfclub.com/"

@@ -2,6 +2,9 @@ name: "Brandon Golf Club"
 address: "Brandon Golf Course, Holywell Lane (opposite Red Lion) Shadwell Leeds, LS17 8EZ"
 lat: 53.8567618
 lng: -1.4887418
+nearby1: "Roundhay Golf Club"
+nearby2: "Moor Allerton Golf Club"
+nearby3: "Leeds Golf Centre (Wike Ridge)"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://brandonandthevillagegolfcourses.co.uk/brandon-golf/"

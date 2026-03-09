@@ -2,6 +2,9 @@ name: "Boothferry Golf Club"
 address: "Boothferry Golf Club Spaldington Lane Howden DN14 7NG"
 lat: 53.7836127
 lng: -0.861555
+nearby1: "The Oaks Golf Club & Spa"
+nearby2: "Drax Golf Club"
+nearby3: "Allerthorpe Golf & Park Retreat"
 region:
   name: "EAST_YORKSHIRE"
 website: "http://boothferrygolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Brough Golf Club"
 address: "BROUGH GOLF CLUB Cave Road, Brough, East Yorkshire, HU15 1HB"
 lat: 53.7366142
 lng: -0.5790227
+nearby1: "Cave Castle Golf Club"
+nearby2: "Hessle Golf Club"
+nearby3: "Hull Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.brough-golfclub.co.uk/"

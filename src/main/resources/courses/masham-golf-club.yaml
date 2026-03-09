@@ -2,6 +2,9 @@ name: "Masham Golf Club"
 address: "Masham Golf Club, Burnholme, Swinton Road, Masham, Ripon HG4 4NS"
 lat: 54.2168918
 lng: -1.6704649
+nearby1: "Bedale Golf Club"
+nearby2: "Akebar Park previously Wensleydale Golf Ltd"
+nearby3: "Ripon City Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://mashamgolfclub.co.uk/"

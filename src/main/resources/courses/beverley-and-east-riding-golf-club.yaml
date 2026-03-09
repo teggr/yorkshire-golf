@@ -2,6 +2,9 @@ name: "Beverley and East Riding Golf Club"
 address: "BEVERLEY AND EAST RIDING GOLF CLUB ANTI MILL, WESTWOOD, BEVERLEY, EAST YORKSHIRE, HU17 8RG"
 lat: 53.8335504
 lng: -0.4423923
+nearby1: "Cottingham Parks Golf & Leisure Club"
+nearby2: "Skidby Lakes Golf Club"
+nearby3: "Hessle Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.beverleygolfclub.co.uk/"

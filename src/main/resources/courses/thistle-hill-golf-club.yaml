@@ -2,6 +2,9 @@ name: "Thistle Hill Golf Club"
 address: "Allanbrooke Barracks, Topcliffe, North Yorkshire YO7 3EG"
 lat: 54.20195
 lng: -1.40053
+nearby1: "Thirsk and Northallerton Golf Club"
+nearby2: "Ripon City Golf Club"
+nearby3: "Romanby Golf & Country Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.thethistlehillgolfclub.co.uk/"

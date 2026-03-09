@@ -2,6 +2,9 @@ name: "City of Wakefield Golf Club"
 address: "CITY OF WAKEFIELD GOLF CLUB Gaskell Sports Pavilion Horbury Road Wakefield WF2 8LG"
 lat: 53.6677204
 lng: -1.5271667
+nearby1: "Midgley Lodge Motel & Golf Course"
+nearby2: "Low Laithes Golf Club"
+nearby3: "Wakefield Golf Club"
 website: "https://www.cowgc.co.uk/"
 region:
   name: "WEST_YORKSHIRE"

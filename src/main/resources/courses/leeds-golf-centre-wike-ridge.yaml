@@ -2,6 +2,9 @@ name: "Leeds Golf Centre (Wike Ridge)"
 address: "Wike Ridge Lane, Shadwell, Leeds, LS17 9JW"
 lat: 53.8729927
 lng: -1.494545
+nearby1: "The Village Golf Course"
+nearby2: "Moor Allerton Golf Club"
+nearby3: "Brandon Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.leedsgolfcentre.com/"

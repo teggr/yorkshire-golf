@@ -2,6 +2,9 @@ name: "Concord Park Golf Club"
 address: "Concord Park Golf Club  Shiregreen Ln  Sheffield  S5 6AE"
 lat: 53.4275222
 lng: -1.4269391
+nearby1: "Grange Park (Yorkshire) Golf Club"
+nearby2: "Phoenix Golf Club"
+nearby3: "Tinsley Park Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.robcalderbankgolf.com/"

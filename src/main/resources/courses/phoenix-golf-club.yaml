@@ -2,6 +2,9 @@ name: "Phoenix Golf Club"
 address: "Phoenix Golf Club Phoenix Pavilion Pavilion Lane Brinsworth Rotherham S60 5PA"
 lat: 53.4122352
 lng: -1.3742327
+nearby1: "Tinsley Park Golf Club"
+nearby2: "Concord Park Golf Club"
+nearby3: "Sitwell Park Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.phoenixgolfclub.co.uk/"

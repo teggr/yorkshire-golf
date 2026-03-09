@@ -2,6 +2,9 @@ name: "Birley Wood Golf Club"
 address: "Birley Lane, Sheffield, S12 3BP"
 lat: 53.3403888
 lng: -1.4004719
+nearby1: "Lees Hall Golf Club"
+nearby2: "Tinsley Park Golf Club"
+nearby3: "Rother Valley Golf Centre"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://everyonegolf.com/venues/birley-wood-golf-course/"

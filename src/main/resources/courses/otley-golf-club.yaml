@@ -2,6 +2,9 @@ name: "Otley Golf Club"
 address: "OTLEY GOLF CLUB LIMITED West Busk Lane, Otley, Leeds, LS21 3NG"
 lat: 53.8996539
 lng: -1.7255847
+nearby1: "Bradford Golf Club"
+nearby2: "Ben Rhydding Golf Club"
+nearby3: "Hollins Hall Hotel & Country Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.otleygolfclub.co.uk/"

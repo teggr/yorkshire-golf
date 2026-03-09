@@ -2,6 +2,9 @@ name: "Waterfront Golf"
 address: "Waterfront Golf Station Road Wath Upon Dearne, S63 7BU"
 lat: 53.51265
 lng: -1.3484586
+nearby1: "Wath Golf Club"
+nearby2: "Hillies Golf Club"
+nearby3: "Sandhill Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.waterfrontgolf.co.uk/"

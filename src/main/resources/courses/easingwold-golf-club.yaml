@@ -2,6 +2,9 @@ name: "Easingwold Golf Club"
 address: "Easingwold Golf Club Stillington Road, Easingwold, YORK, YO61 3ET"
 lat: 54.1081277
 lng: -1.1711909
+nearby1: "Aldwark Manor Golf Club"
+nearby2: "Ampleforth College Golf Club"
+nearby3: "Forest of Galtres Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.easingwoldgolfclub.co.uk/"

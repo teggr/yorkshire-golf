@@ -2,6 +2,9 @@ name: "Bridlington Links Golf & Leisure Estate"
 address: "Bridlington Links Golf & Leisure Estate YO15 1DW"
 lat: 54.1068548
 lng: -0.1513757
+nearby1: "Flamborough Head Golf Club"
+nearby2: "Bridlington Golf Club"
+nearby3: "Filey Golf Club"
 website: "https://www.pure-leisure.co.uk/bridlington-links-facilities/bridlington-links-golf-course/"
 region:
   name: "EAST_YORKSHIRE"

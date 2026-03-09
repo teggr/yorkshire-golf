@@ -2,6 +2,9 @@ name: "York Golf Club"
 address: "Lords Moor Lane, Strensall, York, YO32 5XF"
 lat: 54.039153
 lng: -1.0179762
+nearby1: "York Golf Academy"
+nearby2: "Sandburn Hall"
+nearby3: "Forest Park Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.yorkgolfclub.co.uk/"

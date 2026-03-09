@@ -2,6 +2,9 @@ name: "Ryburn Golf Club"
 address: "Ryburn Golf Club The Shaw, Norland, Sowerby Bridge, HX6 3QP"
 lat: 53.6987234
 lng: -1.9080636
+nearby1: "Bradley Hall Golf Club"
+nearby2: "Halifax West End Golf Club"
+nearby3: "Elland Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.ryburngolfclub.co.uk/"

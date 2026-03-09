@@ -2,6 +2,9 @@ name: "Crookhill Park Municipal Golf Club"
 address: "Adwick Leisure Complex DN6 7QF"
 lat: 53.56364
 lng: -1.1866995
+nearby1: "Owston Park Golf Course"
+nearby2: "Owston Hall Golf Club"
+nearby3: "Thornhurst Park Golf Course"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.dclt.co.uk/crookhill-park-golf-course/"

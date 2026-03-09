@@ -2,6 +2,9 @@ name: "Sandburn Hall"
 address: "SANDBURN HALL Flaxton, York YO60 7RB"
 lat: 54.0361359
 lng: -0.9707249
+nearby1: "York Golf Club"
+nearby2: "York Golf Academy"
+nearby3: "Forest Park Golf Club"
 playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"

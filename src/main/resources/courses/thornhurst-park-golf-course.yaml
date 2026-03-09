@@ -2,6 +2,9 @@ name: "Thornhurst Park Golf Course"
 address: "Holme Ln, Doncaster DN5 0LR"
 lat: 53.5917305
 lng: -1.1451103
+nearby1: "Owston Hall Golf Club"
+nearby2: "Owston Park Golf Course"
+nearby3: "Crookhill Park Municipal Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://thornhurstmanor.co.uk/golf/"

@@ -2,6 +2,9 @@ name: "Hillsborough Golf Club"
 address: "Hillsborough Golf Club Worrall Road, Worrall, Sheffield S6 4BE"
 lat: 53.4173619
 lng: -1.5371084
+nearby1: "Hallamshire Golf Club"
+nearby2: "Stocksbridge Golf Club"
+nearby3: "Concord Park Golf Club"
 region:
   name: "SOUTH_YORKSHIRE"
 website: "https://www.hillsboroughgolfclub.co.uk/"

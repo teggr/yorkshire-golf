@@ -2,6 +2,9 @@ name: "Skidby Lakes Golf Club"
 address: "Cottingham Parks Golf Leisure Club, Woodhill Way, Cottingham, East Yorkshire, HU16 5SW"
 lat: 53.7908852
 lng: -0.4442523
+nearby1: "Cottingham Parks Golf & Leisure Club"
+nearby2: "Hessle Golf Club"
+nearby3: "Hull Golf Club"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.cottinghamparks.co.uk/skidby-lakes"

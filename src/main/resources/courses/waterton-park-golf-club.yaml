@@ -2,6 +2,9 @@ name: "Waterton Park Golf Club"
 address: "Waterton Park Golf Club The Balk Walton Wakefield WF2 6QL"
 lat: 53.6443907
 lng: -1.4559816
+nearby1: "Wakefield Golf Club"
+nearby2: "Woolley Park Golf Club"
+nearby3: "Midgley Lodge Motel & Golf Course"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://watertonparkgc.co.uk/"

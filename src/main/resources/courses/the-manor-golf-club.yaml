@@ -2,6 +2,9 @@ name: "The Manor Golf Club"
 address: "The Manor Bradford Road, Drighlington Bradford, West Yorkshire BD11 1AB"
 lat: 53.7601713
 lng: -1.6683473
+nearby1: "East Bierley Golf Club"
+nearby2: "Fulneck Golf Club"
+nearby3: "Cleckheaton Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.themanorgolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Scarborough North Cliff Golf Club"
 address: "North Cliff Avenue, SCARBOROUGH, North Yorkshire, YO12 6PP"
 lat: 54.2984165
 lng: -0.4152085
+nearby1: "Scarborough South Cliff Golf Club"
+nearby2: "Ganton Golf Club"
+nearby3: "Filey Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://northcliffgolfclub.co.uk/"

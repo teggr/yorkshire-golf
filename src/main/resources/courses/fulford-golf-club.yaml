@@ -2,6 +2,9 @@ name: "Fulford Golf Club"
 address: "Heslington Lane, York, Yorkshire, YO10 5DY"
 lat: 53.9427079
 lng: -1.0546508
+nearby1: "Heworth Golf Club"
+nearby2: "Swallow Hall Golf Club"
+nearby3: "Pike Hills Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.fulfordgolfclub.co.uk/"

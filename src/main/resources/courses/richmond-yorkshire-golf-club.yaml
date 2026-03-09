@@ -2,6 +2,9 @@ name: "Richmond (Yorkshire) Golf Club"
 address: "DL10 4TT"
 lat: 54.41351
 lng: -1.73317
+nearby1: "Catterick Golf Club"
+nearby2: "Akebar Park previously Wensleydale Golf Ltd"
+nearby3: "Bedale Golf Club"
 website: "https://www.richmondyorksgolfclub.co.uk/"
 region:
   name: "NORTH_YORKSHIRE"

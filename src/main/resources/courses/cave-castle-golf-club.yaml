@@ -2,6 +2,9 @@ name: "Cave Castle Golf Club"
 address: "Cave Castle Golf Club, Church Hill South Cave, HU15 2EU"
 lat: 53.7680438
 lng: -0.612421
+nearby1: "Brough Golf Club"
+nearby2: "Hessle Golf Club"
+nearby3: "Hull Golf Club"
 playAndStay: true
 region:
   name: "EAST_YORKSHIRE"

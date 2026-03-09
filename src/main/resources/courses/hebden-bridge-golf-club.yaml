@@ -2,6 +2,9 @@ name: "Hebden Bridge Golf Club"
 address: "Hebden Bridge Golf Club Mount Skip, Hebden Bridge, West Yorkshire, HX7 8PH"
 lat: 53.74126
 lng: -1.99164
+nearby1: "Halifax West End Golf Club"
+nearby2: "Halifax Golf Club"
+nearby3: "Todmorden Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.hebdenbridgegolfclub.co.uk/"

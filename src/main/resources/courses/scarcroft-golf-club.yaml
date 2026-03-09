@@ -2,6 +2,9 @@ name: "Scarcroft Golf Club"
 address: "Scarcroft Golf Club Syke Lane, Scarcroft, Leeds, LS14 3BQ"
 lat: 53.8718425
 lng: -1.4549442
+nearby1: "Moor Allerton Golf Club"
+nearby2: "The Village Golf Course"
+nearby3: "Leeds Golf Centre (Wike Ridge)"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.scarcroftgolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Harrogate Golf Club"
 address: "Forest Lane Head, Harrogate, North Yorkshire, HG2 7TF"
 lat: 54.0036026
 lng: -1.4934173
+nearby1: "Rudding Park Golf Club"
+nearby2: "Knaresborough Golf Club"
+nearby3: "Oakdale (Harrogate) Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.harrogate-gc.co.uk/"

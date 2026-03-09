@@ -2,6 +2,9 @@ name: "Woolley Park Golf Club"
 address: "Woolley Park Golf Club New Road, Woolley, Wakefield, WF4 2JJ"
 lat: 53.6121984
 lng: -1.5048972
+nearby1: "Barnsley Golf Club (The Limes)"
+nearby2: "Wakefield Golf Club"
+nearby3: "Waterton Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.woolleyparkgolfclub.co.uk/"

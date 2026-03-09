@@ -2,6 +2,9 @@ name: "Whitby Golf Club"
 address: "WHITBY GOLF CLUB SANDSEND ROAD, LOW STRAGGLETON, WHITBY, YO21 3SR"
 lat: 54.4924312
 lng: -0.6483411
+nearby1: "Hunley Hotel and Golf Club"
+nearby2: "Saltburn by Sea Golf Club"
+nearby3: "Scarborough North Cliff Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.whitbygolfclub.co.uk/"

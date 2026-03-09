@@ -2,6 +2,9 @@ name: "Temple Newsam Golf Club"
 address: "The Clubhouse, Templenewsam Road, West Yorkshire, LS15 0LN"
 lat: 53.7910437
 lng: -1.4726712
+nearby1: "Leeds Golf Club (Cobble Hall)"
+nearby2: "QHotels Oulton Hall Golf Club"
+nearby3: "Garforth Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.templenewsamgolf.co.uk/"

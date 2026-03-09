@@ -2,6 +2,9 @@ name: "Marsden Golf Club"
 address: "Marsden Golf Club Mount Road Hemplow Huddersfield HD7 6NN"
 lat: 53.5904623
 lng: -1.9375071
+nearby1: "Meltham Golf Club"
+nearby2: "Crosland Heath Golf Club"
+nearby3: "Outlane Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.marsdengolfclub.co.uk/"

@@ -2,6 +2,9 @@ name: "Express Golf Centre"
 address: "Express Golf Centre The Fairways Bradford West Yorkshire BD9 6BR"
 lat: 53.8200504
 lng: -1.8033346
+nearby1: "Northcliffe Golf Club"
+nearby2: "West Bradford Golf Club"
+nearby3: "Shipley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.expressgolf.co.uk/golf-centre"

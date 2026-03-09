@@ -2,6 +2,9 @@ name: "City Golf (Kirkstall)"
 address: "City Golf Leeds  Redcoat Lane  Off Kirkstall Road  Leeds, LS4 2AW"
 lat: 53.8053543
 lng: -1.5901169
+nearby1: "Gotts Park Golf Club"
+nearby2: "Fulneck Golf Club"
+nearby3: "South Leeds Golf Club"
 website: "https://citygolfleeds.co.uk/"
 region:
   name: "WEST_YORKSHIRE"

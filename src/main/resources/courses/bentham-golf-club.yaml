@@ -2,6 +2,9 @@ name: "Bentham Golf Club"
 address: "Robin Lane High Bentham Lancaster LA2 7AG"
 lat: 54.1252012
 lng: -2.5051758
+nearby1: "Settle Golf Club"
+nearby2: "Skipton Golf Club"
+nearby3: "Bracken Ghyll Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.benthamgolfclub.co.uk/"

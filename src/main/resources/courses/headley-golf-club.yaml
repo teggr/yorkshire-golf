@@ -2,6 +2,9 @@ name: "Headley Golf Club"
 address: "Headley Golf Club Headley Lane, Thornton, BD13 3LX"
 lat: 53.78628
 lng: -1.8475
+nearby1: "Clayton Golf Club"
+nearby2: "Queensbury Golf Club"
+nearby3: "West Bradford Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://headleygolf.co.uk/"

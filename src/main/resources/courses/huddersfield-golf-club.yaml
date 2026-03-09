@@ -2,6 +2,9 @@ name: "Huddersfield Golf Club"
 address: "Huddersfield Golf Club Fixby Hall Lightridge Road HD2 2EP"
 lat: 53.672353
 lng: -1.7991144
+nearby1: "Castlefields Golf Club"
+nearby2: "Bradley Park Golf Club"
+nearby3: "Elland Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.huddersfield-golf.co.uk/"

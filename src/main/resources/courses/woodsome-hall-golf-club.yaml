@@ -2,6 +2,9 @@ name: "Woodsome Hall Golf Club"
 address: "Woodsome Hall Golf Club Ltd Fenay Bridge, Huddersfield, HD8 0LQ"
 lat: 53.6256604
 lng: -1.7240857
+nearby1: "Longley Park Golf Club"
+nearby2: "Dewsbury District Golf Club"
+nearby3: "Bradley Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.woodsome.co.uk/"

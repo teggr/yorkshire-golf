@@ -2,6 +2,9 @@ name: "Ganton Golf Club"
 address: "YO12 4PA"
 lat: 54.1861552
 lng: -0.4952782
+nearby1: "Scarborough South Cliff Golf Club"
+nearby2: "Hunmanby Hall Golf Course"
+nearby3: "Scarborough North Cliff Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.gantongolfclub.com/"

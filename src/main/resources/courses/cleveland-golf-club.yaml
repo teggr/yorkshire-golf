@@ -2,6 +2,9 @@ name: "Cleveland Golf Club"
 address: "CLEVELAND GOLF CLUB Majuba Road, Redcar, Cleveland, TS10 5BJ"
 lat: 54.6202869
 lng: -1.077169
+nearby1: "Wilton Golf Club"
+nearby2: "Saltburn by Sea Golf Club"
+nearby3: "Hunley Hotel and Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.clevelandgolfclub.co.uk/"

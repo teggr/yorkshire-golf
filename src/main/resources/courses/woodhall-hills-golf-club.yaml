@@ -2,6 +2,9 @@ name: "Woodhall Hills Golf Club"
 address: "Woodhall Road, Pudsey, Calverley, West Yorkshire, LS28 5UN"
 lat: 53.8244188
 lng: -1.6902395
+nearby1: "Calverley Golf Club"
+nearby2: "Rawdon Golf and Lawn Tennis Club"
+nearby3: "Bradford Moor Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.woodhallhillsgolfclub.com/"

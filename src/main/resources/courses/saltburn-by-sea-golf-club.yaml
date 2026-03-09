@@ -2,6 +2,9 @@ name: "Saltburn by Sea Golf Club"
 address: "Saltburn By The Sea Golf Club, Hob Hill Saltburn By The Sea North Yorkshire, TS121NJ"
 lat: 54.5760556
 lng: -0.9842729
+nearby1: "Hunley Hotel and Golf Club"
+nearby2: "Cleveland Golf Club"
+nearby3: "Wilton Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.saltburngolf.co.uk/"

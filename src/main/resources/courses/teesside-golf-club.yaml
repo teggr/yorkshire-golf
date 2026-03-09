@@ -2,6 +2,9 @@ name: "Teesside Golf Club"
 address: "89 Acklam Rd, Thornaby, Stockton-on-Tees TS17 7JS"
 lat: 54.5530498
 lng: -1.2916078
+nearby1: "Ingleby Barwick Golf Academy"
+nearby2: "Middlesbrough Municipal Golf Centre"
+nearby3: "Eaglescliffe Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.teessidegolfclub.com/"

@@ -2,6 +2,9 @@ name: "East Morton Golf Club (formally Fardew Golf Club)"
 address: "Nursery Farm, Carr Lane, East Morton, Keighley, West Yorkshire BD20 5RY"
 lat: 53.871345
 lng: -1.8591596
+nearby1: "Bingley St Ives Golf Club"
+nearby2: "Shipley Golf Club"
+nearby3: "Keighley Golf Club"
 website: "https://eastmortongolf.co.uk/"
 region:
   name: "WEST_YORKSHIRE"

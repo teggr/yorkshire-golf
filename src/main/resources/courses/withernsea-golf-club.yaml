@@ -2,6 +2,9 @@ name: "Withernsea Golf Club"
 address: "Withernsea Golf Club Egroms Lane, Withernsea, East Riding of Yorkshire HU19 2NA"
 lat: 53.7213726
 lng: 0.0294796
+nearby1: "Burstwick Country Golf"
+nearby2: "Ganstead Park Golf Club"
+nearby3: "Sutton Park Golf Course"
 region:
   name: "EAST_YORKSHIRE"
 website: "https://wgc2016.wixsite.com/w-g-c-1"

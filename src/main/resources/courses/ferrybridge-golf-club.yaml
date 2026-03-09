@@ -2,6 +2,9 @@ name: "Ferrybridge Golf Club"
 address: "West Yorkshire WF11 8EP"
 lat: 53.70754
 lng: -1.2506
+nearby1: "Darrington Golf Club"
+nearby2: "Pontefract and District Golf Club"
+nearby3: "Whitwood Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.ferrybridgegolf.co.uk/"

@@ -2,6 +2,9 @@ name: "Crosland Heath Golf Club"
 address: "CROSLAND HEATH GOLF CLUB Felks Stile Road, Crosland Heath, Huddersfield, HD4 7AF"
 lat: 53.6245604
 lng: -1.8360406
+nearby1: "Meltham Golf Club"
+nearby2: "Outlane Golf Club"
+nearby3: "Longley Park Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.croslandheath.co.uk/"

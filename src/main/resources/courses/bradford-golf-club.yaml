@@ -2,6 +2,9 @@ name: "Bradford Golf Club"
 address: "Hawksworth Lane, Guiseley Leeds LS20 8NP"
 lat: 53.8697126
 lng: -1.7377077
+nearby1: "Hollins Hall Hotel & Country Club"
+nearby2: "Baildon Golf Club"
+nearby3: "Otley Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.bradfordgolfclub.co.uk/"

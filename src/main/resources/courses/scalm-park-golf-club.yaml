@@ -2,6 +2,9 @@ name: "Scalm Park Golf Club"
 address: "Scalm Park Leisure, Wistow Common, Near Selby, North Yorkshire YO8 3RD"
 lat: 53.7865917
 lng: -1.1496963
+nearby1: "Selby Golf Club"
+nearby2: "Tadcaster Golf Club (Scarthingwell)"
+nearby3: "Ferrybridge Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.scalmparkleisure.co.uk/golfing"

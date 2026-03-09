@@ -2,6 +2,9 @@ name: "Branshaw Golf Club"
 address: "Branshaw Moor, Sykes Head, Keighley, BD22 7ES"
 lat: 53.84815
 lng: -1.94342
+nearby1: "Keighley Golf Club"
+nearby2: "Bingley St Ives Golf Club"
+nearby3: "East Morton Golf Club (formally Fardew Golf Club)"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.branshawgolfclub.co.uk/"

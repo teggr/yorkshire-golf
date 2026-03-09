@@ -2,6 +2,9 @@ name: "Knaresborough Golf Club"
 address: "Knaresborough Golf Club, Boroughbridge Road, Knaresborough, North Yorkshire HG5 0QQ"
 lat: 54.027887
 lng: -1.446785
+nearby1: "Harrogate Golf Club"
+nearby2: "Rudding Park Golf Club"
+nearby3: "Oakdale (Harrogate) Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.knaresboroughgolfclub.co.uk/"

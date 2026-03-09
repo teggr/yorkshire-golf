@@ -2,6 +2,9 @@ name: "Swallow Hall Golf Club"
 address: "Golf Swallow Hall Golf Course York Wheldrake Lane, York, YO19 4SG"
 lat: 53.906749
 lng: -1.0034862
+nearby1: "Fulford Golf Club"
+nearby2: "Heworth Golf Club"
+nearby3: "Pike Hills Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.swallowhall.com/golf/"

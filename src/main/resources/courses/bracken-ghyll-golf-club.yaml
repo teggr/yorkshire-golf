@@ -2,6 +2,9 @@ name: "Bracken Ghyll Golf Club"
 address: "Bracken Ghyll Golf Club Ltd, Skipton Road, Addingham, England, LS29 0SL"
 lat: 53.94945
 lng: -1.89678
+nearby1: "Ilkley Golf Club"
+nearby2: "Keighley Golf Club"
+nearby3: "Ben Rhydding Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.brackenghyllgolfclub.co.uk/"
