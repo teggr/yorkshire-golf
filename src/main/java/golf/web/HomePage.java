@@ -128,10 +128,30 @@ public class HomePage implements View {
           )
         ),
 
-        // Explore All Courses CTA
-        div().withClass("ygl-section pb-0 text-center").with(
+        // Explore + Search actions
+        div().withClass("ygl-section pb-0").with(
           div().withClass("container").with(
-            a("Explore All Courses →").withClass("ygl-btn ygl-btn--accent-light ygl-btn--xl").withHref("/courses")
+            div().withClass("ygl-home-actions row g-4 align-items-stretch").with(
+              div().withClass("col-12 col-lg-5 text-center ygl-home-actions__divider").with(
+                h2("Explore Courses").withClass("ygl-section__title mb-3"),
+                p("Browse the full Yorkshire list by region.").withClass("ygl-section__subtitle mx-auto mb-3"),
+                a("Explore All Courses →").withClass("ygl-btn ygl-btn--accent-light ygl-btn--lg").withHref("/courses")
+              ),
+              div().withClass("col-12 col-lg-7 ygl-home-actions__search").with(
+                h2("Search Courses").withClass("ygl-section__title mb-3 text-center text-lg-start"),
+                p("Find a course by name or address.").withClass("ygl-section__subtitle mb-3 text-center text-lg-start"),
+                form().withAction("/search").withMethod("get").withClass("ygl-home-search-form").with(
+                  label("Search Courses").withClass("visually-hidden").attr("for", "home-search-q"),
+                  input().withType("search")
+                    .withName("q")
+                    .withId("home-search-q")
+                    .withClass("form-control")
+                    .withPlaceholder("e.g. Lindrick or Leeds")
+                    .attr("required", ""),
+                  button("Search").withType("submit").withClass("ygl-btn ygl-btn--dark ygl-btn--lg")
+                )
+              )
+            )
           )
         ),
 

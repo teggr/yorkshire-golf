@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,6 +43,53 @@ public class Courses {
         return courses.stream()
                 .filter(course -> !course.closed())
                 .toList();
+    }
+
+    public List<Course> search(String query) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+
+        List<String> tokens = tokenize(query);
+        if (tokens.isEmpty()) {
+            return List.of();
+        }
+
+        return courses.stream()
+                .filter(course -> !course.closed())
+                .map(course -> new SearchHit(course, countTokenMatches(course, tokens)))
+                .filter(hit -> hit.matchCount > 0)
+                .sorted(Comparator
+                        .comparingInt(SearchHit::matchCount).reversed()
+                        .thenComparing(hit -> hit.course.name(), String.CASE_INSENSITIVE_ORDER))
+                .map(SearchHit::course)
+                .toList();
+    }
+
+    private static int countTokenMatches(Course course, List<String> tokens) {
+        String searchable = ((course.name() == null ? "" : course.name()) + " "
+                + (course.address() == null ? "" : course.address()))
+                .toLowerCase(Locale.ROOT);
+
+        int matches = 0;
+        for (String token : tokens) {
+            if (searchable.contains(token)) {
+                matches++;
+            }
+        }
+
+        return matches;
+    }
+
+    private static List<String> tokenize(String query) {
+        return java.util.Arrays.stream(query.toLowerCase(Locale.ROOT).trim().split("\\s+"))
+                .map(String::trim)
+                .filter(token -> !token.isBlank())
+                .distinct()
+                .toList();
+    }
+
+    private record SearchHit(Course course, int matchCount) {
     }
 
     public Course getCourseByName(String name) {

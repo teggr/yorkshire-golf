@@ -125,6 +125,25 @@ public class RegionTrackerPage implements View {
                         )
                       )
                     )
+                  ),
+                  div().withClass("card mb-4").with(
+                    div().withClass("card-header").with(strong("Import Rounds from CSV")),
+                    div().withClass("card-body").with(
+                      form().withMethod("post").withAction("/challenge/" + trackerId + "/import-rounds")
+                        .attr("enctype", "multipart/form-data").with(
+                          csrfField,
+                          div().withClass("row g-3 align-items-end").with(
+                            div().withClass("col-md-10").with(
+                              label("CSV File (courseName, date)").withFor("csvFile").withClass("form-label"),
+                              input().withType("file").withId("csvFile").withName("csvFile")
+                                .withClass("form-control").attr("accept", ".csv").attr("required", "")
+                            ),
+                            div().withClass("col-md-2").with(
+                              button("Import").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
+                            )
+                          )
+                        )
+                    )
                   )
                 )
               )

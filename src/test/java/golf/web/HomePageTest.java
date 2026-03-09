@@ -64,6 +64,11 @@ public class HomePageTest {
         assertTrue(body.contains("/courses#east-yorkshire"));
         assertTrue(body.contains("/courses#south-yorkshire"));
         assertTrue(body.contains("/courses#west-yorkshire"));
+        assertTrue(body.contains("Search Courses"));
+        assertTrue(body.contains("action=\"/search\""));
+        assertTrue(body.contains("name=\"q\""));
+        assertTrue(body.contains("ygl-home-actions"));
+        assertTrue(body.contains("ygl-home-actions__divider"));
         assertTrue(body.contains("href=\"/courses#north-yorkshire\" class=\"ygl-card ygl-card--stat\""));
         assertTrue(body.contains("href=\"/courses#east-yorkshire\" class=\"ygl-card ygl-card--stat\""));
         assertTrue(body.contains("href=\"/courses#south-yorkshire\" class=\"ygl-card ygl-card--stat\""));

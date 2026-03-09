@@ -272,6 +272,22 @@ img {
     min-height: 200px;
     max-height: 300px;
   }
+
+  .ygl-home-actions__divider {
+    border-right: 0;
+    border-bottom: 1px solid var(--ygl-color-border-light);
+    padding-bottom: 1.5rem;
+    padding-right: 0;
+  }
+
+  .ygl-home-actions__search {
+    padding-left: 0;
+  }
+
+  .ygl-home-search-form,
+  .ygl-search-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---------- ygl-page-header (used on sub-pages) ---------- */
@@ -361,6 +377,56 @@ img {
   height: 2px;
   background: var(--ygl-color-accent);
   margin-top: 0.75rem;
+}
+
+.ygl-home-actions {
+  background: var(--ygl-color-bg-white);
+  border: 1px solid var(--ygl-color-border-light);
+  border-radius: var(--ygl-radius-lg);
+  padding: 1.5rem;
+}
+
+.ygl-home-actions__divider {
+  border-right: 1px solid var(--ygl-color-border-light);
+  padding-right: 1.5rem;
+}
+
+.ygl-home-actions__search {
+  padding-left: 1.5rem;
+}
+
+.ygl-home-search-form,
+.ygl-search-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.ygl-home-search-form .form-control,
+.ygl-search-form .form-control {
+  min-height: 48px;
+  border-radius: var(--ygl-radius-sm);
+}
+
+.ygl-home-search-form .ygl-btn,
+.ygl-search-form .ygl-btn {
+  min-height: 48px;
+}
+
+.ygl-search-panel {
+  background: var(--ygl-color-bg-white);
+  border: 1px solid var(--ygl-color-border-light);
+  border-radius: var(--ygl-radius-md);
+  padding: 1rem;
+}
+
+.ygl-search-zero-state {
+  background: var(--ygl-color-bg-white);
+  border: 1px solid var(--ygl-color-border-light);
+  border-radius: var(--ygl-radius-lg);
+  padding: 2rem;
+  text-align: center;
 }
 
 /* ---------- ygl-card ---------- */

@@ -15,8 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequestMapping("/challenge")
@@ -34,6 +39,7 @@ public class UserTrackerController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(required = false) String added,
             @RequestParam(required = false) String error,
+            @RequestParam(required = false) String imported,
             Model model
     ) {
         GolfUser trackerOwner = userService.findByTrackerId(trackerId)
@@ -52,6 +58,10 @@ public class UserTrackerController {
 
         if ("true".equals(added)) {
             model.addAttribute("success", "Round added.");
+        }
+
+        if (imported != null) {
+            model.addAttribute("success", imported + " round(s) imported.");
         }
 
         if ("duplicate".equals(error)) {
@@ -88,6 +98,47 @@ public class UserTrackerController {
 
         userRoundRepository.save(currentUser.id(), courseName, date);
         redirectAttributes.addAttribute("added", "true");
+        return "redirect:/challenge/" + trackerId;
+    }
+
+    @PostMapping("/{trackerId}/import-rounds")
+    public String importRounds(
+            @PathVariable String trackerId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam("csvFile") MultipartFile csvFile,
+            RedirectAttributes redirectAttributes
+    ) throws Exception {
+        GolfUser trackerOwner = userService.findByTrackerId(trackerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tracker not found"));
+
+        GolfUser currentUser = resolveUser(userDetails);
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        if (!currentUser.id().equals(trackerOwner.id())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the tracker owner can import rounds");
+        }
+
+        int imported = 0;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) { firstLine = false; continue; }
+                String[] parts = line.split(",", 2);
+                if (parts.length < 2) continue;
+                String courseName = parts[0].trim();
+                String date = parts[1].trim();
+                if (courseName.isBlank() || date.isBlank()) continue;
+                if (!userRoundRepository.existsByUserIdAndCourseName(currentUser.id(), courseName)) {
+                    userRoundRepository.save(currentUser.id(), courseName, date);
+                    imported++;
+                }
+            }
+        }
+
+        redirectAttributes.addAttribute("imported", imported);
         return "redirect:/challenge/" + trackerId;
     }
 

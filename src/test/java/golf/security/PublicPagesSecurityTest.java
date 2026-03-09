@@ -54,6 +54,12 @@ class PublicPagesSecurityTest {
     }
 
     @Test
+    void searchPageIsPubliclyAccessible() throws Exception {
+        mockMvc.perform(get("/search").param("q", "leeds"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void challengeTrackerPathIsPublicAndReturnsNotFoundForUnknownId() throws Exception {
         mockMvc.perform(get("/challenge/unknown-tracker"))
                 .andExpect(status().isNotFound());
