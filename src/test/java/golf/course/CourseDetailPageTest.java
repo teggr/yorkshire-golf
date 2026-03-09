@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import j2html.tags.DomContent;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -152,5 +154,126 @@ public class CourseDetailPageTest {
         assertTrue(html.contains("West Yorkshire"));
         assertFalse(html.contains("Visit website"));
     }
+
+        @Test
+        void courseDetailRendersNearbyCoursesSectionAfterMapWithCards() {
+        Course course = new Course(
+            "Alwoodley Golf Club",
+            Regions.WestYorkshire,
+            "https://alwoodleygolfclub.com/",
+            "/images/courses/alwoodley-golf-club.jpg",
+            null,
+            false,
+            false,
+            "Alwoodley Ln, Leeds LS17 7DJ",
+            53.85665,
+            -1.50115,
+            "Moortown Golf Club",
+            "Sand Moor Golf Club",
+            "Leeds Golf Centre (Wike Ridge)",
+            null,
+            null
+        );
+
+        List<Course> nearbyCourses = List.of(
+            new Course(
+                "Moortown Golf Club",
+                Regions.WestYorkshire,
+                "https://www.moortowngc.co.uk/",
+                "/images/courses/moortown-golf-club.jpg",
+                null,
+                false,
+                false,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ),
+            new Course(
+                "Sand Moor Golf Club",
+                Regions.WestYorkshire,
+                "https://www.sandmoorgolf.co.uk/",
+                "/images/courses/sand-moor-golf-club.jpg",
+                null,
+                false,
+                false,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ),
+            new Course(
+                "Leeds Golf Centre (Wike Ridge)",
+                Regions.WestYorkshire,
+                "https://www.leedsgolfcentre.com/",
+                null,
+                null,
+                false,
+                false,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+        );
+
+        DomContent result = CourseDetailPage.courseDetail(course, "", nearbyCourses);
+
+        assertNotNull(result);
+        String html = result.render();
+        assertTrue(html.contains("Google Maps"));
+        assertTrue(html.contains("Nearby courses"));
+        assertTrue(html.indexOf("Google Maps") < html.indexOf("Nearby courses"));
+        assertTrue(html.contains("Moortown Golf Club"));
+        assertTrue(html.contains("Sand Moor Golf Club"));
+        assertTrue(html.contains("Leeds Golf Centre (Wike Ridge)"));
+        assertTrue(html.contains("View course"));
+        assertTrue(html.contains("/courses/moortown-golf-club"));
+        assertTrue(html.contains("/courses/sand-moor-golf-club"));
+        assertTrue(html.contains("/courses/leeds-golf-centre-wike-ridge"));
+        assertTrue(html.contains("ygl-card"));
+        assertTrue(html.contains("ygl-card__media"));
+        assertTrue(html.contains("ygl-card__img"));
+        assertTrue(html.contains("ygl-card__placeholder"));
+        }
+
+        @Test
+        void courseDetailDoesNotRenderNearbyCoursesSectionWhenNoneProvided() {
+        Course course = new Course(
+            "Sand Moor Golf Club",
+            Regions.WestYorkshire,
+            null,
+            null,
+            null,
+            false,
+            false,
+            "Claw Hall Rd, Alwoodley, Leeds LS17 8AB",
+            53.86088,
+            -1.53362,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+
+        DomContent result = CourseDetailPage.courseDetail(course, "", List.of());
+
+        assertNotNull(result);
+        String html = result.render();
+        assertFalse(html.contains("Nearby courses"));
+        }
 
 }

@@ -13,6 +13,7 @@ import golf.web.YorkshireGolfPageTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 import static j2html.TagCreator.*;
@@ -35,6 +36,7 @@ public class CourseDetailPage implements View {
                 response.setCharacterEncoding("UTF-8");
 
         Course course = (Course) model.get("course");
+        List<Course> nearbyCourses = resolveNearbyCourses(model);
 
         new YorkshireGolfPageTemplate()
                 .withRequest(request)
@@ -54,11 +56,7 @@ public class CourseDetailPage implements View {
                         div().withClass("container ygl-page").with(
                                 div().withClass("ygl-page__content").with(
                                         a("← Back to Courses").withHref("/courses").withClass("ygl-back-link"),
-                                        div().withClass("row justify-content-center").with(
-                                                div().withClass("col-lg-8").with(
-                                                        courseDetail(course, googleMapsApiKey)
-                                                )
-                                        )
+                                        courseDetail(course, googleMapsApiKey, nearbyCourses)
                                 )
                         )
                 )
@@ -72,6 +70,10 @@ public class CourseDetailPage implements View {
     }
 
     static j2html.tags.DomContent courseDetail(Course course, String googleMapsApiKey) {
+                return courseDetail(course, googleMapsApiKey, List.of());
+        }
+
+        static j2html.tags.DomContent courseDetail(Course course, String googleMapsApiKey, List<Course> nearbyCourses) {
         return article().withClass("ygl-article").with(
                 h1(course.name()).withClass("ygl-article__title"),
                 p().withClass("ygl-article__meta").with(
@@ -83,12 +85,14 @@ public class CourseDetailPage implements View {
                                   )
                                 : span()
                 ),
-                                                                courseInfoSection(course, googleMapsApiKey)
+                courseInfoSection(course, googleMapsApiKey, nearbyCourses)
         );
     }
 
-                private static j2html.tags.DomContent courseInfoSection(Course course, String googleMapsApiKey) {
+    private static j2html.tags.DomContent courseInfoSection(Course course, String googleMapsApiKey, List<Course> nearbyCourses) {
         return div().withClass("ygl-article__content").with(
+                div().withClass("row g-4 ygl-course-overview").with(
+                        div().withClass("col-lg-7").with(
                 // Website link
                 course.website() != null && !course.website().isEmpty()
                         ? div().withClass("mb-3").with(
@@ -138,7 +142,10 @@ public class CourseDetailPage implements View {
                                           )
                                         : text("")
                         )
-                ),
+                )
+                        ),
+
+                        div().withClass("col-lg-5").with(
 
                 course.lat() != null && course.lng() != null
                         ? div().withClass("ygl-course-map").with(
@@ -154,7 +161,64 @@ public class CourseDetailPage implements View {
                                 )
                         )
                         : text("")
+                        )
+                ),
+
+                nearbyCoursesSection(nearbyCourses)
         );
+    }
+
+    private static j2html.tags.DomContent nearbyCoursesSection(List<Course> nearbyCourses) {
+        if (nearbyCourses == null || nearbyCourses.isEmpty()) {
+            return text("");
+        }
+
+        return section().withClass("ygl-course-nearby").with(
+                h2("Nearby courses").withClass("ygl-course-nearby__title"),
+                div().withClass("row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3").with(
+                        nearbyCourses.stream()
+                                .map(nearbyCourse -> div().withClass("col").with(nearbyCourseCard(nearbyCourse)))
+                                .toArray(j2html.tags.DomContent[]::new)
+                )
+        );
+    }
+
+    private static j2html.tags.DomContent nearbyCourseCard(Course nearbyCourse) {
+        String courseUrl = "/courses/" + Courses.toCourseSlug(nearbyCourse.name());
+
+        return div().withClass("ygl-card h-100").with(
+                div().withClass("ygl-card__body").with(
+                        div().withClass("ygl-card__media mb-3").with(
+                                nearbyCourse.mainImageUrl() != null && !nearbyCourse.mainImageUrl().isEmpty()
+                                        ? img().withSrc(nearbyCourse.mainImageUrl())
+                                                .withAlt(nearbyCourse.name())
+                                                .withClass("ygl-card__img")
+                                        : div("No image available").withClass("ygl-card__placeholder").attr("aria-hidden", "true")
+                        ),
+                        p(nearbyCourse.name()).withClass("ygl-card__text mb-3"),
+                        p().withClass("mb-0 mt-auto").with(
+                                a().withClass("ygl-btn ygl-btn--primary ygl-btn--sm")
+                                        .withHref(courseUrl)
+                                        .with(text("View course"))
+                        )
+                )
+        );
+    }
+
+    private static List<Course> resolveNearbyCourses(@Nullable Map<String, ?> model) {
+        if (model == null) {
+            return List.of();
+        }
+
+        Object nearbyCoursesModel = model.get("nearbyCourses");
+        if (!(nearbyCoursesModel instanceof List<?> rawList)) {
+            return List.of();
+        }
+
+        return rawList.stream()
+                .filter(Course.class::isInstance)
+                .map(Course.class::cast)
+                .toList();
     }
 
     private static String googleMapsEmbedUrl(Course course, String googleMapsApiKey) {

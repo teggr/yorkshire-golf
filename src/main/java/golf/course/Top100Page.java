@@ -40,9 +40,9 @@ public class Top100Page implements View {
                         // Page header
                         div().withClass("ygl-page-header").with(
                                 div().withClass("container").with(
-                                        span("Golf Monthly Top 100").withClass("ygl-hero__label"),
+                                        span("Golf Monthly UK & I Top 100").withClass("ygl-hero__label"),
                                         h1("Yorkshire's Finest").withClass("ygl-page-header__title"),
-                                        p("Yorkshire punches well above its weight on the national stage. These courses have earned their place among the Golf Monthly Top 100 UK & Ireland — a testament to the county's exceptional golfing landscape, from the heathland classics of the West Riding to the sweeping parkland of North Yorkshire.").withClass("ygl-page-header__lead")
+                                        p("Yorkshire punches well above its weight on the national stage. These courses have earned their place among the Golf Monthly UK & I Top 100 UK & Ireland — a testament to the county's exceptional golfing landscape, from the heathland classics of the West Riding to the sweeping parkland of North Yorkshire.").withClass("ygl-page-header__lead")
                                 )
                         ),
                         // Course list
@@ -68,7 +68,7 @@ public class Top100Page implements View {
         return div().withClass("ygl-top100-entry").with(
                 div().withClass("ygl-top100-entry__rank").with(
                         span("#" + course.top100()).withClass("ygl-top100-entry__rank-number"),
-                        span("Golf Monthly Top 100").withClass("ygl-top100-entry__rank-label")
+                        span("Golf Monthly UK & I Top 100").withClass("ygl-top100-entry__rank-label")
                 ),
                 course.mainImageUrl() != null && !course.mainImageUrl().isEmpty()
                         ? div().withClass("ygl-top100-entry__image-wrapper").with(

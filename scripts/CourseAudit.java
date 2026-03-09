@@ -94,6 +94,8 @@ public class CourseAudit {
         app.post("/update-stay-image", CourseAudit::handleUpdateStayImage);
         app.post("/update-closed", CourseAudit::handleUpdateClosed);
         app.post("/update-play-and-stay", CourseAudit::handleUpdatePlayAndStay);
+        app.post("/update-top100", CourseAudit::handleUpdateTop100);
+        app.post("/update-next100", CourseAudit::handleUpdateNext100);
         app.post("/update-address", CourseAudit::handleUpdateAddress);
         app.post("/download-image", CourseAudit::handleDownloadImage);
         app.post("/jump-to-letter", CourseAudit::handleJumpToLetter);
@@ -243,6 +245,52 @@ public class CourseAudit {
             Files.writeString(currentFile, updatedYaml);
 
             ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Update error", e.getMessage()));
+        }
+    }
+
+    private static void handleUpdateTop100(Context ctx) {
+        handleUpdateOptionalRankField(ctx, "top100", "newTop100");
+    }
+
+    private static void handleUpdateNext100(Context ctx) {
+        handleUpdateOptionalBooleanField(ctx, "next100", "next100");
+    }
+
+    private static void handleUpdateOptionalBooleanField(Context ctx, String fieldName, String formFieldName) {
+        try {
+            List<String> fieldValues = ctx.formParams(formFieldName);
+            boolean enabled = fieldValues != null && fieldValues.contains("true");
+
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+            String updatedYaml = updateOptionalBooleanInYaml(yamlContent, fieldName, enabled);
+            Files.writeString(currentFile, updatedYaml);
+
+            ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Update error", e.getMessage()));
+        }
+    }
+
+    private static void handleUpdateOptionalRankField(Context ctx, String fieldName, String formFieldName) {
+        try {
+            String value = ctx.formParam(formFieldName);
+            Integer rank = null;
+
+            if (value != null && !value.trim().isEmpty()) {
+                rank = Integer.parseInt(value.trim());
+            }
+
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+            String updatedYaml = updateOptionalRankInYaml(yamlContent, fieldName, rank);
+            Files.writeString(currentFile, updatedYaml);
+
+            ctx.redirect("/");
+        } catch (NumberFormatException e) {
+            ctx.html(renderError("Update error", "Please enter a whole number or leave blank to clear."));
         } catch (Exception e) {
             ctx.html(renderError("Update error", e.getMessage()));
         }
@@ -886,19 +934,36 @@ public class CourseAudit {
         String nearby1 = (String) data.get("nearby1");
         String nearby2 = (String) data.get("nearby2");
         String nearby3 = (String) data.get("nearby3");
-        
-        // Parse next100 field
-        Integer next100 = null;
-        Object next100Obj = data.get("next100");
-        if (next100Obj instanceof Integer) {
-            next100 = (Integer) next100Obj;
-        } else if (next100Obj instanceof String) {
+
+        Integer top100 = null;
+        Object top100Obj = data.get("top100");
+        if (top100Obj instanceof Integer) {
+            top100 = (Integer) top100Obj;
+        } else if (top100Obj instanceof String) {
             try {
-                next100 = Integer.parseInt((String) next100Obj);
+                top100 = Integer.parseInt((String) top100Obj);
             } catch (NumberFormatException ignored) {}
         }
         
-        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, lat, lng, nearby1, nearby2, nearby3, next100);
+        // Parse next100 field. Accept legacy numeric/string values as true.
+        Boolean next100 = null;
+        Object next100Obj = data.get("next100");
+        if (next100Obj instanceof Boolean) {
+            next100 = (Boolean) next100Obj;
+        } else if (next100Obj instanceof Number) {
+            next100 = ((Number) next100Obj).intValue() > 0;
+        } else if (next100Obj instanceof String) {
+            String value = ((String) next100Obj).trim();
+            if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+                next100 = Boolean.parseBoolean(value);
+            } else {
+                try {
+                    next100 = Integer.parseInt(value) > 0;
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+        
+        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, lat, lng, nearby1, nearby2, nearby3, top100, next100);
     }
     
     private static String renderHTML(String fileName, String yamlContent, CourseData course,
@@ -1347,6 +1412,31 @@ public class CourseAudit {
                             <div style="font-size: 11px; color: #666; margin-top: 8px;">Updates address in file automatically</div>
                         </div>
                     </div>
+
+                    <div class="validation-section">
+                        <div class="validation-label">Top 100 Rank (Optional)</div>
+                        <div class="form-section">
+                            <input type="number" name="newTop100" min="1" step="1" placeholder="e.g. 42" value="%s" class="form-input">
+                            <button type="submit" formaction="/update-top100" class="btn-primary form-button">🏆 Update Top 100</button>
+                            <div style="font-size: 11px; color: #666; margin-top: 8px;">Leave blank to remove top100 from YAML</div>
+                        </div>
+                    </div>
+
+                    <div class="validation-section">
+                        <div class="validation-label">Next 100 Membership</div>
+                        <div class="form-section">
+                            <div style="margin-bottom: 10px;">
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="hidden" name="next100" value="false">
+                                    <input type="checkbox" name="next100" value="true" %s
+                                         onchange="this.form.noValidate=true; this.form.action='/update-next100'; this.form.submit();"
+                                           style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;">
+                                    <span style="font-size: 14px;"><strong>Included in Next 100</strong></span>
+                                </label>
+                            </div>
+                            <div style="font-size: 11px; color: #666; margin-top: 8px;">Unchecked removes next100 from YAML</div>
+                        </div>
+                    </div>
                     
                     <div class="validation-section">
                         <div class="validation-label">Download New Image</div>
@@ -1393,6 +1483,8 @@ public class CourseAudit {
                             <div style="margin-bottom: 10px;"><strong>Nearby 1:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Nearby 2:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Nearby 3:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Top 100:</strong> %s</div>
+                            <div style="margin-bottom: 10px;"><strong>Next 100:</strong> %s</div>
                             <div style="margin-bottom: 10px;"><strong>Status:</strong> <span style="color: %s; font-weight: bold;">%s</span></div>
                             <div><strong>File:</strong> <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 12px;">%s</code></div>
                         </div>
@@ -1431,6 +1523,8 @@ public class CourseAudit {
             escapeHtml(course.website != null ? course.website : ""),
             escapeHtml(course.stayImageUrl != null ? course.stayImageUrl : ""),
             escapeHtml(course.address != null ? course.address : ""),
+            course.top100 != null ? String.valueOf(course.top100) : "",
+            Boolean.TRUE.equals(course.next100) ? "checked" : "",
             course.closed ? "checked" : "",
             course.playAndStay ? "checked" : "",
             escapeHtml(course.name != null ? course.name : "N/A"),
@@ -1443,6 +1537,8 @@ public class CourseAudit {
             course.nearby1 != null ? escapeHtml(course.nearby1) : "<span style='color:#999'>—</span>",
             course.nearby2 != null ? escapeHtml(course.nearby2) : "<span style='color:#999'>—</span>",
             course.nearby3 != null ? escapeHtml(course.nearby3) : "<span style='color:#999'>—</span>",
+            course.top100 != null ? String.valueOf(course.top100) : "<span style='color:#999'>—</span>",
+            Boolean.TRUE.equals(course.next100) ? "Yes" : "No",
             course.closed ? "#ef5350" : "#4caf50",
             course.closed ? "CLOSED" : "OPEN",
             fileName,
@@ -1920,6 +2016,64 @@ public class CourseAudit {
         return result.toString();
     }
 
+    private static String updateOptionalRankInYaml(String yamlContent, String fieldName, Integer rankValue) {
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean inserted = false;
+
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (trimmed.startsWith(fieldName + ":")) {
+                continue;
+            }
+
+            result.append(line).append("\n");
+
+            if (!inserted && trimmed.startsWith("mainImageUrl:")) {
+                int indentLen = line.length() - line.stripLeading().length();
+                String indent = line.substring(0, indentLen);
+                if ("top100".equals(fieldName) && rankValue != null) {
+                    result.append(indent).append("top100: ").append(rankValue).append("\n");
+                }
+                inserted = true;
+            }
+        }
+
+        if (!inserted && rankValue != null) {
+            result.append(fieldName).append(": ").append(rankValue).append("\n");
+        }
+
+        return result.toString();
+    }
+
+    private static String updateOptionalBooleanInYaml(String yamlContent, String fieldName, boolean enabled) {
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean inserted = false;
+
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (trimmed.startsWith(fieldName + ":")) {
+                continue;
+            }
+
+            result.append(line).append("\n");
+
+            if (enabled && !inserted && trimmed.startsWith("mainImageUrl:")) {
+                int indentLen = line.length() - line.stripLeading().length();
+                String indent = line.substring(0, indentLen);
+                result.append(indent).append(fieldName).append(": true").append("\n");
+                inserted = true;
+            }
+        }
+
+        if (enabled && !inserted) {
+            result.append(fieldName).append(": true").append("\n");
+        }
+
+        return result.toString();
+    }
+
     private static String updateLatLngInYaml(String yamlContent, double lat, double lng) {
         // Remove any existing lat/lng lines and insert new coordinates after the address line
         String[] lines = yamlContent.split("\n");
@@ -1988,7 +2142,7 @@ public class CourseAudit {
     }
     
     // Data classes
-    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Double lat, Double lng, String nearby1, String nearby2, String nearby3, Integer next100) {}
+    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Double lat, Double lng, String nearby1, String nearby2, String nearby3, Integer top100, Boolean next100) {}
     
     record ValidationResult(ValidationStatus status, String message, String dimensions) {}
     

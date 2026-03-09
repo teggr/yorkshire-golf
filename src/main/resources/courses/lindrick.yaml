@@ -1,0 +1,12 @@
+name: "Lindrick"
+address: "Lindrick Golf Club, Deep Carrs Lane, Lindrick Common, Rotherham, South Yorkshire S81 8BH"
+lat: 53.3374057
+lng: -1.1797081
+nearby1: "Rother Valley Golf Centre"
+nearby2: "Styrrup Hall Golf and Country Club"
+nearby3: "Renishaw Park Golf Club"
+region:
+  name: "SOUTH_YORKSHIRE"
+website: "https://www.lindrickgolfclub.co.uk/"
+mainImageUrl: "/images/courses/lindrick.jpg"
+next100: true

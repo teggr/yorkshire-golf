@@ -81,8 +81,8 @@ public class Courses {
     public List<Course> getNext100Courses() {
         return courses.stream()
                 .filter(course -> !course.closed())
-                .filter(course -> course.next100() != null)
-                .sorted(java.util.Comparator.comparingInt(Course::next100))
+                .filter(course -> Boolean.TRUE.equals(course.next100()))
+                .sorted(java.util.Comparator.comparing(Course::name, String.CASE_INSENSITIVE_ORDER))
                 .toList();
     }
 

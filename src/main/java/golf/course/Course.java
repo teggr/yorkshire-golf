@@ -16,5 +16,5 @@ public record Course(String name,
 					 @Nullable String nearby2,
 					 @Nullable String nearby3,
 					 @Nullable Integer top100,
-					 @Nullable Integer next100) {
+					 @Nullable Boolean next100) {
 }

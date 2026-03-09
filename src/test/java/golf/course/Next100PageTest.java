@@ -27,7 +27,7 @@ public class Next100PageTest {
                 null,
                 null,
                 null,
-                132
+                true
         );
 
         var result = Next100Page.courseSection(course);
@@ -35,11 +35,11 @@ public class Next100PageTest {
         assertNotNull(result);
         String html = result.render();
         assertTrue(html.contains("ygl-top100-entry"));
-        assertTrue(html.contains("ygl-top100-entry__rank-number"));
+        assertTrue(html.contains("ygl-top100-entry__rank-label"));
         assertTrue(html.contains("ygl-top100-entry__image-wrapper"));
         assertTrue(html.contains("ygl-top100-entry__title"));
         assertTrue(html.contains("Golf Monthly Next 100"));
-        assertTrue(html.contains("#132"));
+        assertTrue(!html.contains("#132"));
 
     }
 }

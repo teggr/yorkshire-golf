@@ -9,4 +9,4 @@ region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.fulfordgolfclub.co.uk/"
 mainImageUrl: "/images/courses/fulford-golf-club.jpg"
-next100: 177
+next100: true

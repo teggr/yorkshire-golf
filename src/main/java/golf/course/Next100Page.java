@@ -62,12 +62,11 @@ public class Next100Page implements View {
     }
 
     static j2html.tags.DomContent courseSection(Course course) {
-        if (course.next100() == null) {
+                if (!Boolean.TRUE.equals(course.next100())) {
             return span();
         }
         return div().withClass("ygl-top100-entry").with(
                 div().withClass("ygl-top100-entry__rank").with(
-                        span("#" + course.next100()).withClass("ygl-top100-entry__rank-number"),
                         span("Golf Monthly Next 100").withClass("ygl-top100-entry__rank-label")
                 ),
                 course.mainImageUrl() != null && !course.mainImageUrl().isEmpty()

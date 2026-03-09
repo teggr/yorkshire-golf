@@ -754,6 +754,12 @@ img {
   margin-top: 2rem;
 }
 
+@media (min-width: 992px) {
+  .ygl-course-map {
+    margin-top: 0;
+  }
+}
+
 .ygl-course-map__title {
   font-family: var(--ygl-font-heading);
   font-weight: 600;
@@ -767,6 +773,19 @@ img {
   overflow: hidden;
   box-shadow: var(--ygl-shadow-xs);
   border: 1px solid var(--ygl-color-border-light);
+}
+
+/* ---------- ygl-course-nearby ---------- */
+.ygl-course-nearby {
+  margin-top: 2rem;
+}
+
+.ygl-course-nearby__title {
+  font-family: var(--ygl-font-heading);
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--ygl-color-primary);
+  margin-bottom: 0.75rem;
 }
 
 /* ---------- ygl-map-page ---------- */
