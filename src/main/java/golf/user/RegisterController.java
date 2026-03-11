@@ -42,10 +42,17 @@ public class RegisterController {
 
         if (userService.emailExists(email)) {
             model.addAttribute("error", "An account with that email address already exists.");
+            model.addAttribute("email", email);
             return "registerPage";
         }
 
-        userService.register(email, password);
+        try {
+            userService.register(email, password);
+        } catch (DuplicateEmailException ex) {
+            model.addAttribute("error", "An account with that email address already exists.");
+            model.addAttribute("email", email);
+            return "registerPage";
+        }
         return "redirect:/login?registered=true";
     }
 

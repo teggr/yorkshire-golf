@@ -2,6 +2,7 @@ package golf.user;
 
 import golf.email.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,19 +26,31 @@ public class UserService {
     private final EmailService emailService;
 
     public GolfUser register(String email, String rawPassword) {
+        String normalizedEmail = normalizeEmail(email);
+        if (userRepository.existsByEmail(normalizedEmail)) {
+            throw new DuplicateEmailException(normalizedEmail);
+        }
+
         String encodedPassword = passwordEncoder.encode(rawPassword);
         String trackerId = generateTrackerId();
-        GolfUser user = new GolfUser(null, email.toLowerCase().trim(), encodedPassword,
+        GolfUser user = new GolfUser(null, normalizedEmail, encodedPassword,
                 trackerId, "USER", false);
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException ex) {
+            if (userRepository.existsByEmail(normalizedEmail)) {
+                throw new DuplicateEmailException(normalizedEmail, ex);
+            }
+            throw ex;
+        }
     }
 
     public boolean emailExists(String email) {
-        return userRepository.existsByEmail(email.toLowerCase().trim());
+        return userRepository.existsByEmail(normalizeEmail(email));
     }
 
     public Optional<GolfUser> findByEmail(String email) {
-        return userRepository.findByEmail(email.toLowerCase().trim());
+        return userRepository.findByEmail(normalizeEmail(email));
     }
 
     public Optional<GolfUser> findByTrackerId(String trackerId) {
@@ -121,6 +134,10 @@ public class UserService {
         byte[] bytes = new byte[32];
         new SecureRandom().nextBytes(bytes);
         return HexFormat.of().formatHex(bytes);
+    }
+
+    private String normalizeEmail(String email) {
+        return email.toLowerCase().trim();
     }
 
     public enum PasswordResetResult {
