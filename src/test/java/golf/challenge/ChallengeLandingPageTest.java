@@ -32,7 +32,7 @@ class ChallengeLandingPageTest {
         assertTrue(html.contains("By signing up to Yorkshire Golf Life"));
         assertTrue(html.contains("register your rounds"));
         assertTrue(html.contains("/register"));
-        assertTrue(html.contains("/images/challenge/challenge-tracker-landing.svg"));
+        assertTrue(html.contains("/images/challenge/challenge-tracker-landing.png"));
         assertTrue(
             html.contains("href=\"/challenge\" class=\"nav-link ygl-navbar__link ygl-navbar__link--active\"")
                 || html.contains("class=\"nav-link ygl-navbar__link ygl-navbar__link--active\" href=\"/challenge\"")

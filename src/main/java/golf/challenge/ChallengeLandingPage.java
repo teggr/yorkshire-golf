@@ -55,7 +55,7 @@ public class ChallengeLandingPage implements View {
                                         ),
                                         div().withClass("col-12 col-lg-6").with(
                                                 div().withClass("ygl-chart").with(
-                                                        img().withSrc("/images/challenge/challenge-tracker-landing.svg")
+                                                        img().withSrc("/images/challenge/challenge-tracker-landing.png")
                                                                 .withAlt("Example challenge info chart showing all Yorkshire courses played")
                                                                 .withClass("img-fluid")
                                                 )
