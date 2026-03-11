@@ -2,6 +2,7 @@ package golf.web;
 
 import golf.course.Courses;
 import golf.course.Course;
+import golf.course.CourseImages;
 import golf.course.Region;
 import golf.course.Regions;
 import jakarta.servlet.http.HttpServletRequest;
@@ -100,9 +101,10 @@ public class HomePage implements View {
               featuredCourse != null && featuredCourse.mainImageUrl() != null && !featuredCourse.mainImageUrl().isEmpty()
                 ? div().withClass("col-12 col-lg-5 order-2").with(
                     div().withClass("ygl-hero__image-wrapper").with(
-                      img().withSrc(featuredCourse.mainImageUrl())
+                      img().withSrc(CourseImages.toThumbUrl(featuredCourse.mainImageUrl()))
                           .withAlt(featuredCourse.name())
                           .withClass("ygl-hero__image")
+                          .attr("onerror", "this.onerror=null;this.src='" + featuredCourse.mainImageUrl() + "';")
                     )
                   )
                 : text("")
@@ -194,9 +196,12 @@ public class HomePage implements View {
                       h3(region.displayName()).withClass("ygl-card__title"),
                       div().withClass("ygl-card__media mb-3").with(
                         regionCourse != null && regionCourse.mainImageUrl() != null && !regionCourse.mainImageUrl().isEmpty()
-                          ? img().withSrc(regionCourse.mainImageUrl())
+                          ? img().withSrc(CourseImages.toThumbUrl(regionCourse.mainImageUrl()))
                               .withAlt(regionCourse.name())
                               .withClass("ygl-card__img")
+                              .attr("loading", "lazy")
+                              .attr("decoding", "async")
+                              .attr("onerror", "this.onerror=null;this.src='" + regionCourse.mainImageUrl() + "';")
                           : div("No image available").withClass("ygl-card__placeholder").attr("aria-hidden", "true")
                       ),
                       regionCourse != null

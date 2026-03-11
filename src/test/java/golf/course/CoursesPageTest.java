@@ -192,6 +192,10 @@ public class CoursesPageTest {
         assertTrue(html.contains("ygl-card--course"));
         assertTrue(html.contains("ygl-card__media"));
         assertTrue(html.contains("ygl-card__img"));
+        assertTrue(html.contains("/images/courses/thumbs/rudding-park-golf-club.jpg"));
+        assertTrue(html.contains("loading=\"lazy\""));
+        assertTrue(html.contains("decoding=\"async\""));
+        assertTrue(html.contains("onerror=\""));
         assertTrue(html.contains("/images/courses/rudding-park-golf-club.jpg"));
         assertTrue(html.contains("/courses/rudding-park-golf-club"));
 
@@ -240,4 +244,31 @@ public class CoursesPageTest {
 
         return result;
     }
+
+        @Test
+        void courseCardConvertsPngToThumbnailJpgPath() {
+                Course courseWithPng = new Course(
+                                "Baildon Golf Club",
+                                Regions.WestYorkshire,
+                                "https://baildon.example",
+                                "/images/courses/baildon-golf-club.png",
+                                null,
+                                false,
+                                false,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                );
+
+                String html = CoursesPage.courseCard(courseWithPng).render();
+
+                assertTrue(html.contains("/images/courses/thumbs/baildon-golf-club.jpg"));
+                assertTrue(html.contains("onerror=\""));
+                assertTrue(html.contains("/images/courses/baildon-golf-club.png"));
+        }
 }

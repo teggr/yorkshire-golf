@@ -16,6 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -39,7 +45,10 @@ public class CourseAudit {
     private static final int PORT = 7070;
     private static final String COURSES_PATH = "src/main/resources/courses";
     private static final String IMAGES_PATH = "src/main/resources/static/images/courses";
+    private static final String THUMBS_PATH = "src/main/resources/static/images/courses/thumbs";
     private static final String PLACEHOLDER_IMAGE = "/images/courses/placeholder-course.jpg";
+    private static final int THUMB_WIDTH = 600;
+    private static final float THUMB_JPEG_QUALITY = 0.85f;
     private static final Duration GEOCODE_CONNECT_TIMEOUT = Duration.ofSeconds(10);
     private static final Duration GEOCODE_REQUEST_TIMEOUT = Duration.ofSeconds(20);
     private static final String SHOW_CLOSED_OPTION = "--show-closed";
@@ -98,6 +107,7 @@ public class CourseAudit {
         app.post("/update-next100", CourseAudit::handleUpdateNext100);
         app.post("/update-address", CourseAudit::handleUpdateAddress);
         app.post("/download-image", CourseAudit::handleDownloadImage);
+        app.post("/generate-thumbnails", CourseAudit::handleGenerateThumbnails);
         app.post("/jump-to-letter", CourseAudit::handleJumpToLetter);
         app.post("/search-course", CourseAudit::handleSearchCourse);
         app.post("/geocode-current", CourseAudit::handleGeocodeCurrent);
@@ -367,6 +377,77 @@ public class CourseAudit {
             ctx.redirect("/");
         } catch (Exception e) {
             ctx.html(renderError("Download error", e.getMessage()));
+        }
+    }
+
+    private static void handleGenerateThumbnails(Context ctx) {
+        int generated = 0;
+        int skipped = 0;
+        int failed = 0;
+        List<String> warnings = new ArrayList<>();
+
+        try {
+            Path imagesDir = Paths.get(IMAGES_PATH);
+            if (!Files.exists(imagesDir)) {
+                ctx.html(renderError("Thumbnail generation error", "Images directory not found: " + imagesDir));
+                return;
+            }
+
+            List<Path> imageFiles;
+            try (var stream = Files.list(imagesDir)) {
+                imageFiles = stream
+                        .filter(Files::isRegularFile)
+                        .filter(path -> {
+                            String name = path.getFileName().toString().toLowerCase();
+                            return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".webp") || name.endsWith(".gif");
+                        })
+                        .sorted()
+                        .toList();
+            }
+
+            for (Path sourcePath : imageFiles) {
+                String fileName = sourcePath.getFileName().toString();
+                int dot = fileName.lastIndexOf('.');
+                String baseName = dot > 0 ? fileName.substring(0, dot) : fileName;
+                Path targetPath = Paths.get(THUMBS_PATH, baseName + ".jpg");
+
+                if (Files.exists(targetPath)) {
+                    skipped++;
+                    continue;
+                }
+
+                try {
+                    generateThumbnail(sourcePath, targetPath, THUMB_WIDTH);
+                    generated++;
+                } catch (Exception e) {
+                    failed++;
+                    warnings.add(fileName + ": " + e.getMessage());
+                }
+            }
+
+            StringBuilder summary = new StringBuilder();
+            summary.append("✅ Thumbnail generation complete: ")
+                    .append(generated).append(" generated, ")
+                    .append(skipped).append(" already existed, ")
+                    .append(failed).append(" failed.");
+
+            if (!warnings.isEmpty()) {
+                summary.append("<br><br>⚠️ Warnings:<br>");
+                for (String warning : warnings) {
+                    summary.append("• ").append(escapeHtml(warning)).append("<br>");
+                }
+            }
+
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+            String fileName = currentFile.getFileName().toString();
+            CourseData course = parseCourse(yamlContent);
+            ValidationResult websiteValidation = validator.validateWebsite(course.website);
+            ValidationResult imageValidation = validator.validateImage(course.mainImageUrl);
+            ValidationResult stayImageValidation = validator.validateImage(course.stayImageUrl);
+            ctx.html(renderHTML(fileName, yamlContent, course, websiteValidation, imageValidation, stayImageValidation, summary.toString()));
+        } catch (Exception e) {
+            ctx.html(renderError("Thumbnail generation error", e.getMessage()));
         }
     }
     
@@ -1239,6 +1320,28 @@ public class CourseAudit {
             margin-bottom: 20px;
             border: 1px solid #e0e0e0;
         }
+        .top-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: #eef6ff;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+        .top-actions__title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0d47a1;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .top-actions__hint {
+            font-size: 13px;
+            color: #0d47a1;
+        }
         .nav-section {
             margin-bottom: 12px;
         }
@@ -1355,6 +1458,16 @@ public class CourseAudit {
         %s
         
         %s
+
+        <div class="top-actions">
+            <div>
+                <div class="top-actions__title">Image Tools</div>
+                <div class="top-actions__hint">Generate thumbnails for all course images (writes missing files only).</div>
+            </div>
+            <form method="post" action="/generate-thumbnails">
+                <button type="submit" formnovalidate class="btn-primary">🖼️ Generate All Missing Thumbnails</button>
+            </form>
+        </div>
         
         <form method="post">
             <div class="content-area">
@@ -1446,7 +1559,7 @@ public class CourseAudit {
                             <div style="font-size: 11px; color: #666; margin-top: 8px;">Downloads image and updates file automatically</div>
                         </div>
                     </div>
-                    
+
                     <div class="validation-section">
                         <div class="validation-label">Course Status</div>
                         <div class="form-section">
@@ -1784,12 +1897,62 @@ public class CourseAudit {
             // Save image to filesystem
             Path imagePath = Paths.get(IMAGES_PATH, imageFileName);
             ImageIO.write(image, extension, imagePath.toFile());
+
+            Path thumbnailPath = Paths.get(THUMBS_PATH, baseName + ".jpg");
+            generateThumbnail(imagePath, thumbnailPath, THUMB_WIDTH);
             
             String localPath = "/images/courses/" + imageFileName;
             return new DownloadResult(true, "Success", localPath);
             
         } catch (Exception e) {
             return new DownloadResult(false, "Error downloading image: " + e.getMessage(), null);
+        }
+    }
+
+    private static void generateThumbnail(Path sourcePath, Path thumbPath, int targetWidth) throws IOException {
+        BufferedImage source = ImageIO.read(sourcePath.toFile());
+        if (source == null) {
+            throw new IOException("Could not decode image");
+        }
+
+        int width = source.getWidth();
+        int height = source.getHeight();
+        if (width <= 0 || height <= 0) {
+            throw new IOException("Invalid image dimensions");
+        }
+
+        int outputWidth = Math.min(targetWidth, width);
+        int outputHeight = Math.max(1, (int) Math.round((double) height * outputWidth / width));
+
+        BufferedImage resized = new BufferedImage(outputWidth, outputHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = resized.createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.drawImage(source, 0, 0, outputWidth, outputHeight, null);
+        graphics.dispose();
+
+        Files.createDirectories(thumbPath.getParent());
+        writeJpeg(resized, thumbPath, THUMB_JPEG_QUALITY);
+    }
+
+    private static void writeJpeg(BufferedImage image, Path outputPath, float quality) throws IOException {
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+        if (!writers.hasNext()) {
+            throw new IOException("No JPEG writer available");
+        }
+
+        ImageWriter writer = writers.next();
+        try (FileImageOutputStream output = new FileImageOutputStream(outputPath.toFile())) {
+            writer.setOutput(output);
+            ImageWriteParam params = writer.getDefaultWriteParam();
+            if (params.canWriteCompressed()) {
+                params.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                params.setCompressionQuality(quality);
+            }
+            writer.write(null, new IIOImage(image, null, null), params);
+        } finally {
+            writer.dispose();
         }
     }
     

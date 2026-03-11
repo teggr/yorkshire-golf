@@ -98,9 +98,16 @@ public class CoursesPage implements View {
     }
 
     static j2html.tags.DomContent courseCard(Course course, @Nullable String imageUrl) {
+        String thumbImageUrl = CourseImages.toThumbUrl(imageUrl);
+        String fallbackAttr = "this.onerror=null;this.src='" + imageUrl + "';";
         j2html.tags.DomContent mediaEl = div().withClass("ygl-card__media").with(
                 imageUrl != null && !imageUrl.isEmpty()
-                        ? img().withSrc(imageUrl).withAlt(course.name()).withClass("ygl-card__img")
+                        ? img().withSrc(thumbImageUrl)
+                                .withAlt(course.name())
+                                .withClass("ygl-card__img")
+                                .attr("loading", "lazy")
+                                .attr("decoding", "async")
+                                .attr("onerror", fallbackAttr)
                         : div("No image available").withClass("ygl-card__placeholder").attr("aria-hidden", "true")
         );
 

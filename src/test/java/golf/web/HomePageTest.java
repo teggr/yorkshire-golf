@@ -21,7 +21,7 @@ public class HomePageTest {
                 "Featured Club",
                 Regions.NorthYorkshire,
                 "https://featured.example",
-                "/images/featured.jpg",
+                "/images/courses/featured.jpg",
                 null,
                 false,
                 false,
@@ -36,10 +36,10 @@ public class HomePageTest {
         );
 
         List<Course> courses = List.of(
-                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", "/images/ganton.jpg", null, false, false, null, null, null, null, null, null, null, null),
+                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", "/images/courses/ganton.jpg", null, false, false, null, null, null, null, null, null, null, null),
                 new Course("Bridlington Links", Regions.EastYorkshire, "https://bridlington.example", null, null, false, false, null, null, null, null, null, null, null, null),
-                new Course("Rother Valley Golf", Regions.SouthYorkshire, "https://rothervalley.example", "/images/rother.jpg", null, false, false, null, null, null, null, null, null, null, null),
-                new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", "/images/moortown.jpg", null, false, false, null, null, null, null, null, null, null, null)
+                new Course("Rother Valley Golf", Regions.SouthYorkshire, "https://rothervalley.example", "/images/courses/rother.jpg", null, false, false, null, null, null, null, null, null, null, null),
+                new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", "/images/courses/moortown.jpg", null, false, false, null, null, null, null, null, null, null, null)
         );
 
         // Render through view to validate full home markup
@@ -76,6 +76,14 @@ public class HomePageTest {
         assertTrue(body.contains("ygl-card__media"));
         assertTrue(body.contains("ygl-card__img"));
         assertTrue(body.contains("ygl-card__placeholder"));
+        assertTrue(body.contains("/images/courses/thumbs/featured.jpg"));
+        assertTrue(body.contains("onerror=\""));
+        assertTrue(body.contains("/images/courses/featured.jpg"));
+        assertTrue(body.contains("/images/courses/thumbs/ganton.jpg")
+                || body.contains("/images/courses/thumbs/rother.jpg")
+                || body.contains("/images/courses/thumbs/moortown.jpg"));
+        assertTrue(body.contains("loading=\"lazy\""));
+        assertTrue(body.contains("decoding=\"async\""));
         assertTrue(body.contains("row g-4"));
         assertTrue(body.contains("col-6 col-lg-3"));
         assertFalse(body.contains("Sign in to track your challenge"));
