@@ -16,7 +16,7 @@ public class MapController {
 
     private final Courses courses;
 
-    @Value("${golf.google-maps.api-key:}")
+    @Value("${GOOGLE_MAPS_API_KEY:}")
     private String googleMapsApiKey;
 
     @GetMapping

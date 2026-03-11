@@ -22,7 +22,7 @@ import static j2html.TagCreator.*;
 @Slf4j
 public class CourseDetailPage implements View {
 
-        @Value("${golf.google-maps.api-key:}")
+        @Value("${GOOGLE_MAPS_API_KEY:}")
         private String googleMapsApiKey;
 
     @Override
