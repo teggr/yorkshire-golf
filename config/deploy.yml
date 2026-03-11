@@ -13,11 +13,12 @@ servers:
       traefik.http.routers.golf-tracker.tls.certresolver: "letsencrypt"
 env:
   clear:
+    SPRING_DATASOURCE_URL: jdbc:h2:file:/golf-data/golfdb;AUTO_SERVER=TRUE
     MAIL_HOST: host.docker.internal
     MAIL_PORT: 25
     APP_BASE_URL: https://yorkshiregolf.life
   secret:
-    GOOGLE_MAPS_API_KEY: GOOGLE_MAPS_API_KEY
+    - GOOGLE_MAPS_API_KEY
 registry:
   username:
     - DOCKER_USERNAME
@@ -50,3 +51,5 @@ accessories:
     image: namshi/smtp
     host: 46.224.198.56
     port: "127.0.0.1:25:25"
+volumes:
+  - /golf-data:/golf-data

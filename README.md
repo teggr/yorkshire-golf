@@ -24,21 +24,27 @@ Requires:
 ./mvnw clean package
 ```
 
+# Release
+
+```shell
+./mvnw versions:set -DremoveSnapshot=true -DprocessAllModules=true -DgenerateBackupPoms=false
+
+./mvnw clean package docker:push
+```
+
 # Deploy
 
 Build the Docker image:
 
 ```shell
-./mvnw clean package
+deploy4j deploy --version=0.0.9
 ```
 
-Push to Docker Hub (ensure you are logged in with `docker login`):
+# Post-Deploy
 
 ```shell
-./mvnw docker:push
+./mvnw versions:set -DnextSnapshot=true -DprocessAllModules=true -DgenerateBackupPoms=false
 ```
-
-Set `GOOGLE_MAPS_API_KEY` in the runtime environment to enable Google Maps embeds on course pages.
 
 # Usage
 

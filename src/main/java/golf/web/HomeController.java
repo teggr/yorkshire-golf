@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.random.RandomGenerator;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/")
@@ -25,7 +25,7 @@ public class HomeController {
       model.addAttribute("courses", allCourses);
       return "homePage";
     }
-    Course featured = allCourses.get(RandomGenerator.getDefault().nextInt(allCourses.size()));
+    Course featured = allCourses.get(new Random().nextInt(allCourses.size()));
     model.addAttribute("featuredCourse", featured);
     model.addAttribute("courses", allCourses);
     return "homePage";

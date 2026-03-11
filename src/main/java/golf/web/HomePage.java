@@ -16,7 +16,7 @@ import org.springframework.web.servlet.View;
 
 import java.util.List;
 import java.util.Map;
-import java.util.random.RandomGenerator;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static j2html.TagCreator.*;
@@ -53,7 +53,7 @@ public class HomePage implements View {
     Map<Region, Long> courseCountByRegion = allCourses.stream()
       .collect(Collectors.groupingBy(Course::region, Collectors.counting()));
 
-    RandomGenerator random = RandomGenerator.getDefault();
+    Random random = new Random();
 
     Map<Region, List<Course>> coursesByRegion = allCourses.stream()
       .collect(Collectors.groupingBy(Course::region));
