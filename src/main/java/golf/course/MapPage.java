@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.h1;
+import static j2html.TagCreator.iframe;
 import static j2html.TagCreator.p;
 import static j2html.TagCreator.rawHtml;
 import static j2html.TagCreator.script;
@@ -64,9 +65,19 @@ public class MapPage implements View {
                         div().withClass("container ygl-page").with(
                                 div().withClass("ygl-map-page").with(
                                         p("Use the map below to browse all open Yorkshire golf courses.").withClass("ygl-page__lead"),
-                                        div().withId("course-map").withClass("ygl-map-page__map"),
                                         googleMapsApiKey.isBlank()
-                                                ? p("Map is unavailable right now.").withClass("text-muted mt-3")
+                                                ? div().withClass("ratio ratio-16x9 ygl-map-page__map").with(
+                                                        iframe()
+                                                                .withSrc(fallbackMapUrl())
+                                                                .withTitle("Yorkshire course map")
+                                                                .attr("style", "border:0;")
+                                                                .attr("loading", "lazy")
+                                                                .attr("referrerpolicy", "no-referrer-when-downgrade")
+                                                                .attr("allowfullscreen", "")
+                                                )
+                                                : div().withId("course-map").withClass("ygl-map-page__map"),
+                                        googleMapsApiKey.isBlank()
+                                                ? p("Google Maps API key is not configured, so a basic map is shown.").withClass("text-muted mt-3")
                                                 : div()
                                 )
                         )
@@ -83,6 +94,12 @@ public class MapPage implements View {
         String encodedKey = URLEncoder.encode(googleMapsApiKey, StandardCharsets.UTF_8);
         return "https://maps.googleapis.com/maps/api/js?key=" + encodedKey + "&callback=yglInitCourseMap";
     }
+
+        private static String fallbackMapUrl() {
+                return "https://maps.google.com/maps?q="
+                                + URLEncoder.encode("Yorkshire golf courses", StandardCharsets.UTF_8)
+                                + "&z=8&output=embed";
+        }
 
         public record MapPoint(String name, Double lat, Double lng, @Nullable String coursePath) {
     }

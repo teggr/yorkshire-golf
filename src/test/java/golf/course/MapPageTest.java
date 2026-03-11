@@ -41,8 +41,8 @@ class MapPageTest {
         assertTrue(html.contains("/courses/ganton-golf-club"));
     }
 
-    @Test
-    void renderWithoutApiKeyShowsFallbackMessage() throws Exception {
+        @Test
+        void renderWithoutApiKeyShowsFallbackEmbed() throws Exception {
         MapPage page = new MapPage();
 
         var request = new org.springframework.mock.web.MockHttpServletRequest();
@@ -55,7 +55,9 @@ class MapPageTest {
         ), request, response);
 
         String html = response.getContentAsString();
-        assertTrue(html.contains("Map is unavailable right now."));
+        assertTrue(html.contains("Google Maps API key is not configured"));
+        assertTrue(html.contains("maps.google.com/maps?q="));
+        assertTrue(html.contains("output=embed"));
         assertFalse(html.contains("maps.googleapis.com/maps/api/js"));
     }
 }
