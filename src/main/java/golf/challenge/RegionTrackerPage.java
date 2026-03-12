@@ -98,8 +98,11 @@ public class RegionTrackerPage implements View {
         div().withClass("container ygl-page").with(
           div().withClass("row mt-4").with(
             div().withClass("col-12").with(
-              div().withClass("alert ygl-share-banner mb-0").with(
-                p("This page is public — feel free to share it! Send the link to friends, family, or fellow golfers, or screenshot your progress and show it off on the socials.").withClass("mb-0")
+              div().withClass("alert ygl-share-banner mb-0 d-flex flex-wrap align-items-center gap-3").with(
+                p("This page is public — feel free to share it! Send the link to friends, family, or fellow golfers, or screenshot your progress and show it off on the socials.").withClass("mb-0 flex-grow-1"),
+                button("⬇ Download Infographics").withId("ygl-download-infographics")
+                  .withType("button")
+                  .withClass("ygl-btn ygl-btn--outline ygl-btn--sm flex-shrink-0")
               )
             )
           )
@@ -229,7 +232,8 @@ public class RegionTrackerPage implements View {
               )
             )
           )
-        )
+        ),
+        script().withSrc("/js/download-infographics.js")
       );
 
     pageTemplate.render(response.getWriter());
