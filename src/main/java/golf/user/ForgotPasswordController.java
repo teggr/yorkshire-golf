@@ -23,6 +23,7 @@ public class ForgotPasswordController {
     @GetMapping
     public String forgotPasswordPage(
             @RequestParam(required = false) String token,
+            @RequestParam(required = false) String locked,
             Model model
     ) {
         if (token != null && !token.isBlank()) {
@@ -30,6 +31,9 @@ public class ForgotPasswordController {
             model.addAttribute("token", token);
         } else {
             model.addAttribute("step", "email");
+        }
+        if ("true".equals(locked)) {
+            model.addAttribute("locked", true);
         }
         return "forgotPasswordPage";
     }

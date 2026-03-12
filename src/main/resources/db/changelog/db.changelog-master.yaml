@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changeset-20260309-01-initial-schema.yaml
   - include:
       file: db/changelog/changeset-20260309-02-password-reset-token-upgrade.yaml
+  - include:
+      file: db/changelog/changeset-20260312-01-failed-login-attempts.yaml

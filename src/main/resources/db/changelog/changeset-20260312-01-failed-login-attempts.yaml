@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260312-01-failed-login-attempts
+      author: copilot
+      changes:
+        - addColumn:
+            tableName: golf_user
+            columns:
+              - column:
+                  name: failed_login_attempts
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false

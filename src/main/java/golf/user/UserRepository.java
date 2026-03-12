@@ -24,7 +24,8 @@ public class UserRepository {
             rs.getString("password"),
             rs.getString("tracker_id"),
             rs.getString("role"),
-            rs.getBoolean("account_locked")
+            rs.getBoolean("account_locked"),
+            rs.getInt("failed_login_attempts")
     );
 
     public Optional<GolfUser> findByEmail(String email) {
@@ -73,13 +74,29 @@ public class UserRepository {
             return ps;
         }, keyHolder);
         long id = keyHolder.getKey().longValue();
-        return new GolfUser(id, user.email(), user.password(), user.trackerId(), user.role(), user.accountLocked());
+        return new GolfUser(id, user.email(), user.password(), user.trackerId(), user.role(), user.accountLocked(), 0);
     }
 
     public void updateAccountLocked(Long userId, boolean locked) {
         jdbc.update(
                 "UPDATE golf_user SET account_locked = ? WHERE id = ?",
                 locked, userId
+        );
+    }
+
+    public void incrementFailedLoginAttempts(Long userId, int maxFailures) {
+        jdbc.update(
+                "UPDATE golf_user SET failed_login_attempts = failed_login_attempts + 1, " +
+                "account_locked = CASE WHEN failed_login_attempts + 1 >= ? THEN TRUE ELSE FALSE END " +
+                "WHERE id = ? AND account_locked = FALSE",
+                maxFailures, userId
+        );
+    }
+
+    public void resetFailedLoginAttempts(Long userId) {
+        jdbc.update(
+                "UPDATE golf_user SET failed_login_attempts = 0 WHERE id = ?",
+                userId
         );
     }
 

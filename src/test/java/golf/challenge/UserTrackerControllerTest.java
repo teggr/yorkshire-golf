@@ -44,7 +44,7 @@ class UserTrackerControllerTest {
         Model model = new ExtendedModelMap();
 
         when(userService.findByTrackerId("abc123tracker"))
-                .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false)));
+                .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0)));
         when(yorkshireChallenge.getTrackerForUser(10L)).thenReturn(tracker);
         when(yorkshireChallenge.getMonthlyCourseProgressForUser(10L)).thenReturn(monthlyProgress);
         when(tracker.totalCourseCount()).thenReturn(195L);
@@ -79,9 +79,9 @@ class UserTrackerControllerTest {
     Course course = mock(Course.class);
 
     when(userService.findByTrackerId("abc123tracker"))
-        .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false)));
+        .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0)));
     when(userService.findByEmail("g@example.com"))
-        .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false)));
+        .thenReturn(Optional.of(new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0)));
     when(yorkshireChallenge.getTrackerForUser(10L)).thenReturn(tracker);
     when(yorkshireChallenge.getMonthlyCourseProgressForUser(10L)).thenReturn(monthlyProgress);
     when(tracker.totalCourseCount()).thenReturn(195L);
@@ -113,7 +113,7 @@ class UserTrackerControllerTest {
 
     RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
 
-    GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false);
+    GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0);
     when(userService.findByTrackerId("abc123tracker")).thenReturn(Optional.of(owner));
     when(userService.findByEmail("g@example.com")).thenReturn(Optional.of(owner));
     when(userRoundRepository.existsByUserIdAndCourseName(10L, "Alwoodley")).thenReturn(false);
@@ -141,9 +141,9 @@ class UserTrackerControllerTest {
     RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
 
     when(userService.findByTrackerId("abc123tracker"))
-        .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false)));
+        .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false, 0)));
     when(userService.findByEmail("other@example.com"))
-        .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false)));
+        .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false, 0)));
 
     ResponseStatusException ex = assertThrows(ResponseStatusException.class,
         () -> controller.addRound("abc123tracker", userDetails, "Alwoodley", "2026-03-07", redirectAttributes));
@@ -178,7 +178,7 @@ class UserTrackerControllerTest {
         UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
 
         UserDetails userDetails = User.withUsername("g@example.com").password("unused").roles("USER").build();
-        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false);
+        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0);
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
 
         when(userService.findByTrackerId("abc123tracker")).thenReturn(Optional.of(owner));
@@ -206,7 +206,7 @@ class UserTrackerControllerTest {
         UserTrackerController controller = new UserTrackerController(userService, yorkshireChallenge, courses, userRoundRepository);
 
         UserDetails userDetails = User.withUsername("g@example.com").password("unused").roles("USER").build();
-        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false);
+        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0);
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
 
         when(userService.findByTrackerId("abc123tracker")).thenReturn(Optional.of(owner));
@@ -237,9 +237,9 @@ class UserTrackerControllerTest {
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
 
         when(userService.findByTrackerId("abc123tracker"))
-            .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false)));
+            .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false, 0)));
         when(userService.findByEmail("other@example.com"))
-            .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false)));
+            .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false, 0)));
 
         String csv = "courseName,date\nAlwoodley Golf Club,2024-05-24\n";
         MockMultipartFile file = new MockMultipartFile("csvFile", "rounds.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
@@ -261,7 +261,7 @@ class UserTrackerControllerTest {
 
         UserDetails userDetails = User.withUsername("g@example.com").password("unused").roles("USER").build();
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
-        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false);
+        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0);
 
         when(userService.findByTrackerId("abc123tracker")).thenReturn(Optional.of(owner));
         when(userService.findByEmail("g@example.com")).thenReturn(Optional.of(owner));
@@ -286,9 +286,9 @@ class UserTrackerControllerTest {
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
 
         when(userService.findByTrackerId("abc123tracker"))
-                .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false)));
+                .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false, 0)));
         when(userService.findByEmail("other@example.com"))
-                .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false)));
+                .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false, 0)));
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> controller.deleteRound("abc123tracker", userDetails, "123", redirectAttributes));
@@ -307,7 +307,7 @@ class UserTrackerControllerTest {
 
         UserDetails userDetails = User.withUsername("g@example.com").password("unused").roles("USER").build();
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
-        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false);
+        GolfUser owner = new GolfUser(10L, "g@example.com", "secret", "abc123tracker", "USER", false, 0);
 
         when(userService.findByTrackerId("abc123tracker")).thenReturn(Optional.of(owner));
         when(userService.findByEmail("g@example.com")).thenReturn(Optional.of(owner));
@@ -332,9 +332,9 @@ class UserTrackerControllerTest {
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
 
         when(userService.findByTrackerId("abc123tracker"))
-                .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false)));
+                .thenReturn(Optional.of(new GolfUser(10L, "owner@example.com", "secret", "abc123tracker", "USER", false, 0)));
         when(userService.findByEmail("other@example.com"))
-                .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false)));
+                .thenReturn(Optional.of(new GolfUser(20L, "other@example.com", "secret", "zzz", "USER", false, 0)));
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> controller.updateRoundDate("abc123tracker", userDetails, "123", "2026-03-08", redirectAttributes));

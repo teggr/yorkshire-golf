@@ -6,6 +6,7 @@ public record GolfUser(
         String password,
         String trackerId,
         String role,
-        boolean accountLocked
+        boolean accountLocked,
+        int failedLoginAttempts
 ) {
 }
