@@ -36,6 +36,7 @@ public class Next100Page implements View {
                 .withRequest(request)
                 .withCurrentPageBasePath("/next-100")
                 .withTitle("Next 100 – Yorkshire Golf")
+                .withDescription("Explore Yorkshire's standout golf courses featured in Golf Monthly's UK & Ireland rankings 101–200. Discover hidden gems and exceptional clubs across all four ridings.")
                 .withBody(
                         // Page header
                         div().withClass("ygl-page-header").with(

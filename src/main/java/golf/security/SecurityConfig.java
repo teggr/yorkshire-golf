@@ -48,7 +48,8 @@ public class SecurityConfig {
                     "/challenge/**",
                         "/register/**", "/login/**", "/forgot-password/**",
                         "/css/**", "/images/**", "/js/**",
-                        "/actuator/**"
+                        "/actuator/**",
+                        "/sitemap.xml", "/robots.txt"
                 ).permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()

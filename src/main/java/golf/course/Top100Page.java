@@ -36,6 +36,7 @@ public class Top100Page implements View {
                 .withRequest(request)
                 .withCurrentPageBasePath("/top-100")
                 .withTitle("Top 100 Golf Courses – Yorkshire Golf Life")
+                .withDescription("Discover Yorkshire's finest golf courses featured in the Golf Monthly UK & Ireland Top 100. A curated list of outstanding clubs from heathland classics to sweeping parkland courses.")
                 .withBody(
                         // Page header
                         div().withClass("ygl-page-header").with(

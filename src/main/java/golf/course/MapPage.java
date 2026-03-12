@@ -48,6 +48,7 @@ public class MapPage implements View {
                 .withRequest(request)
                 .withCurrentPageBasePath("/map")
                 .withTitle("Course Map – Yorkshire Golf")
+                .withDescription("View all Yorkshire golf courses on an interactive map. Explore clubs across North, East, South and West Yorkshire and find courses near you.")
                 .withPageScripts(
                         script(rawHtml(mapConfigScriptBody(mapPoints))),
                         script().withSrc("/js/map-page.js").attr("defer", ""),

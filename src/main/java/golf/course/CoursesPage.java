@@ -46,6 +46,7 @@ public class CoursesPage implements View {
         new YorkshireGolfPageTemplate().withRequest(request)
                 .withCurrentPageBasePath("/courses")
                 .withTitle("Yorkshire Golf Courses")
+                .withDescription("Browse all golf courses across Yorkshire, organised by region. Find clubs and course information across North, East, South and West Yorkshire.")
                 .withBody(
                         // Page header
                         div().withClass("ygl-page-header").with(

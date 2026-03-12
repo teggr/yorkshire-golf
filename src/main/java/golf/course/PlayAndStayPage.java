@@ -35,6 +35,7 @@ public class PlayAndStayPage implements View {
         new YorkshireGolfPageTemplate().withRequest(request)
                 .withCurrentPageBasePath("/play-and-stay")
                 .withTitle("Play & Stay – Yorkshire Golf")
+                .withDescription("Find Yorkshire golf clubs offering play and stay packages with onsite accommodation. Stay longer, play more, and experience the best of Yorkshire golf.")
                 .withBody(
                         // Page header
                         div().withClass("ygl-page-header").with(
