@@ -29,6 +29,7 @@ public class ForgotPasswordPage implements View {
         String step = model.get("step") != null ? (String) model.get("step") : "email";
         String errorMessage = (String) model.get("error");
         String token = (String) model.get("token");
+        boolean locked = Boolean.TRUE.equals(model.get("locked"));
         j2html.tags.DomContent csrfField = CsrfUtil.csrfInput(request);
 
         new YorkshireGolfPageTemplate().withRequest(request)
@@ -43,6 +44,12 @@ public class ForgotPasswordPage implements View {
                         div().withClass("container ygl-page").with(
                                 div().withClass("row justify-content-center").with(
                                         div().withClass("col-md-6 col-lg-5").with(
+                                                locked
+                                                        ? div().withClass("alert alert-warning").with(
+                                                                p("Your account has been locked due to too many failed login attempts.").withClass("mb-1"),
+                                                                p("Please reset your password to regain access.").withClass("mb-0")
+                                                          )
+                                                        : text(""),
                                                 errorMessage != null
                                                         ? div(errorMessage).withClass("alert alert-danger")
                                                         : text(""),

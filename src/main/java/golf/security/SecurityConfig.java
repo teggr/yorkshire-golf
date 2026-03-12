@@ -84,7 +84,7 @@ public class SecurityConfig {
                 loginAttemptService.recordFailure(username);
 
                 if (exception instanceof LockedException) {
-                    response.sendRedirect("/login?error=locked");
+                    response.sendRedirect("/forgot-password?locked=true");
                     return;
                 }
                 response.sendRedirect("/login?error=true");

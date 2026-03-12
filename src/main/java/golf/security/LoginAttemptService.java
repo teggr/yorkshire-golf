@@ -1,56 +1,27 @@
 package golf.security;
 
+import golf.user.GolfUser;
+import golf.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class LoginAttemptService {
 
-    static final int MAX_FAILURES = 5;
-    static final Duration LOCK_DURATION = Duration.ofMinutes(15);
+    static final int MAX_FAILURES = 10;
 
-    private final Clock clock;
-    private final Map<String, AttemptState> attemptsByEmail = new ConcurrentHashMap<>();
-
-    public LoginAttemptService() {
-        this(Clock.systemUTC());
-    }
-
-    LoginAttemptService(Clock clock) {
-        this.clock = clock;
-    }
+    private final UserRepository userRepository;
 
     public void recordFailure(String email) {
         String key = normalize(email);
         if (key == null) {
             return;
         }
-
-        attemptsByEmail.compute(key, (ignored, state) -> {
-            AttemptState current = state == null ? new AttemptState() : state;
-            Instant now = Instant.now(clock);
-
-            if (current.lockedUntil != null && now.isAfter(current.lockedUntil)) {
-                current = new AttemptState();
-            }
-
-            if (current.lockedUntil != null && now.isBefore(current.lockedUntil)) {
-                return current;
-            }
-
-            current.failures++;
-            if (current.failures >= MAX_FAILURES) {
-                current.lockedUntil = now.plus(LOCK_DURATION);
-                current.failures = 0;
-            }
-            return current;
-        });
+        userRepository.findByEmail(key).ifPresent(user ->
+                userRepository.incrementFailedLoginAttempts(user.id(), MAX_FAILURES));
     }
 
     public void recordSuccess(String email) {
@@ -58,7 +29,8 @@ public class LoginAttemptService {
         if (key == null) {
             return;
         }
-        attemptsByEmail.remove(key);
+        userRepository.findByEmail(key).ifPresent(user ->
+                userRepository.resetFailedLoginAttempts(user.id()));
     }
 
     public boolean isLocked(String email) {
@@ -66,18 +38,9 @@ public class LoginAttemptService {
         if (key == null) {
             return false;
         }
-
-        AttemptState state = attemptsByEmail.get(key);
-        if (state == null || state.lockedUntil == null) {
-            return false;
-        }
-
-        Instant now = Instant.now(clock);
-        if (!now.isBefore(state.lockedUntil)) {
-            attemptsByEmail.remove(key);
-            return false;
-        }
-        return true;
+        return userRepository.findByEmail(key)
+                .map(GolfUser::accountLocked)
+                .orElse(false);
     }
 
     private String normalize(String email) {
@@ -89,10 +52,5 @@ public class LoginAttemptService {
             return null;
         }
         return trimmed.toLowerCase(Locale.ROOT);
-    }
-
-    private static final class AttemptState {
-        private int failures;
-        private Instant lockedUntil;
     }
 }

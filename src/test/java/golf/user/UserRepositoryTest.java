@@ -59,9 +59,9 @@ class UserRepositoryTest {
 
     @Test
     void saveRejectsDuplicateEmailAddresses() {
-        repository.save(new GolfUser(null, "user@example.com", "hash", "tracker-1", "USER", false));
+        repository.save(new GolfUser(null, "user@example.com", "hash", "tracker-1", "USER", false, 0));
 
-        assertThatThrownBy(() -> repository.save(new GolfUser(null, "user@example.com", "hash", "tracker-2", "USER", false)))
+        assertThatThrownBy(() -> repository.save(new GolfUser(null, "user@example.com", "hash", "tracker-2", "USER", false, 0)))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 }
