@@ -712,6 +712,16 @@ img {
   padding-top: 2.5rem;
 }
 
+/* ---------- ygl-share-banner ---------- */
+.ygl-share-banner {
+  background-color: var(--ygl-color-bg-alt);
+  border: 1px solid var(--ygl-color-border);
+  border-left: 4px solid var(--ygl-color-accent);
+  border-radius: var(--ygl-radius-md);
+  color: var(--ygl-color-text-secondary);
+  padding: 1rem 1.25rem;
+}
+
 .ygl-round-actions {
   display: flex;
   gap: 0.75rem;

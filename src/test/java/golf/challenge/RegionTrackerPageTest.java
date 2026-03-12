@@ -91,6 +91,41 @@ class RegionTrackerPageTest {
         assertTrue(html.contains("Save date"));
         assertTrue(html.contains("Delete"));
         assertTrue(html.contains("Are you sure you want to delete this round?"));
+        assertTrue(html.contains("ygl-share-banner"));
+        assertTrue(html.contains("courseName,date"));
+        assertTrue(html.contains("bulk-import"));
+    }
+
+    @Test
+    void renderShowsSharingBannerForNonOwner() throws Exception {
+        RegionTrackerPage page = new RegionTrackerPage();
+
+        RegionChallengeTracker tracker = new RegionChallengeTracker(
+                Map.of(
+                        Regions.NorthYorkshire, 10L,
+                        Regions.EastYorkshire, 20L,
+                        Regions.SouthYorkshire, 30L,
+                        Regions.WestYorkshire, 40L
+                ),
+                List.of()
+        );
+
+        var request = new org.springframework.mock.web.MockHttpServletRequest();
+        request.setRequestURI("/challenge/abc123tracker");
+        var response = new org.springframework.mock.web.MockHttpServletResponse();
+
+        page.render(Map.of(
+                "tracker", tracker,
+                "trackerId", "abc123tracker",
+                "canAddRound", false,
+                "allCourses", List.of()
+        ), request, response);
+
+        String html = response.getContentAsString();
+        assertTrue(html.contains("ygl-share-banner"));
+        assertTrue(html.contains("This page is public"));
+        assertFalse(html.contains("courseName,date"));
+        assertFalse(html.contains("Import Rounds from CSV"));
     }
 
     @Test

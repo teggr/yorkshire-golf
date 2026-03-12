@@ -94,6 +94,16 @@ public class RegionTrackerPage implements View {
             p("Track your progress through every golf course across the four ridings of Yorkshire.").withClass("ygl-page-header__lead")
           )
         ),
+        // Sharing banner
+        div().withClass("container ygl-page").with(
+          div().withClass("row mt-4").with(
+            div().withClass("col-12").with(
+              div().withClass("alert ygl-share-banner mb-0").with(
+                p("This page is public — feel free to share it! Send the link to friends, family, or fellow golfers, or screenshot your progress and show it off on the socials.").withClass("mb-0")
+              )
+            )
+          )
+        ),
         // Chart
         div().withClass("container ygl-page").with(
           div().withClass("row g-4 ygl-infographics-row").with(
@@ -148,12 +158,15 @@ public class RegionTrackerPage implements View {
                 div().withClass("card mb-4").with(
                   div().withClass("card-header").with(strong("Import Rounds from CSV")),
                   div().withClass("card-body").with(
+                    p("Upload a CSV file to bulk-import your rounds. Your file should have a header row followed by one round per line, with two columns: course name and date played in YYYY-MM-DD format — for example: ").withClass("text-muted small mb-3").with(
+                      code("courseName,date")
+                    ),
                     form().withMethod("post").withAction("/challenge/" + trackerId + "/import-rounds")
                       .attr("enctype", "multipart/form-data").with(
                         csrfField,
                         div().withClass("row g-3 align-items-end").with(
                           div().withClass("col-md-10").with(
-                            label("CSV File (courseName, date)").withFor("csvFile").withClass("form-label"),
+                            label("CSV File").withFor("csvFile").withClass("form-label"),
                             input().withType("file").withId("csvFile").withName("csvFile")
                               .withClass("form-control").attr("accept", ".csv").attr("required", "")
                           ),
