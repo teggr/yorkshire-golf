@@ -38,7 +38,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/challenge/*/import-rounds").authenticated()
+                .requestMatchers(HttpMethod.POST, "/challenge/**").authenticated()
                 .requestMatchers(
                     "/", "/courses/**", "/search/**", "/play-and-stay/**",
                     "/map/**",

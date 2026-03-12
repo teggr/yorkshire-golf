@@ -37,7 +37,7 @@ class LoginAttemptServiceTest {
 
         service.recordFailure("unknown@example.com");
 
-        verify(userRepository, never()).incrementFailedLoginAttempts(any(), any());
+        verify(userRepository, never()).incrementFailedLoginAttempts(anyLong(), anyInt());
     }
 
     @Test
