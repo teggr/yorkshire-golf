@@ -47,7 +47,7 @@ class RegionTrackerControllerTest {
                 .build();
 
         when(userService.findByEmail("golfer@example.com"))
-                .thenReturn(Optional.of(new GolfUser(1L, "golfer@example.com", "secret", "abc123tracker", "USER", false)));
+                .thenReturn(Optional.of(new GolfUser(1L, "golfer@example.com", "secret", "abc123tracker", "USER", false, 0)));
 
         String view = controller.home(userDetails, model);
 

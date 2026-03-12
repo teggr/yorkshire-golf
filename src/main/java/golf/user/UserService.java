@@ -34,7 +34,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(rawPassword);
         String trackerId = generateTrackerId();
         GolfUser user = new GolfUser(null, normalizedEmail, encodedPassword,
-                trackerId, "USER", false);
+                trackerId, "USER", false, 0);
         try {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
@@ -71,9 +71,6 @@ public class UserService {
             return;
         }
         GolfUser user = userOpt.get();
-        if (user.accountLocked()) {
-            return;
-        }
         String token = generateSecureToken();
         passwordResetTokenRepository.save(user.id(), token);
         String resetLink = resetBaseUrl + "?token=" + token;
@@ -107,11 +104,14 @@ public class UserService {
         }
         String encodedPassword = passwordEncoder.encode(newRawPassword);
         userRepository.updatePassword(resetToken.userId(), encodedPassword);
+        userRepository.updateAccountLocked(resetToken.userId(), false);
+        userRepository.resetFailedLoginAttempts(resetToken.userId());
         return PasswordResetResult.SUCCESS;
     }
 
     public void unlockAccount(Long userId) {
         userRepository.updateAccountLocked(userId, false);
+        userRepository.resetFailedLoginAttempts(userId);
         passwordResetTokenRepository.invalidateAllForUser(userId);
     }
 
