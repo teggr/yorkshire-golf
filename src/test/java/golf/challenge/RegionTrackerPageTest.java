@@ -124,6 +124,9 @@ class RegionTrackerPageTest {
         String html = response.getContentAsString();
         assertTrue(html.contains("ygl-share-banner"));
         assertTrue(html.contains("This page is public"));
+        assertTrue(html.contains("ygl-download-infographics"));
+        assertTrue(html.contains("Download Infographics"));
+        assertTrue(html.contains("download-infographics.js"));
         assertFalse(html.contains("courseName,date"));
         assertFalse(html.contains("Import Rounds from CSV"));
     }
