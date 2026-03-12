@@ -76,6 +76,10 @@ public class HomePage implements View {
     new YorkshireGolfPageTemplate()
       .withRequest(request)
       .withTitle("Yorkshire Golf Life")
+      .withDescription("Explore and discover the best golf courses across Yorkshire. Browse courses by region, track your progress with the Yorkshire Golf Challenge, and find clubs in North, East, South and West Yorkshire.")
+      .withOgImage(featuredCourse != null && featuredCourse.mainImageUrl() != null && !featuredCourse.mainImageUrl().isEmpty()
+          ? featuredCourse.mainImageUrl()
+          : null)
       .withBody(
         // Hero
         div().withClass("ygl-hero").with(

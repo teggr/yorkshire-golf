@@ -42,6 +42,9 @@ public class CourseDetailPage implements View {
                 .withRequest(request)
                 .withCurrentPageBasePath("/courses")
                 .withTitle(course.name() + " - Yorkshire Golf Life")
+                .withDescription(course.name() + " is a golf club in " + course.region().displayName() + ". Find course information, location details, and nearby courses on Yorkshire Golf Life.")
+                .withOgImage(course.mainImageUrl() != null && !course.mainImageUrl().isEmpty() ? course.mainImageUrl() : null)
+                .withOgType("article")
                 .withBody(
                         // Hero image
                         course.mainImageUrl() != null && !course.mainImageUrl().isEmpty()

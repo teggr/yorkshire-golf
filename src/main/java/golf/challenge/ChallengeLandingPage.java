@@ -34,6 +34,7 @@ public class ChallengeLandingPage implements View {
                 .withRequest(request)
                 .withCurrentPageBasePath("/challenge")
                 .withTitle("Challenge Tracker — Yorkshire Golf Life")
+                .withDescription("Take on the Yorkshire Golf Challenge and track your progress playing every golf course across the four ridings of Yorkshire. Create an account to start tracking your rounds.")
                 .withBody(
                         div().withClass("ygl-page-header").with(
                                 div().withClass("container").with(

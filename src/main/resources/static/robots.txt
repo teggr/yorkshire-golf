@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /logout
+Disallow: /challenge/*/round
+
+Sitemap: https://yorkshiregolf.life/sitemap.xml

@@ -15,7 +15,13 @@ import static j2html.TagCreator.*;
 
 public class YorkshireGolfPageTemplate {
 
+    private static final String SITE_NAME = "Yorkshire Golf Life";
+    private static final String TWITTER_HANDLE = "@yorkshiregolflife";
+
     private String title;
+    private String description;
+    private String ogImage;
+    private String ogType = "website";
     private DomContent[] pageScripts = new DomContent[0];
     private DomContent[] body = new DomContent[0];
     private HttpServletRequest request;
@@ -23,6 +29,21 @@ public class YorkshireGolfPageTemplate {
 
     public YorkshireGolfPageTemplate withTitle(String title) {
         this.title = title;
+        return this;
+    }
+
+    public YorkshireGolfPageTemplate withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public YorkshireGolfPageTemplate withOgImage(String ogImage) {
+        this.ogImage = ogImage;
+        return this;
+    }
+
+    public YorkshireGolfPageTemplate withOgType(String ogType) {
+        this.ogType = ogType;
         return this;
     }
 
@@ -199,7 +220,46 @@ public class YorkshireGolfPageTemplate {
                 );
     }
 
+    private String buildCanonicalUrl() {
+        if (request == null) {
+            return null;
+        }
+        String scheme = request.getHeader("X-Forwarded-Proto");
+        if (scheme == null || scheme.isBlank()) {
+            scheme = request.getScheme();
+        }
+        String host = request.getHeader("X-Forwarded-Host");
+        if (host == null || host.isBlank()) {
+            host = request.getServerName();
+            int port = request.getServerPort();
+            if (("http".equals(scheme) && port != 80) || ("https".equals(scheme) && port != 443)) {
+                host = host + ":" + port;
+            }
+        }
+        return scheme + "://" + host + request.getRequestURI();
+    }
+
+    private String buildAbsoluteImageUrl(String imageUrl) {
+        if (imageUrl == null || imageUrl.isBlank()) {
+            return null;
+        }
+        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+            return imageUrl;
+        }
+        String canonical = buildCanonicalUrl();
+        if (canonical == null) {
+            return imageUrl;
+        }
+        // extract scheme://host from canonical
+        int pathStart = canonical.indexOf('/', canonical.indexOf("//") + 2);
+        String origin = pathStart > 0 ? canonical.substring(0, pathStart) : canonical;
+        return origin + (imageUrl.startsWith("/") ? imageUrl : "/" + imageUrl);
+    }
+
     private DomContent buildHtml() {
+        String canonicalUrl = buildCanonicalUrl();
+        String absoluteOgImage = buildAbsoluteImageUrl(ogImage);
+
         return html()
                 .attr("lang", "en")
                 .with(
@@ -208,6 +268,37 @@ public class YorkshireGolfPageTemplate {
                                         bootstrapCharsetMetaTag(),
                                         bootstrapViewportMetaTag(),
                                         title(title),
+                                        // Meta description
+                                        description != null && !description.isBlank()
+                                                ? meta().withName("description").attr("content", description)
+                                                : text(""),
+                                        // Canonical URL
+                                        canonicalUrl != null
+                                                ? link().attr("rel", "canonical").withHref(canonicalUrl)
+                                                : text(""),
+                                        // Open Graph tags
+                                        meta().attr("property", "og:site_name").attr("content", SITE_NAME),
+                                        meta().attr("property", "og:type").attr("content", ogType),
+                                        meta().attr("property", "og:title").attr("content", title),
+                                        description != null && !description.isBlank()
+                                                ? meta().attr("property", "og:description").attr("content", description)
+                                                : text(""),
+                                        canonicalUrl != null
+                                                ? meta().attr("property", "og:url").attr("content", canonicalUrl)
+                                                : text(""),
+                                        absoluteOgImage != null
+                                                ? meta().attr("property", "og:image").attr("content", absoluteOgImage)
+                                                : text(""),
+                                        // Twitter Card tags
+                                        meta().withName("twitter:card").attr("content", "summary_large_image"),
+                                        meta().withName("twitter:site").attr("content", TWITTER_HANDLE),
+                                        meta().withName("twitter:title").attr("content", title),
+                                        description != null && !description.isBlank()
+                                                ? meta().withName("twitter:description").attr("content", description)
+                                                : text(""),
+                                        absoluteOgImage != null
+                                                ? meta().withName("twitter:image").attr("content", absoluteOgImage)
+                                                : text(""),
                                         googleFontsPreconnect(),
                                         googleFontsLinkTag(),
                                         bootstrapMinCssLinkTag(),
