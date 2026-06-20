@@ -29,7 +29,9 @@ Requires:
 ```shell
 ./mvnw versions:set -DremoveSnapshot=true -DprocessAllModules=true -DgenerateBackupPoms=false
 
-./mvnw clean package docker:push
+./mvnw clean package 
+
+./mvnw docker:push
 ```
 
 # Deploy
@@ -37,7 +39,7 @@ Requires:
 Build the Docker image:
 
 ```shell
-deploy4j deploy --version=0.0.13
+deploy4j deploy --version=0.0.14
 ```
 
 # Post-Deploy
