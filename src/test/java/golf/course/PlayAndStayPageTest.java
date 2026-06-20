@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PlayAndStayPageTest {
 
-    @Test
     @Preview
     public DomContent courseGridExample() {
         // Given - courses with play and stay
@@ -22,10 +21,13 @@ public class PlayAndStayPageTest {
             new Course("Hollins Hall Hotel & Country Club", Regions.WestYorkshire, "https://www.britanniahotels.com/hotels/hollins-hall-hotel-country-club/golf", "/images/courses/hollins-hall-hotel-country-club.jpg", null, false, true, null, null, null, null, null, null, null, null)
         );
 
-        // When - render course grid
-        var result = PlayAndStayPage.courseGrid(courses);
+        return PlayAndStayPage.courseGrid(courses);
+    }
 
-        // Then - should render successfully
+    @Test
+    public void courseGridRendersPlayAndStayCourses() {
+        var result = courseGridExample();
+
         assertNotNull(result);
         String html = result.render();
         assertTrue(html.contains("Rudding Park Golf Club"));
@@ -33,25 +35,23 @@ public class PlayAndStayPageTest {
         assertTrue(html.contains("ygl-card--course"));
         assertTrue(html.contains("https://example.com/rudding-stay.jpg"));
         assertTrue(html.contains("/images/courses/hollins-hall-hotel-country-club.jpg"));
-
-        return result;
     }
 
-    @Test
     @Preview
     public DomContent courseGridEmptyExample() {
         // Given - no play and stay courses
         List<Course> courses = List.of();
 
-        // When - render empty grid
-        var result = PlayAndStayPage.courseGrid(courses);
+        return PlayAndStayPage.courseGrid(courses);
+    }
 
-        // Then - should render empty state
+    @Test
+    public void courseGridRendersEmptyStateWhenNoCoursesFound() {
+        var result = courseGridEmptyExample();
+
         assertNotNull(result);
         String html = result.render();
         assertTrue(html.contains("No Play &amp; Stay courses found."));
-
-        return result;
     }
 
 }

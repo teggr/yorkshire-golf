@@ -12,7 +12,7 @@
 
 	<groupId>life.yorkshiregolf</groupId>
 	<artifactId>golf-tracker</artifactId>
-	<version>0.0.12-SNAPSHOT</version>
+	<version>0.0.13</version>
 	<name>golf-tracker</name>
 	<description>Tracker for Yorkshire Golf</description>
 

@@ -93,6 +93,7 @@ jobs:
         cat > .deploy4j/secrets << "EOF"
         DOCKER_USERNAME=$DOCKER_USERNAME
         DOCKER_PASSWORD=$DOCKER_PASSWORD
+        MAIL_PASSWORD=$MAIL_PASSWORD
         PRIVATE_KEY_PASSPHRASE=$PRIVATE_KEY_PASSPHRASE
         PRIVATE_KEY=~/.ssh/id_rsa
         EOF
@@ -102,6 +103,7 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        MAIL_PASSWORD: ${{ secrets.RESEND_API_KEY }}
         PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
       run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.6 deploy --version ${{ steps.set_release_version.outputs.release_version }}
 

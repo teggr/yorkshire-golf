@@ -22,6 +22,7 @@ class ApplicationPropertiesTest {
         assertEquals("${MAIL_SMTP_AUTH:false}", properties.getProperty("spring.mail.properties.mail.smtp.auth"));
         assertEquals("${MAIL_SMTP_STARTTLS_ENABLE:false}", properties.getProperty("spring.mail.properties.mail.smtp.starttls.enable"));
         assertEquals("${MAIL_SMTP_STARTTLS_REQUIRED:false}", properties.getProperty("spring.mail.properties.mail.smtp.starttls.required"));
+        assertEquals("${MAIL_FROM:noreply@email.yorkshiregolf.life}", properties.getProperty("golf.mail.from"));
         assertEquals("${APP_BASE_URL:http://localhost:8080}", properties.getProperty("golf.app.base-url"));
     }
 }

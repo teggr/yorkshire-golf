@@ -4,8 +4,6 @@ servers:
   web:
     hosts:
       - 46.224.198.56
-    options:
-      add-host: host.docker.internal:host-gateway
     labels:
       traefik.http.routers.golf-tracker.rule: "Host(`yorkshiregolf.life`) || Host(`www.yorkshiregolf.life`)"
       traefik.http.routers.golf-tracker.entrypoints: "websecure"
@@ -14,14 +12,17 @@ servers:
 env:
   clear:
     SPRING_DATASOURCE_URL: jdbc:h2:file:/golf-data/golfdb;AUTO_SERVER=TRUE
-    MAIL_HOST: host.docker.internal
-    MAIL_PORT: 25
+    MAIL_HOST: smtp.resend.com
+    MAIL_PORT: 587
+    MAIL_USERNAME: resend
+    MAIL_FROM: noreply@email.yorkshiregolf.life
     APP_BASE_URL: https://yorkshiregolf.life
-    MAIL_SMTP_AUTH: false
-    MAIL_SMTP_STARTTLS_ENABLE: false
-    MAIL_SMTP_STARTTLS_REQUIRED: false
+    MAIL_SMTP_AUTH: true
+    MAIL_SMTP_STARTTLS_ENABLE: true
+    MAIL_SMTP_STARTTLS_REQUIRED: true
   secret:
     - GOOGLE_MAPS_API_KEY
+    - MAIL_PASSWORD
 registry:
   username:
     - DOCKER_USERNAME
@@ -49,10 +50,5 @@ traefik:
     certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
     certificatesResolvers.letsencrypt.acme.httpchallenge: true
     certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: "web"
-accessories:
-  smtp:
-    image: namshi/smtp
-    host: 46.224.198.56
-    port: "127.0.0.1:25:25"
 volumes:
   - /golf-data:/golf-data
