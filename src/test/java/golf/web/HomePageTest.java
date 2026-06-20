@@ -98,6 +98,10 @@ public class HomePageTest {
                 body.contains("href=\"/challenge\" class=\"nav-link ygl-navbar__link\"")
                         || body.contains("class=\"nav-link ygl-navbar__link\" href=\"/challenge\"")
         );
+        assertTrue(
+                body.contains("href=\"/tee-times-near-me\" class=\"ygl-tee-times-strip__link\"")
+                        || body.contains("class=\"ygl-tee-times-strip__link\" href=\"/tee-times-near-me\"")
+        );
         assertFalse(body.contains("ygl-navbar__link--active"));
         assertFalse(body.contains("aria-current=\"page\""));
 

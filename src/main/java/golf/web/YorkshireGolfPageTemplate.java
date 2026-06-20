@@ -166,6 +166,16 @@ public class YorkshireGolfPageTemplate {
                 );
     }
 
+    private DomContent buildTeeTimesStrip() {
+        return div().withClass("ygl-tee-times-strip").with(
+                div().withClass("container").with(
+                        a("Find tee times near me")
+                                .withClass("ygl-tee-times-strip__link")
+                                .withHref("/tee-times-near-me")
+                )
+        );
+    }
+
     private DomContent buildFooter() {
         return footer()
                 .withClass("ygl-footer")
@@ -311,6 +321,7 @@ public class YorkshireGolfPageTemplate {
                         body()
                                 .attr(hxBoost())
                                 .with(buildNavbar())
+                                .with(buildTeeTimesStrip())
                                 .with(
                                         body
                                 )

@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/challenge/**").authenticated()
                 .requestMatchers(
                     "/", "/courses/**", "/search/**", "/play-and-stay/**",
+                    "/tee-times-near-me/**",
                     "/map/**",
                     "/top-100/**", "/next-100/**",
                     "/rounds/**",

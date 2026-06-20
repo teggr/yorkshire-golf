@@ -60,6 +60,12 @@ class PublicPagesSecurityTest {
     }
 
     @Test
+    void teeTimesNearMeIsPubliclyAccessible() throws Exception {
+        mockMvc.perform(get("/tee-times-near-me"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
     void challengeTrackerPathIsPublicAndReturnsNotFoundForUnknownId() throws Exception {
         mockMvc.perform(get("/challenge/unknown-tracker"))
                 .andExpect(status().isNotFound());
