@@ -17,6 +17,9 @@ env:
     MAIL_HOST: host.docker.internal
     MAIL_PORT: 25
     APP_BASE_URL: https://yorkshiregolf.life
+    MAIL_SMTP_AUTH: false
+    MAIL_SMTP_STARTTLS_ENABLE: false
+    MAIL_SMTP_STARTTLS_REQUIRED: false
   secret:
     - GOOGLE_MAPS_API_KEY
 registry:
