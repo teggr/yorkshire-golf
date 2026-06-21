@@ -39,7 +39,7 @@ Requires:
 Build the Docker image:
 
 ```shell
-deploy4j deploy --version=0.0.14
+deploy4j deploy --version=0.0.15
 ```
 
 # Post-Deploy
