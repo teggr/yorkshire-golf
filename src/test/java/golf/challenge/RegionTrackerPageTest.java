@@ -36,7 +36,7 @@ class RegionTrackerPageTest {
                 "trackerId", "abc123tracker",
                 "canAddRound", false,
                 "allCourses", List.of(
-                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null)
+                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null, null)
                 )
         ), request, response);
 
@@ -61,7 +61,7 @@ class RegionTrackerPageTest {
     void renderShowsLoggedRoundsSectionAndActionsForTrackerOwner() throws Exception {
         RegionTrackerPage page = new RegionTrackerPage();
 
-        Course course = new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null);
+        Course course = new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null, null);
         RegionChallengeTracker tracker = new RegionChallengeTracker(
                 Map.of(
                         Regions.NorthYorkshire, 10L,
@@ -135,7 +135,7 @@ class RegionTrackerPageTest {
     void renderHidesLoggedRoundsSectionForNonOwner() throws Exception {
         RegionTrackerPage page = new RegionTrackerPage();
 
-        Course course = new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null);
+        Course course = new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null, null);
         RegionChallengeTracker tracker = new RegionChallengeTracker(
                 Map.of(
                         Regions.NorthYorkshire, 10L,

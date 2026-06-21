@@ -20,12 +20,12 @@ class CoursesTest {
         List<Course> internalCourses = (List<Course>) coursesField.get(courses);
 
         internalCourses.addAll(List.of(
-                new Course("zeta club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, true),
-                new Course("Alpha Club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, true),
-                new Course("bravo club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, false),
-                new Course("charlie club", Regions.NorthYorkshire, null, null, null, true, false, null, null, null, null, null, null, null, true),
-                new Course("delta club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null),
-                new Course("beta club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, true)
+                new Course("zeta club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, true, null),
+                new Course("Alpha Club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, true, null),
+                new Course("bravo club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, false, null),
+                new Course("charlie club", Regions.NorthYorkshire, null, null, null, true, false, null, null, null, null, null, null, null, true, null),
+                new Course("delta club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null, null),
+                new Course("beta club", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, true, null)
         ));
 
         List<String> next100CourseNames = courses.getNext100Courses().stream()

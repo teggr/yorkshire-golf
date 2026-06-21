@@ -32,6 +32,7 @@ public class CourseDetailPageTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -77,6 +78,7 @@ public class CourseDetailPageTest {
             null,
             null,
             null,
+            null,
             null
         );
 
@@ -88,6 +90,7 @@ public class CourseDetailPageTest {
         assertTrue(html.contains("West Yorkshire"));
         assertTrue(html.contains("https://alwoodleygolfclub.com/"));
         assertTrue(html.contains("Visit website"));
+        assertFalse(html.contains("/courses/alwoodley-golf-club/tee-times"));
         assertTrue(html.contains("Address"));
         assertTrue(html.contains("Alwoodley Ln, Leeds LS17 7DJ"));
         assertTrue(html.contains("Google Maps"));
@@ -108,6 +111,7 @@ public class CourseDetailPageTest {
                 null,
                 false,
             true,
+            null,
             null,
             null,
             null,
@@ -143,6 +147,7 @@ public class CourseDetailPageTest {
             null,
             null,
             null,
+            null,
             null
         );
 
@@ -153,6 +158,36 @@ public class CourseDetailPageTest {
         assertTrue(html.contains("Sand Moor Golf Club"));
         assertTrue(html.contains("West Yorkshire"));
         assertFalse(html.contains("Visit website"));
+        assertFalse(html.contains("Tee times"));
+    }
+
+    @Test
+    void courseDetailRendersTeeTimesLinkWhenAvailable() {
+        Course course = new Course(
+                "Alwoodley Golf Club",
+                Regions.WestYorkshire,
+                "https://alwoodleygolfclub.com/",
+                "/images/courses/alwoodley-golf-club.jpg",
+                null,
+                false,
+                false,
+                "Alwoodley Ln, Leeds LS17 7DJ",
+                53.85665,
+                -1.50115,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "https://www.golfnow.co.uk/tee-times/facility/123-alwoodley-golf-club"
+        );
+
+        DomContent result = CourseDetailPage.courseDetail(course);
+
+        assertNotNull(result);
+        String html = result.render();
+        assertTrue(html.contains("/courses/alwoodley-golf-club/tee-times"));
+        assertTrue(html.contains("Tee times"));
     }
 
         @Test
@@ -172,6 +207,7 @@ public class CourseDetailPageTest {
             "Sand Moor Golf Club",
             "Leeds Golf Centre (Wike Ridge)",
             null,
+            null,
             null
         );
 
@@ -184,6 +220,7 @@ public class CourseDetailPageTest {
                 null,
                 false,
                 false,
+                null,
                 null,
                 null,
                 null,
@@ -208,6 +245,7 @@ public class CourseDetailPageTest {
                 null,
                 null,
                 null,
+                null,
                 null
             ),
             new Course(
@@ -218,6 +256,7 @@ public class CourseDetailPageTest {
                 null,
                 false,
                 false,
+                null,
                 null,
                 null,
                 null,
@@ -262,6 +301,7 @@ public class CourseDetailPageTest {
             "Claw Hall Rd, Alwoodley, Leeds LS17 8AB",
             53.86088,
             -1.53362,
+            null,
             null,
             null,
             null,

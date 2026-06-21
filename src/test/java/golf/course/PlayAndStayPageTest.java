@@ -17,8 +17,8 @@ public class PlayAndStayPageTest {
     public DomContent courseGridExample() {
         // Given - courses with play and stay
         List<Course> courses = List.of(
-            new Course("Rudding Park Golf Club", Regions.NorthYorkshire, "https://www.ruddingpark.com/", "/images/courses/rudding-park-golf-club.png", "https://example.com/rudding-stay.jpg", false, true, null, null, null, null, null, null, null, null),
-            new Course("Hollins Hall Hotel & Country Club", Regions.WestYorkshire, "https://www.britanniahotels.com/hotels/hollins-hall-hotel-country-club/golf", "/images/courses/hollins-hall-hotel-country-club.jpg", null, false, true, null, null, null, null, null, null, null, null)
+            new Course("Rudding Park Golf Club", Regions.NorthYorkshire, "https://www.ruddingpark.com/", "/images/courses/rudding-park-golf-club.png", "https://example.com/rudding-stay.jpg", false, true, null, null, null, null, null, null, null, null, null),
+            new Course("Hollins Hall Hotel & Country Club", Regions.WestYorkshire, "https://www.britanniahotels.com/hotels/hollins-hall-hotel-country-club/golf", "/images/courses/hollins-hall-hotel-country-club.jpg", null, false, true, null, null, null, null, null, null, null, null, null)
         );
 
         return PlayAndStayPage.courseGrid(courses);

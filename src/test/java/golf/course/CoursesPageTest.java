@@ -26,7 +26,7 @@ public class CoursesPageTest {
 
                 page.render(Map.of(
                                 "courses", List.of(
-                                                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null)
+                                                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null, null)
                                 )
                 ), request, response);
 
@@ -52,12 +52,12 @@ public class CoursesPageTest {
         // Given - example courses grouped by region
         Map<Region, List<Course>> byRegion = Map.of(
                 Regions.NorthYorkshire, List.of(
-                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null),
-                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, null, false, false, null, null, null, null, null, null, null, null)
+                        new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", null, null, false, false, null, null, null, null, null, null, null, null, null),
+                        new Course("Fulford Golf Club", Regions.NorthYorkshire, "https://www.fulfordgolfclub.co.uk", null, null, false, false, null, null, null, null, null, null, null, null, null)
                 ),
                 Regions.WestYorkshire, List.of(
-                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, null, false, false, null, null, null, null, null, null, null, null),
-                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null)
+                        new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", null, null, false, false, null, null, null, null, null, null, null, null, null),
+                        new Course("Sand Moor Golf Club", Regions.WestYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null, null)
                 )
         );
 
@@ -105,6 +105,7 @@ public class CoursesPageTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -133,6 +134,7 @@ public class CoursesPageTest {
                 null,
                 false,
                 false,
+                null,
                 null,
                 null,
                 null,
@@ -172,6 +174,7 @@ public class CoursesPageTest {
                 null,
                 false,
                 false,
+                null,
                 null,
                 null,
                 null,
@@ -229,6 +232,7 @@ public class CoursesPageTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -255,6 +259,7 @@ public class CoursesPageTest {
                                 null,
                                 false,
                                 false,
+                                null,
                                 null,
                                 null,
                                 null,

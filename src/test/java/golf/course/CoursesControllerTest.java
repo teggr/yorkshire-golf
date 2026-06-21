@@ -35,6 +35,7 @@ class CoursesControllerTest {
                 "Missing Golf Club",
                 "Closed Golf Club",
                 null,
+                null,
                 null
         );
 
@@ -53,6 +54,7 @@ class CoursesControllerTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -64,6 +66,7 @@ class CoursesControllerTest {
                 null,
                 true,
                 false,
+                null,
                 null,
                 null,
                 null,

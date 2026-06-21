@@ -35,7 +35,7 @@ class SearchControllerTest {
         SearchController controller = new SearchController(courses);
         Model model = new ExtendedModelMap();
         Course lindrick = new Course("Lindrick Golf Club", Regions.SouthYorkshire, null, null, null, false, false,
-                "Lindrick Dale, Worksop", null, null, null, null, null, null, null);
+            "Lindrick Dale, Worksop", null, null, null, null, null, null, null, null);
 
         when(courses.search("lindrick")).thenReturn(List.of(lindrick));
 
@@ -53,9 +53,9 @@ class SearchControllerTest {
 
         List<Course> matches = List.of(
                 new Course("Leeds Golf Club", Regions.WestYorkshire, null, null, null, false, false,
-                        "Elmete Lane, Leeds", null, null, null, null, null, null, null),
+                    "Elmete Lane, Leeds", null, null, null, null, null, null, null, null),
                 new Course("Leeds West Club", Regions.WestYorkshire, null, null, null, false, false,
-                        "Leeds", null, null, null, null, null, null, null)
+                    "Leeds", null, null, null, null, null, null, null, null)
         );
         when(courses.search("leeds")).thenReturn(matches);
 

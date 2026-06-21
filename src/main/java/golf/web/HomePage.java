@@ -59,17 +59,16 @@ public class HomePage implements View {
     Map<Region, List<Course>> coursesByRegion = allCourses.stream()
       .collect(Collectors.groupingBy(Course::region));
 
-    Map<Region, Course> featuredCourseByRegion = regionOrder.stream()
-      .collect(Collectors.toMap(
-        region -> region,
-        region -> {
-          List<Course> regionCourses = coursesByRegion.getOrDefault(region, List.of());
-          if (regionCourses.isEmpty()) {
-            return null;
-          }
-          return regionCourses.get(random.nextInt(regionCourses.size()));
-        }
-      ));
+    Map<Region, Course> featuredCourseByRegion = new java.util.LinkedHashMap<>();
+    for (Region region : regionOrder) {
+      List<Course> regionCourses = coursesByRegion.getOrDefault(region, List.of());
+      if (regionCourses.isEmpty()) {
+        featuredCourseByRegion.put(region, null);
+        continue;
+      }
+
+      featuredCourseByRegion.put(region, chooseFeaturedRegionCourse(regionCourses, random));
+    }
 
     long totalCourses = allCourses.size();
 
@@ -92,9 +91,12 @@ public class HomePage implements View {
                       span("Featured Course").withClass("ygl-hero__label"),
                       h1(featuredCourse.name()).withClass("ygl-hero__title"),
                       p(featuredCourse.region().displayName()).withClass("ygl-hero__subtitle"),
-                      a().withHref("/courses/" + Courses.toCourseSlug(featuredCourse.name()))
-                          .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
-                          .with(text("View course"))
+                      div().withClass("d-flex flex-wrap gap-3").with(
+                        a().withHref("/courses/" + Courses.toCourseSlug(featuredCourse.name()))
+                            .withClass("ygl-btn ygl-btn--primary ygl-btn--lg")
+                            .with(text("View course")),
+                        teeTimesLink(featuredCourse, "ygl-btn ygl-btn--outline ygl-btn--tee-times ygl-btn--lg")
+                      )
                     )
                   : div().with(
                       h1("Yorkshire Golf Life").withClass("ygl-hero__title"),
@@ -212,10 +214,11 @@ public class HomePage implements View {
                         ? p(regionCourse.name()).withClass("ygl-card__text mb-2")
                         : p("No courses currently available.").withClass("ygl-card__text mb-2"),
                       regionCourse != null
-                        ? p().withClass("mb-0").with(
+                        ? p().withClass("mb-0 d-flex flex-wrap gap-2").with(
                             a().withClass("ygl-btn ygl-btn--primary ygl-btn--sm")
                               .withHref("/courses/" + Courses.toCourseSlug(regionCourse.name()))
-                              .with(text("View course"))
+                              .with(text("View course")),
+                            teeTimesLink(regionCourse, "ygl-btn ygl-btn--outline ygl-btn--tee-times ygl-btn--sm")
                           )
                         : text("")
                     ),
@@ -237,6 +240,20 @@ public class HomePage implements View {
 
   static String toRegionSlug(Region region) {
     return region.displayName().toLowerCase().replace(" ", "-");
+  }
+
+  private static Course chooseFeaturedRegionCourse(List<Course> regionCourses, Random random) {
+    return regionCourses.get(random.nextInt(regionCourses.size()));
+  }
+
+  private static j2html.tags.DomContent teeTimesLink(Course course, String buttonClass) {
+    if (course.golfnowUrl() == null || course.golfnowUrl().isBlank()) {
+      return text("");
+    }
+
+    return a("Tee times")
+        .withClass(buttonClass)
+        .withHref("/courses/" + Courses.toCourseSlug(course.name()) + "/tee-times");
   }
 
   private static j2html.tags.DomContent buildAccountSection(HttpServletRequest request) {

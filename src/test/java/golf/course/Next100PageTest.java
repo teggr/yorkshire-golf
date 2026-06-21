@@ -27,7 +27,8 @@ public class Next100PageTest {
                 null,
                 null,
                 null,
-                true
+                true,
+                null
         );
 
         var result = Next100Page.courseSection(course);

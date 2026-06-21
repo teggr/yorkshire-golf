@@ -25,9 +25,9 @@ class SearchResultsPageTest {
                 "resultCount", 2,
                 "results", List.of(
                         new Course("Leeds Golf Club", Regions.WestYorkshire, null, null, null, false, false,
-                                "Elmete Lane, Leeds", null, null, null, null, null, null, null),
+                                "Elmete Lane, Leeds", null, null, null, null, null, null, null, null),
                         new Course("Leeds West Club", Regions.WestYorkshire, null, null, null, false, false,
-                                "Leeds", null, null, null, null, null, null, null)
+                                "Leeds", null, null, null, null, null, null, null, null)
                 )
         ), request, response);
 

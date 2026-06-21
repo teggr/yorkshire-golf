@@ -15,11 +15,11 @@ class CoursesSearchTest {
         Courses courses = new Courses();
         seedCourses(courses,
                 new Course("Lindrick Golf Club", Regions.SouthYorkshire, null, null, null, false, false,
-                        "Lindrick Dale, Worksop", null, null, null, null, null, null, null),
+                    "Lindrick Dale, Worksop", null, null, null, null, null, null, null, null),
                 new Course("Leeds Golf Club", Regions.WestYorkshire, null, null, null, false, false,
-                "Elmete Lane, Leeds, West Yorkshire", null, null, null, null, null, null, null),
+                "Elmete Lane, Leeds, West Yorkshire", null, null, null, null, null, null, null, null),
                 new Course("Closed Leeds Golf", Regions.WestYorkshire, null, null, null, true, false,
-                        "Leeds", null, null, null, null, null, null, null)
+                    "Leeds", null, null, null, null, null, null, null, null)
         );
 
         List<Course> byName = courses.search("lindrick");
@@ -37,9 +37,9 @@ class CoursesSearchTest {
         Courses courses = new Courses();
         seedCourses(courses,
                 new Course("Leeds Golf Club", Regions.WestYorkshire, null, null, null, false, false,
-                        "Elmete Lane, Leeds, West Yorkshire", null, null, null, null, null, null, null),
+                    "Elmete Lane, Leeds, West Yorkshire", null, null, null, null, null, null, null, null),
                 new Course("York Golf Club", Regions.NorthYorkshire, null, null, null, false, false,
-                        "Strensall Road, York", null, null, null, null, null, null, null)
+                    "Strensall Road, York", null, null, null, null, null, null, null, null)
         );
 
         List<Course> results = courses.search("york leeds");
@@ -52,7 +52,7 @@ class CoursesSearchTest {
         Courses courses = new Courses();
         seedCourses(courses,
                 new Course("Lindrick Golf Club", Regions.SouthYorkshire, null, null, null, false, false,
-                        "Lindrick Dale, Worksop", null, null, null, null, null, null, null)
+                    "Lindrick Dale, Worksop", null, null, null, null, null, null, null, null)
         );
 
         assertTrue(courses.search(" ").isEmpty());

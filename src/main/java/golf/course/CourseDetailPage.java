@@ -96,10 +96,9 @@ public class CourseDetailPage implements View {
         return div().withClass("ygl-article__content").with(
                 div().withClass("row g-4 ygl-course-overview").with(
                         div().withClass("col-lg-7").with(
-                // Website link
-                course.website() != null && !course.website().isEmpty()
-                        ? div().withClass("mb-3").with(
-                                a().withClass("ygl-btn ygl-btn--primary")
+                div().withClass("mb-3 d-flex flex-wrap gap-2").with(
+                        course.website() != null && !course.website().isEmpty()
+                                ? a().withClass("ygl-btn ygl-btn--primary")
                                         .withHref(course.website())
                                         .withTarget("_blank")
                                         .withRel("noopener noreferrer")
@@ -107,8 +106,13 @@ public class CourseDetailPage implements View {
                                                 text("Visit website"),
                                                 i().withClass("bi bi-box-arrow-up-right ms-2")
                                         )
-                          )
-                        : text(""),
+                                : text(""),
+                        course.golfnowUrl() != null && !course.golfnowUrl().isEmpty()
+                                ? a("Tee times")
+                                        .withClass("ygl-btn ygl-btn--outline ygl-btn--tee-times")
+                                        .withHref("/courses/" + Courses.toCourseSlug(course.name()) + "/tee-times")
+                                : text("")
+                ),
 
                 // Course details table
                 div().withClass("ygl-course-details").with(

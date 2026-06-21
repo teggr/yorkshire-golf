@@ -32,14 +32,15 @@ public class HomePageTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
         List<Course> courses = List.of(
-                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", "/images/courses/ganton.jpg", null, false, false, null, null, null, null, null, null, null, null),
-                new Course("Bridlington Links", Regions.EastYorkshire, "https://bridlington.example", null, null, false, false, null, null, null, null, null, null, null, null),
-                new Course("Rother Valley Golf", Regions.SouthYorkshire, "https://rothervalley.example", "/images/courses/rother.jpg", null, false, false, null, null, null, null, null, null, null, null),
-                new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", "/images/courses/moortown.jpg", null, false, false, null, null, null, null, null, null, null, null)
+                new Course("Ganton Golf Club", Regions.NorthYorkshire, "https://www.gantongolfclub.com", "/images/courses/ganton.jpg", null, false, false, null, null, null, null, null, null, null, null, "https://www.golfnow.co.uk/tee-times/facility/123-ganton-golf-club"),
+                new Course("Bridlington Links", Regions.EastYorkshire, "https://bridlington.example", null, null, false, false, null, null, null, null, null, null, null, null, null),
+                new Course("Rother Valley Golf", Regions.SouthYorkshire, "https://rothervalley.example", "/images/courses/rother.jpg", null, false, false, null, null, null, null, null, null, null, null, null),
+                new Course("Moortown Golf Club", Regions.WestYorkshire, "https://www.moortowngc.co.uk", "/images/courses/moortown.jpg", null, false, false, null, null, null, null, null, null, null, null, null)
         );
 
         // Render through view to validate full home markup
@@ -109,5 +110,96 @@ public class HomePageTest {
                 || body.contains("/courses/bridlington-links")
                 || body.contains("/courses/rother-valley-golf")
                 || body.contains("/courses/moortown-golf-club"));
+                assertTrue(body.contains("/courses/ganton-golf-club/tee-times"));
+                assertTrue(body.contains("Tee times"));
     }
+
+        @Test
+        void renderShowsFeaturedTeeTimesLinkWhenAvailable() throws Exception {
+                HomePage homePage = new HomePage();
+
+                Course featuredCourse = new Course(
+                                "Featured Club",
+                                Regions.NorthYorkshire,
+                                "https://featured.example",
+                                "/images/courses/featured.jpg",
+                                null,
+                                false,
+                                false,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "https://www.golfnow.co.uk/tee-times/facility/123-featured-club"
+                );
+
+                var request = new org.springframework.mock.web.MockHttpServletRequest();
+                var response = new org.springframework.mock.web.MockHttpServletResponse();
+                homePage.render(Map.of("featuredCourse", featuredCourse, "courses", List.of(featuredCourse)), request, response);
+
+                String body = response.getContentAsString();
+
+                assertTrue(body.contains("/courses/featured-club/tee-times"));
+                assertTrue(body.contains("Tee times"));
+        }
+
+        @Test
+        void renderUsesTheDisplayedCourseForRegionCardTeeTimesLink() throws Exception {
+                HomePage homePage = new HomePage();
+
+                Course noTeeTimesCourse = new Course(
+                                "No Tee Times Club",
+                                Regions.EastYorkshire,
+                                "https://no-tee-times.example",
+                                "/images/courses/no-tee-times.jpg",
+                                null,
+                                false,
+                                false,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                );
+                Course teeTimesCourse = new Course(
+                                "Tee Times Club",
+                                Regions.NorthYorkshire,
+                                "https://tee-times.example",
+                                "/images/courses/tee-times.jpg",
+                                null,
+                                false,
+                                false,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "https://www.golfnow.co.uk/tee-times/facility/123-tee-times-club"
+                );
+
+                var request = new org.springframework.mock.web.MockHttpServletRequest();
+                var response = new org.springframework.mock.web.MockHttpServletResponse();
+                var model = new java.util.LinkedHashMap<String, Object>();
+                model.put("featuredCourse", null);
+                model.put("courses", List.of(noTeeTimesCourse, teeTimesCourse));
+                homePage.render(model, request, response);
+
+                String body = response.getContentAsString();
+
+                assertTrue(body.contains("No Tee Times Club"));
+                assertTrue(body.contains("Tee Times Club"));
+                assertTrue(body.contains("/courses/tee-times-club/tee-times"));
+                assertFalse(body.contains("/courses/no-tee-times-club/tee-times"));
+        }
 }

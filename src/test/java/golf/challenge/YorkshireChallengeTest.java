@@ -42,9 +42,9 @@ class YorkshireChallengeTest {
         UserRoundRepository userRoundRepository = mock(UserRoundRepository.class);
         YorkshireChallenge challenge = new YorkshireChallenge(courses, userRoundRepository);
 
-        Course northCourse = new Course("North Course", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null);
-        Course westCourse = new Course("West Course", Regions.WestYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null);
-        Course eastCourse = new Course("East Course", Regions.EastYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null);
+        Course northCourse = new Course("North Course", Regions.NorthYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null, null);
+        Course westCourse = new Course("West Course", Regions.WestYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null, null);
+        Course eastCourse = new Course("East Course", Regions.EastYorkshire, null, null, null, false, false, null, null, null, null, null, null, null, null, null);
 
         // Repository returns newest-first; service should normalize to ascending timeline.
         when(userRoundRepository.findByUserId(10L)).thenReturn(List.of(
