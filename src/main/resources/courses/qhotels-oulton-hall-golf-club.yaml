@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "WEST_YORKSHIRE"
 website: "https://www.qhotels.co.uk/our-locations/oulton-hall/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/14379-oulton-hall-hotel-spa-golf-resort"
 mainImageUrl: "/images/courses/qhotels-oulton-hall-golf-club.jpg"
 stayImageUrl: "https://www.oultonhallhotel.co.uk/media/0r3j5pip/rooms-desktop-1.jpg?v=1dc4344402cfec0"

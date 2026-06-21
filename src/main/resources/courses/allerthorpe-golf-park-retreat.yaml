@@ -7,6 +7,7 @@ nearby2: "The Oaks Golf Club & Spa"
 nearby3: "Swallow Hall Golf Club"
 playAndStay: true
 website: "https://www.prestigecountryparks.co.uk/allerthorpe"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/17649-allerthorpe-golf-country-park"
 region:
   name: "NORTH_YORKSHIRE"
 mainImageUrl: "/images/courses/allerthorpe-golf-park-retreat.jpg"

@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "http://www.theoaksgolfclub.co.uk/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/14969-the-oaks-golf-club-spa"
 mainImageUrl: "/images/courses/the-oaks-golf-club-spa.jpg"
 stayImageUrl: "http://www.theoaksgolfclub.co.uk/wp-content/uploads/2023/04/IMG-20230411-WA0065.jpg"

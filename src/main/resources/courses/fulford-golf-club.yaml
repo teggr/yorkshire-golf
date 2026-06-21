@@ -8,5 +8,6 @@ nearby3: "Pike Hills Golf Club"
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.fulfordgolfclub.co.uk/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/15012-fulford-golf-club"
 mainImageUrl: "/images/courses/fulford-golf-club.jpg"
 next100: true

@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.aldwarkmanorestate.co.uk/golf/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/2466-aldwark-manor-estate-golf"
 mainImageUrl: "/images/courses/aldwark-manor-golf-club.jpg"
 stayImageUrl: "https://www.aldwarkmanorestate.co.uk/wp-content/uploads/2023/05/wensleydale-suite-fixed-bg.jpg"

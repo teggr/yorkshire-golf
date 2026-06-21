@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "EAST_YORKSHIRE"
 website: "https://www.cavecastlehotel.com/golf-club"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/16215-cave-castle-hotel-country-club"
 mainImageUrl: "/images/courses/cave-castle-golf-club.jpg"
 stayImageUrl: "https://images.squarespace-cdn.com/content/v1/640a0ec1e5100d7d91232e1a/e2adf634-5efd-4cda-91d1-3d9bbc692d2e/Cave+Castle078.jpeg?format=1500w"

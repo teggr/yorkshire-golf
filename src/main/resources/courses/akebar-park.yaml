@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://akebarpark.com/akebar-golf"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/19127-akebar-park-golf-club"
 mainImageUrl: "/images/courses/akebar-park.jpg"
 stayImageUrl: "https://akebarpark.com/wp-content/uploads/2024/02/yes_4_1400x1016.jpg"

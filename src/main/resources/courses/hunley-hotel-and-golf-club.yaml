@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.hunleyhotel.co.uk/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/13880-hunley-hotel-golf-club"
 mainImageUrl: "/images/courses/hunley-hotel-and-golf-club.jpg"
 stayImageUrl: "https://hunleygolfnew.wpenginepowered.com/wp-content/uploads/2022/08/20220805_075628-scaled.jpg"

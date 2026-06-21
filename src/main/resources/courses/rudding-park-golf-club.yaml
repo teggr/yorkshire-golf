@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.ruddingpark.com/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/13837-rudding-park-hotel-spa-golf-the-hawtree-course"
 mainImageUrl: "/images/courses/rudding-park-golf-club.png"
 stayImageUrl: "https://www.ruddingpark.co.uk/media/6534/680-plomptonsuite.jpg"

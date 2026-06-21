@@ -100,6 +100,7 @@ public class CourseAudit {
         app.post("/next", CourseAudit::handleNext);
         app.post("/previous", CourseAudit::handlePrevious);
         app.post("/update-website", CourseAudit::handleUpdateWebsite);
+        app.post("/update-golfnow-url", CourseAudit::handleUpdateGolfNowUrl);
         app.post("/update-stay-image", CourseAudit::handleUpdateStayImage);
         app.post("/update-closed", CourseAudit::handleUpdateClosed);
         app.post("/update-play-and-stay", CourseAudit::handleUpdatePlayAndStay);
@@ -207,6 +208,30 @@ public class CourseAudit {
             
             // Update YAML with new website URL
             String updatedYaml = updateWebsiteUrlInYaml(yamlContent, newWebsiteUrl);
+            
+            // Save the updated YAML
+            Files.writeString(currentFile, updatedYaml);
+            
+            // Redirect to reload the page
+            ctx.redirect("/");
+        } catch (Exception e) {
+            ctx.html(renderError("Update error", e.getMessage()));
+        }
+    }
+    
+    private static void handleUpdateGolfNowUrl(Context ctx) {
+        try {
+            String newGolfNowUrl = ctx.formParam("newGolfNowUrl");
+            if (newGolfNowUrl == null) {
+                newGolfNowUrl = ""; // Allow clearing the URL
+            }
+            newGolfNowUrl = newGolfNowUrl.trim();
+            
+            Path currentFile = fileNavigator.getCurrentFile();
+            String yamlContent = Files.readString(currentFile);
+            
+            // Update YAML with new GolfNow URL
+            String updatedYaml = updateGolfNowUrlInYaml(yamlContent, newGolfNowUrl);
             
             // Save the updated YAML
             Files.writeString(currentFile, updatedYaml);
@@ -966,6 +991,7 @@ public class CourseAudit {
         
         String name = (String) data.get("name");
         String website = (String) data.get("website");
+        String golfnowUrl = (String) data.get("golfnowUrl");
         String mainImageUrl = (String) data.get("mainImageUrl");
         String stayImageUrl = (String) data.get("stayImageUrl");
         
@@ -1044,7 +1070,7 @@ public class CourseAudit {
             }
         }
         
-        return new CourseData(name, website, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, lat, lng, nearby1, nearby2, nearby3, top100, next100);
+        return new CourseData(name, website, golfnowUrl, mainImageUrl, stayImageUrl, region, closed, playAndStay, address, lat, lng, nearby1, nearby2, nearby3, top100, next100);
     }
     
     private static String renderHTML(String fileName, String yamlContent, CourseData course,
@@ -1062,6 +1088,9 @@ public class CourseAudit {
         
         // Website validation with visit button
         String websiteSection = renderWebsiteValidation(course.website, websiteValidation);
+        
+        // GolfNow URL section
+        String golfnowSection = renderGolfNowUrlSection(course.name, course.golfnowUrl);
         
         // Navigation header with alphabet and search
         String navHeader = renderNavigationHeader();
@@ -1508,6 +1537,8 @@ public class CourseAudit {
                         </div>
                     </div>
 
+                    %%GOLFNOW_SECTION%%
+
                     <div class="validation-section">
                         <div class="validation-label">Update Stay Image URL</div>
                         <div class="form-section">
@@ -1630,7 +1661,7 @@ public class CourseAudit {
             navHeader,  // Navigation header
             imagePreview,
             stayImagePreview,
-            "%WEBSITE_SECTION%",
+            "%%WEBSITE_SECTION%%",
             renderValidationResult(imageValidation),
             renderValidationResult(stayImageValidation),
             escapeHtml(course.website != null ? course.website : ""),
@@ -1657,7 +1688,8 @@ public class CourseAudit {
             fileName,
             hasPrev ? "" : "disabled",
             hasNext ? "" : "disabled"
-        ).replace("%WEBSITE_SECTION%", websiteSection);
+        ).replace("%WEBSITE_SECTION%", websiteSection)
+         .replace("%GOLFNOW_SECTION%", golfnowSection);
     }
     
     private static String renderImagePreview(String imageUrl, ValidationResult validation) {
@@ -1721,6 +1753,39 @@ public class CourseAudit {
         }
         
         return validationHtml;
+    }
+    
+    private static String renderGolfNowUrlSection(String courseName, String golfnowUrl) {
+        String section = """
+        <div class="validation-section">
+            <div class="validation-label">GolfNow URL</div>
+            <div class="form-section">
+                <input type="url" name="newGolfNowUrl" placeholder="https://www.golfnow.co.uk/courses/..." value="%s" class="form-input">
+                <button type="submit" formaction="/update-golfnow-url" class="btn-primary form-button">🔗 Update GolfNow URL</button>
+                <div style="font-size: 11px; color: #666; margin-top: 8px;">Updates golfnowUrl in file automatically</div>
+            </div>
+            
+            <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+        """.formatted(golfnowUrl != null ? escapeHtml(golfnowUrl) : "");
+        
+        if (golfnowUrl != null && !golfnowUrl.isEmpty() && 
+            (golfnowUrl.startsWith("http://") || golfnowUrl.startsWith("https://"))) {
+            section += """
+                <a href="%s" target="_blank" rel="noopener noreferrer" class="btn-link" style="text-align: center;">
+                    ✅ Visit GolfNow Listing
+                </a>
+            """.formatted(escapeHtml(golfnowUrl));
+        }
+        
+        section += """
+                <a href="https://www.golfnow.co.uk/course-directory" target="_blank" rel="noopener noreferrer" class="btn-link" style="text-align: center; opacity: 0.7;">
+                    🔍 Search GolfNow Directory
+                </a>
+            </div>
+        </div>
+        """;
+        
+        return section;
     }
     
     private static String renderValidationResult(ValidationResult result) {
@@ -2061,6 +2126,51 @@ public class CourseAudit {
         return result.toString();
     }
     
+    private static String updateGolfNowUrlInYaml(String yamlContent, String newGolfNowUrl) {
+        // Replace or add golfnowUrl field
+        boolean hasGolfNowUrlField = yamlContent.contains("golfnowUrl:");
+        String[] lines = yamlContent.split("\n");
+        StringBuilder result = new StringBuilder();
+        boolean foundGolfNowUrl = false;
+        boolean addedGolfNowUrl = false;
+
+        for (String line : lines) {
+            if (line.trim().startsWith("golfnowUrl:")) {
+                if (!foundGolfNowUrl) {
+                    // Replace the first golfnowUrl field found
+                    String indent = line.substring(0, line.indexOf("golfnowUrl:"));
+                    if (newGolfNowUrl.isEmpty()) {
+                        result.append(indent).append("golfnowUrl:");
+                    } else {
+                        result.append(indent).append("golfnowUrl: \"").append(newGolfNowUrl).append("\"");
+                    }
+                    foundGolfNowUrl = true;
+                    result.append("\n");
+                }
+                // Skip any duplicate golfnowUrl fields
+                continue;
+            }
+
+            result.append(line);
+
+            // Add golfnowUrl field after website if it doesn't exist anywhere
+            if (!hasGolfNowUrlField && !addedGolfNowUrl && line.trim().startsWith("website:")) {
+                String indent = "";
+                if (line.indexOf("website:") > 0) {
+                    indent = line.substring(0, line.indexOf("website:"));
+                }
+                if (!newGolfNowUrl.isEmpty()) {
+                    result.append("\n").append(indent).append("golfnowUrl: \"").append(newGolfNowUrl).append("\"");
+                }
+                addedGolfNowUrl = true;
+            }
+
+            result.append("\n");
+        }
+
+        return result.toString();
+    }
+    
     private static String updateClosedInYaml(String yamlContent, boolean isClosed) {
         // First check if closed field exists anywhere
         boolean hasClosedField = yamlContent.contains("closed:");
@@ -2305,7 +2415,7 @@ public class CourseAudit {
     }
     
     // Data classes
-    record CourseData(String name, String website, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Double lat, Double lng, String nearby1, String nearby2, String nearby3, Integer top100, Boolean next100) {}
+    record CourseData(String name, String website, String golfnowUrl, String mainImageUrl, String stayImageUrl, String region, boolean closed, boolean playAndStay, String address, Double lat, Double lng, String nearby1, String nearby2, String nearby3, Integer top100, Boolean next100) {}
     
     record ValidationResult(ValidationStatus status, String message, String dimensions) {}
     

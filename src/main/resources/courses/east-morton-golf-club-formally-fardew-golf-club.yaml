@@ -6,6 +6,7 @@ nearby1: "Bingley St Ives Golf Club"
 nearby2: "Shipley Golf Club"
 nearby3: "Keighley Golf Club"
 website: "https://eastmortongolf.co.uk/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/13951-east-morton-golf-club"
 region:
   name: "WEST_YORKSHIRE"
 mainImageUrl: "/images/courses/east-morton-golf-club-formally-fardew-golf-club.jpg"

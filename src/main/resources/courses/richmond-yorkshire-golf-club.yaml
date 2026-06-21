@@ -6,6 +6,7 @@ nearby1: "Catterick Golf Club"
 nearby2: "Akebar Park previously Wensleydale Golf Ltd"
 nearby3: "Bedale Golf Club"
 website: "https://www.richmondyorksgolfclub.co.uk/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/10615-richmond-york-golf-club"
 region:
   name: "NORTH_YORKSHIRE"
 mainImageUrl: "/images/courses/richmond-yorkshire-golf-club.jpg"

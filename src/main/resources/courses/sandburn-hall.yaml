@@ -9,5 +9,6 @@ playAndStay: true
 region:
   name: "NORTH_YORKSHIRE"
 website: "https://www.sandburnhall.co.uk/golf/"
+golfnowUrl: "https://www.golfnow.co.uk/tee-times/facility/13948-sandburn-hall-golf-club"
 mainImageUrl: "/images/courses/sandburn-hall.jpg"
 stayImageUrl: "https://www.sandburnhall.co.uk/wp-content/uploads/2024/12/sandburnhall-lifestyle-341-720x316.jpg"
