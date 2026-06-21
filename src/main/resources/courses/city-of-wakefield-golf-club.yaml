@@ -6,6 +6,7 @@ nearby1: "Midgley Lodge Motel & Golf Course"
 nearby2: "Low Laithes Golf Club"
 nearby3: "Wakefield Golf Club"
 website: "https://www.cowgc.co.uk/"
+golfnowUrl: "https://www.golfnow.co.uk/courses/-4182-city-of-wakefield-golf-club-details"
 region:
   name: "WEST_YORKSHIRE"
 mainImageUrl: "/images/courses/city-of-wakefield-golf-club.jpg"

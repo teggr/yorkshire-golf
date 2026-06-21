@@ -7,6 +7,7 @@ nearby2: "Bradford Golf Club"
 nearby3: "Rawdon Golf and Lawn Tennis Club"
 playAndStay: true
 website: "https://www.britanniahotels.com/hotels/hollins-hall-hotel-country-club/golf"
+golfnowUrl: "https://www.golfnow.co.uk/courses/-4348-hollins-hall-hotel-country-club-details"
 region:
   name: "WEST_YORKSHIRE"
 mainImageUrl: "/images/courses/hollins-hall-hotel-country-club.jpg"

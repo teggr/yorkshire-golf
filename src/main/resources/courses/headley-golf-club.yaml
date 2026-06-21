@@ -8,4 +8,5 @@ nearby3: "West Bradford Golf Club"
 region:
   name: "WEST_YORKSHIRE"
 website: "https://headleygolf.co.uk/"
+golfnowUrl: "https://www.golfnow.co.uk/courses/-5527-headley-golf-club-details"
 mainImageUrl: "/images/courses/headley-golf-club.png"
