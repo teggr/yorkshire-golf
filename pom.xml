@@ -71,9 +71,9 @@
 
 		<!--  -->
 		<dependency>
-			<groupId>com.teggr.j2html</groupId>
-   			<artifactId>j2html-preview-annotation</artifactId>
-    		<version>1.0.0-SNAPSHOT</version>
+			<groupId>dev.rebelcraft</groupId>
+   			<artifactId>j2html-preview</artifactId>
+    		<version>0.0.1</version>
 			<scope>test</scope>
 		</dependency>	
 

@@ -2,7 +2,7 @@ package golf.course;
 
 import org.junit.jupiter.api.Test;
 
-import com.teggr.j2html.preview.Preview;
+import dev.rebelcraft.j2html.preview.Preview;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -2,7 +2,7 @@ package golf.course;
 
 import org.junit.jupiter.api.Test;
 
-import com.teggr.j2html.preview.Preview;
+import dev.rebelcraft.j2html.preview.Preview;
 
 import j2html.tags.DomContent;
 
