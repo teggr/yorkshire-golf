@@ -92,6 +92,8 @@ jobs:
         MAIL_PASSWORD=$MAIL_PASSWORD
         PRIVATE_KEY_PASSPHRASE=$PRIVATE_KEY_PASSPHRASE
         PRIVATE_KEY=~/.ssh/id_rsa
+        ADMIN_BASIC_AUTH=$ADMIN_BASIC_AUTH
+        GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY
         EOF
 
     # deploy application using deploy4j
@@ -99,8 +101,10 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        MAIL_PASSWORD: ${{ secrets.RESEND_API_KEY }}
+        MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
+        ADMIN_BASIC_AUTH: ${{ secrets.ADMIN_BASIC_AUTH }}
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
       run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.6 deploy --version ${{ steps.set_release_version.outputs.release_version }}
 
     # tag release
