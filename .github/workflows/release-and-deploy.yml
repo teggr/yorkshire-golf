@@ -74,10 +74,6 @@ jobs:
     - name: Setup JBang
       uses: jbangdev/setup-jbang@main
 
-    # configure java versions for jbang
-    - name: Configure java
-      run: jbang jdk install 21 ${{env.JAVA_HOME_21_X64}}
-
     # setup SSH for deploy4j
     - name: Write private key to file
       env:
