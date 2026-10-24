@@ -1,0 +1,363 @@
+package golf.security;
+
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.*;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jwt.*;
+import com.sun.net.httpserver.HttpServer;
+import golf.GolfTrackerApplication;
+import golf.user.UserRepository;
+import golf.user.ExternalIdentityService;
+import golf.user.GolfUser;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.mock.env.MockEnvironment;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest(classes = {GolfTrackerApplication.class, OidcProtocolTest.ProviderConfiguration.class},
+        properties = {"spring.datasource.url=jdbc:h2:mem:oidc-protocol;DB_CLOSE_DELAY=-1", "spring.mail.host=localhost"})
+@AutoConfigureMockMvc
+class OidcProtocolTest {
+    private static final RSAKey KEY;
+    private static final HttpServer SERVER;
+    private static final String ISSUER;
+    private static volatile String idToken;
+    private static volatile String facebookSubject;
+    private static volatile String facebookAuthorization;
+    private static volatile String facebookQuery;
+    private static volatile String tokenRequestBody;
+    static {
+        try {
+            KEY = new RSAKeyGenerator(2048).keyID("test-key").generate();
+            SERVER = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+            ISSUER = "http://127.0.0.1:" + SERVER.getAddress().getPort();
+            SERVER.createContext("/jwks", exchange -> {
+                byte[] bytes = new JWKSet(KEY.toPublicJWK()).toString().getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, bytes.length);
+                exchange.getResponseBody().write(bytes);
+                exchange.close();
+            });
+            SERVER.createContext("/token", exchange -> {
+                tokenRequestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                byte[] bytes = ("{\"access_token\":\"test-access-token-do-not-save\",\"token_type\":\"Bearer\","
+                        + "\"expires_in\":3600,\"id_token\":\"" + idToken + "\"}").getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, bytes.length);
+                exchange.getResponseBody().write(bytes);
+                exchange.close();
+            });
+            SERVER.createContext("/me", exchange -> {
+                facebookAuthorization = exchange.getRequestHeaders().getFirst("Authorization");
+                facebookQuery = exchange.getRequestURI().getRawQuery();
+                byte[] bytes = ("{\"id\":\"" + facebookSubject
+                        + "\",\"email\":\"ignored-provider-email@example.com\",\"name\":\"Ignored name\"}")
+                        .getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, bytes.length);
+                exchange.getResponseBody().write(bytes);
+                exchange.close();
+            });
+            SERVER.start();
+        } catch (Exception ex) {
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+
+    @TestConfiguration(proxyBeanMethods = false)
+    static class ProviderConfiguration {
+        @Bean @Primary
+        FederatedProviders testProviders() {
+            return new FederatedProviders(new MockEnvironment()
+                    .withProperty("golf.auth.google.enabled", "true")
+                    .withProperty("golf.auth.google.client-id", "test-client")
+                    .withProperty("golf.auth.google.client-secret", "test-secret")
+                    .withProperty("golf.auth.apple.enabled", "true")
+                    .withProperty("golf.auth.apple.client-id", "test-client")
+                    .withProperty("golf.auth.apple.client-secret", FederatedProvidersTest.appleSecret())
+                    .withProperty("golf.auth.facebook.enabled", "true")
+                    .withProperty("golf.auth.facebook.client-id", "test-client")
+                    .withProperty("golf.auth.facebook.client-secret", "test-secret")) {
+                @Override public ClientRegistration registration(String provider) {
+                    ClientRegistration original = super.registration(provider);
+                    if (original == null) return null;
+                    return ClientRegistration.withClientRegistration(original)
+                            .authorizationUri(ISSUER + "/authorize")
+                            .tokenUri(ISSUER + "/token")
+                            .jwkSetUri(ISSUER + "/jwks")
+                            .userInfoUri("facebook".equals(provider) ? ISSUER + "/me?fields=id" : null)
+                            .issuerUri(ISSUER).build();
+                }
+            };
+        }
+    }
+
+    @Autowired MockMvc mvc;
+    @Autowired UserRepository users;
+    @Autowired ExternalIdentityService identities;
+    @Autowired org.springframework.security.crypto.password.PasswordEncoder passwords;
+
+    @AfterAll static void stopProvider() { SERVER.stop(0); }
+
+    @Test
+    void realSignedOidcCallbackRotatesSessionAndKeepsOnlyLocalPrincipal() throws Exception {
+        var start = start();
+        String oldSessionId = start.session().getId();
+        idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY);
+        var result = mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/challenge")).andReturn();
+        var session = result.getRequest().getSession(false);
+        Map<String, String> tokenParameters = parseParameters(tokenRequestBody);
+        String verifier = tokenParameters.get("code_verifier");
+        assertThat(verifier).isNotBlank();
+        String challenge = Base64.getUrlEncoder().withoutPadding().encodeToString(
+                java.security.MessageDigest.getInstance("SHA-256").digest(verifier.getBytes(StandardCharsets.US_ASCII)));
+        assertThat(start.parameters().get("code_challenge")).isEqualTo(challenge);
+        assertThat(session.getId()).isNotEqualTo(oldSessionId);
+        SecurityContext context = (SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+        assertThat(context.getAuthentication().getPrincipal()).isInstanceOf(LocalPrincipal.class);
+        assertThat(context.toString()).doesNotContain("test-access-token", idToken, "provider-subject", "provider-email");
+        for (String name : Collections.list(session.getAttributeNames())) {
+            assertThat(session.getAttribute(name).toString()).doesNotContain("test-access-token", idToken, "provider-email");
+        }
+    }
+
+    @Test
+    void rejectsWrongNonceIssuerAudienceExpiredAndInvalidSignatureWithoutCreatingAccounts() throws Exception {
+        for (String invalid : List.of("nonce", "issuer", "audience", "expired", "signature")) {
+            int before = users.findAll().size();
+            var start = start();
+            idToken = token(invalid.equals("nonce") ? "wrong-nonce" : start.parameters().get("nonce"),
+                    invalid.equals("issuer") ? "https://wrong-issuer.example" : ISSUER,
+                    invalid.equals("audience") ? "wrong-client" : "test-client",
+                    invalid.equals("expired") ? -600 : 600,
+                    invalid.equals("signature") ? new RSAKeyGenerator(2048).keyID("test-key").generate() : KEY);
+            mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                            .param("state", start.parameters().get("state")).param("code", "test-code"))
+                    .andExpect(redirectedUrl("/login?error=true"));
+            assertThat(users.findAll()).hasSize(before);
+        }
+    }
+
+    @Test
+    void rejectsTamperedStateBeforeTokenExchange() throws Exception {
+        var start = start();
+        mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state") + "tampered").param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?error=true"));
+    }
+
+    @Test
+    void appleIdentityOnlyUsesQueryCallbackAndValidatesOidcToken() throws Exception {
+        var result = mvc.perform(get("/oauth2/authorization/apple")).andReturn();
+        assertThat(result.getResponse().getRedirectedUrl()).contains("scope=openid", "response_mode=query")
+                .doesNotContain("scope=email", "form_post", "code_challenge", "prompt=", "max_age=");
+        var start = parseStart(result);
+        idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY);
+        mvc.perform(get("/login/oauth2/code/apple").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/challenge"));
+    }
+
+    @Test
+    void facebookOAuthUsesOnlyAppScopedIdAndNeverPersistsReturnedEmailOrName() throws Exception {
+        facebookSubject = "facebook-" + UUID.randomUUID();
+        var result = mvc.perform(get("/oauth2/authorization/facebook")).andReturn();
+        assertThat(result.getResponse().getRedirectedUrl()).contains("scope=public_profile", "auth_type=reauthenticate")
+                .doesNotContain("email", "code_challenge");
+        var start = parseStart(result);
+        var callback = mvc.perform(get("/login/oauth2/code/facebook").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/challenge")).andReturn();
+        GolfUser user = users.findById(identities.find("facebook", facebookSubject).orElseThrow().userId()).orElseThrow();
+        assertThat(facebookAuthorization).isEqualTo("Bearer " + "test-access-token-do-not-save");
+        assertThat(facebookQuery).isEqualTo("fields=id");
+        assertThat(user.email()).isNull();
+        assertThat(user.password()).isNull();
+        for (String name : Collections.list(callback.getRequest().getSession().getAttributeNames())) {
+            assertThat(callback.getRequest().getSession().getAttribute(name).toString())
+                    .doesNotContain("ignored-provider-email", "Ignored name", "test-access-token");
+        }
+    }
+
+    @Test
+    void explicitLinkUsesExistingLocalAccountAndRejectsProviderIdentityOwnedElsewhere() throws Exception {
+        GolfUser user = local();
+        int before = users.findAll().size();
+        var start = startAction(user, "link", "password");
+        String subject = "link-" + UUID.randomUUID();
+        idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
+        mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/challenge"));
+        assertThat(identities.find("google", subject).orElseThrow().userId()).isEqualTo(user.id());
+        assertThat(users.findAll()).hasSize(before);
+        assertThat(users.findById(user.id()).orElseThrow().trackerId()).isEqualTo(user.trackerId());
+
+        GolfUser attacker = local();
+        var otherStart = startAction(attacker, "link", "password");
+        idToken = token(otherStart.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
+        mvc.perform(get("/login/oauth2/code/google").session(otherStart.session())
+                        .param("state", otherStart.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?error=true"));
+        assertThat(identities.find("google", subject).orElseThrow().userId()).isEqualTo(user.id());
+    }
+
+    @Test
+    void externalOnlyReauthenticationMustMatchExistingIdentityAndGrantsOneUseConfirmation() throws Exception {
+        String subject = "reauth-" + UUID.randomUUID();
+        GolfUser user = identities.login("google", subject);
+        var start = startAction(user, "reauthenticate", null);
+        idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
+        var result = mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/challenge")).andReturn();
+        MockHttpSession session = (MockHttpSession) result.getRequest().getSession();
+        identities.link(user.id(), "facebook", "facebook-" + UUID.randomUUID());
+        mvc.perform(post("/account/unlink/facebook").session(session).with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account"));
+        assertThat(identities.list(user.id())).extracting(ExternalIdentityService.Identity::provider).containsExactly("google");
+        mvc.perform(post("/account/unlink/google").session(session).with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+
+        var wrong = startAction(user, "reauthenticate", null);
+        idToken = token(wrong.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, "different-provider-account");
+        mvc.perform(get("/login/oauth2/code/google").session(wrong.session())
+                        .param("state", wrong.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?error=true"));
+    }
+
+    @Test
+    void appleReauthenticationAcceptsFreshNonceBoundTokenWithoutOptionalAuthTime() throws Exception {
+        String subject = "apple-reauth-" + UUID.randomUUID();
+        GolfUser user = identities.login("apple", subject);
+        mvc.perform(post("/account/link/google").with(user(new LocalPrincipal(user.id())))
+                        .with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+        identities.link(user.id(), "google", UUID.randomUUID().toString());
+        var start = startAction(user, "reauthenticate", null, "apple");
+        String original = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
+        var parsed = SignedJWT.parse(original);
+        var claims = new JWTClaimsSet.Builder(parsed.getJWTClaimsSet()).claim("auth_time", null)
+                .issueTime(Date.from(Instant.now())).build();
+        var jwt = new SignedJWT(parsed.getHeader(), claims);
+        jwt.sign(new RSASSASigner(KEY));
+        idToken = jwt.serialize();
+        var result = mvc.perform(get("/login/oauth2/code/apple").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/challenge")).andReturn();
+        mvc.perform(post("/account/unlink/google").session((MockHttpSession) result.getRequest().getSession())
+                        .with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account"));
+    }
+
+    @Test
+    void linkingRejectsStaleProviderAuthenticationEvenWithValidFreshAuthorizationCode() throws Exception {
+        GolfUser user = local();
+        var start = startAction(user, "link", "password");
+        var original = SignedJWT.parse(token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY));
+        var jwt = new SignedJWT(original.getHeader(), new JWTClaimsSet.Builder(original.getJWTClaimsSet())
+                .claim("auth_time", Instant.now().minusSeconds(600).getEpochSecond()).build());
+        jwt.sign(new RSASSASigner(KEY));
+        idToken = jwt.serialize();
+        mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?error=true"));
+        assertThat(identities.list(user.id())).isEmpty();
+    }
+
+    @Test
+    void linkCannotBeReboundToDifferentUserOrExpiredFlow() throws Exception {
+        for (boolean expired : List.of(true, false)) {
+            GolfUser user = local();
+            var start = startAction(user, "link", "password");
+            start.session().setAttribute(FederatedFlow.SESSION_KEY,
+                    new FederatedFlow("link", "google", expired ? user.id() : local().id(),
+                            expired ? Instant.now().minusSeconds(1) : Instant.now().plusSeconds(300)));
+            int before = users.findAll().size();
+            mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                            .param("state", start.parameters().get("state")).param("code", "test-code"))
+                    .andExpect(redirectedUrl("/login?error=true"));
+            assertThat(users.findAll()).hasSize(before);
+        }
+    }
+
+    private GolfUser local() {
+        return users.save(new GolfUser(null, UUID.randomUUID() + "@example.com", passwords.encode("password"),
+                UUID.randomUUID().toString(), "USER", false, 0));
+    }
+
+    private Start startAction(GolfUser user, String action, String password) throws Exception {
+        return startAction(user, action, password, "google");
+    }
+
+    private Start startAction(GolfUser user, String action, String password, String provider) throws Exception {
+        var post = post("/account/" + action + "/" + provider).with(user(new LocalPrincipal(user.id())))
+                .with(csrf()).param("confirmed", "true");
+        if (password != null) post.param("password", password);
+        var result = mvc.perform(post).andExpect(redirectedUrl("/oauth2/authorization/" + provider)).andReturn();
+        var redirected = mvc.perform(get("/oauth2/authorization/" + provider)
+                        .session((MockHttpSession) result.getRequest().getSession()))
+                .andExpect(status().is3xxRedirection()).andReturn();
+        return parseStart(redirected);
+    }
+
+    private record Start(MockHttpSession session, Map<String, String> parameters) {}
+    private Start start() throws Exception {
+        var result = mvc.perform(get("/oauth2/authorization/google")).andExpect(status().is3xxRedirection()).andReturn();
+        return parseStart(result);
+    }
+
+    private Start parseStart(org.springframework.test.web.servlet.MvcResult result) {
+        URI redirect = URI.create(result.getResponse().getRedirectedUrl());
+        return new Start((MockHttpSession) result.getRequest().getSession(), parseParameters(redirect.getRawQuery()));
+    }
+
+    private Map<String, String> parseParameters(String encoded) {
+        Map<String, String> params = new HashMap<>();
+        for (String pair : encoded.split("&")) {
+            String[] parts = pair.split("=", 2);
+            params.put(parts[0], URLDecoder.decode(parts[1], StandardCharsets.UTF_8));
+        }
+        return params;
+    }
+
+    private String token(String nonce, String issuer, String audience, int lifetime, RSAKey signingKey) throws Exception {
+        return token(nonce, issuer, audience, lifetime, signingKey, "provider-subject-" + UUID.randomUUID());
+    }
+
+    private String token(String nonce, String issuer, String audience, int lifetime, RSAKey signingKey, String subject) throws Exception {
+        Instant now = Instant.now();
+        var claims = new JWTClaimsSet.Builder().issuer(issuer).audience(audience)
+                .subject(subject).issueTime(Date.from(now.minusSeconds(1000)))
+                .expirationTime(Date.from(now.plusSeconds(lifetime))).claim("nonce", nonce)
+                .claim("email", "provider-email@example.com").claim("auth_time", now.getEpochSecond()).build();
+        var jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("test-key").build(), claims);
+        jwt.sign(new RSASSASigner(signingKey));
+        return jwt.serialize();
+    }
+
+}

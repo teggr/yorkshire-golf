@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20261024-01-external-identities
+      author: copilot
+      changes:
+        - dropNotNullConstraint:
+            tableName: golf_user
+            columnName: email
+            columnDataType: VARCHAR(255)
+        - dropNotNullConstraint:
+            tableName: golf_user
+            columnName: password
+            columnDataType: VARCHAR(255)
+        - createTable:
+            tableName: external_identity
+            columns:
+              - column:
+                  name: provider
+                  type: VARCHAR(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subject
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: external_identity
+            columnNames: provider, subject
+            constraintName: uk_external_identity_subject
+        - addForeignKeyConstraint:
+            baseTableName: external_identity
+            baseColumnNames: user_id
+            referencedTableName: golf_user
+            referencedColumnNames: id
+            constraintName: fk_external_identity_user
+        - createIndex:
+            tableName: external_identity
+            indexName: idx_external_identity_user
+            columns:
+              - column:
+                  name: user_id

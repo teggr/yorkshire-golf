@@ -254,7 +254,8 @@ public class UserTrackerController {
         if (userDetails == null) {
             return null;
         }
-        return userService.findByEmail(userDetails.getUsername()).orElse(null);
+        return (userDetails instanceof golf.security.LocalPrincipal local
+                ? userService.findById(local.userId()) : userService.findByEmail(userDetails.getUsername())).orElse(null);
     }
 
 }

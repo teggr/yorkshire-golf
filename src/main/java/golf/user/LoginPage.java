@@ -16,6 +16,11 @@ import static j2html.TagCreator.*;
 
 @Component
 public class LoginPage implements View {
+    private final golf.security.FederatedProviders providers;
+
+    public LoginPage(golf.security.FederatedProviders providers) {
+        this.providers = providers;
+    }
 
     @Override
     public @Nullable String getContentType() {
@@ -43,11 +48,15 @@ public class LoginPage implements View {
                                 div().withClass("row justify-content-center").with(
                                         div().withClass("col-md-6 col-lg-4").with(
                                                 hasError
-                                                        ? div("Invalid email or password. Your account may also be locked.").withClass("alert alert-danger")
+                                                        ? div("Unable to sign in. Please try again or use another sign-in method.").withClass("alert alert-danger")
                                                         : text(""),
                                                 registered
                                                         ? div("Account created successfully! Please sign in.").withClass("alert alert-success")
                                                         : text(""),
+                                                div().with(each(providers.enabled(), provider ->
+                                                        a("Continue with " + golf.security.FederatedProviders.label(provider))
+                                                                .withHref("/oauth2/authorization/" + provider)
+                                                                .attr("hx-boost", "false").withClass("btn btn-outline-primary w-100 mb-3"))),
                                                 form().withMethod("post").withAction("/login").with(
                                                         CsrfUtil.csrfInput(request),
                                                         div().withClass("mb-3").with(

@@ -150,6 +150,11 @@ public class YorkshireGolfPageTemplate {
                                                         text("")
                                                 ),
                                                 iffElse( loggedIn,
+                                                        li().withClass("nav-item").with(
+                                                                a("Sign-in methods").withClass("nav-link ygl-navbar__link").withHref("/account")
+                                                        ), text("")
+                                                ),
+                                                iffElse( loggedIn,
                                                          li().withClass("nav-item").with(
                                                                 form().withMethod("post").withAction("/logout")
                                                                         .withClass("d-inline").with(

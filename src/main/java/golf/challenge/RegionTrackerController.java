@@ -21,7 +21,8 @@ public class RegionTrackerController {
   @GetMapping
   public String home(@AuthenticationPrincipal UserDetails userDetails, Model model) {
     if (userDetails != null) {
-      return userService.findByEmail(userDetails.getUsername())
+      return (userDetails instanceof golf.security.LocalPrincipal local
+              ? userService.findById(local.userId()) : userService.findByEmail(userDetails.getUsername()))
               .map(user -> "redirect:/challenge/" + user.trackerId())
               .orElse("redirect:/login");
     }

@@ -19,6 +19,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class UserRepositoryTest {
 
@@ -63,5 +64,22 @@ class UserRepositoryTest {
 
         assertThatThrownBy(() -> repository.save(new GolfUser(null, "user@example.com", "hash", "tracker-2", "USER", false, 0)))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void externalAccountsHaveNoEmailOrPasswordAndSubjectsAreCaseSensitive() {
+        GolfUser first = repository.save(new GolfUser(null, null, null, "external-1", "USER", false, 0));
+        GolfUser second = repository.save(new GolfUser(null, null, null, "external-2", "USER", false, 0));
+        jdbcTemplate.update("INSERT INTO external_identity(provider, subject, user_id) VALUES (?, ?, ?)",
+                "google", "CaseSensitive", first.id());
+        jdbcTemplate.update("INSERT INTO external_identity(provider, subject, user_id) VALUES (?, ?, ?)",
+                "google", "casesensitive", second.id());
+        assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM external_identity", Integer.class)).isEqualTo(2);
+        assertThatThrownBy(() -> jdbcTemplate.update(
+                "INSERT INTO external_identity(provider, subject, user_id) VALUES (?, ?, ?)",
+                "google", "CaseSensitive", second.id())).isInstanceOf(DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> jdbcTemplate.update(
+                "INSERT INTO external_identity(provider, subject, user_id) VALUES (?, ?, ?)",
+                "apple", "unknown-user", -1)).isInstanceOf(DataIntegrityViolationException.class);
     }
 }

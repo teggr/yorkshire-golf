@@ -35,7 +35,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, FederatedAuthentication federated) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/challenge/**").authenticated()
@@ -48,6 +48,7 @@ public class SecurityConfig {
                     "/my-rounds/**",
                     "/challenge/**",
                         "/register/**", "/login/**", "/forgot-password/**",
+                        "/oauth2/authorization/**", "/login/oauth2/code/**",
                         "/css/**", "/images/**", "/js/**",
                         "/actuator/**",
                         "/sitemap.xml", "/robots.txt"
@@ -65,6 +66,8 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")
                 .permitAll()
             );
+        http.requestCache(cache -> cache.disable());
+        federated.configure(http);
 
         return http.build();
     }
