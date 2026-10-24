@@ -100,6 +100,8 @@ Local login continues to identify existing accounts by email; federated sessions
 instead carry the local numeric user ID, not provider claims. The identity table
 stores no names, emails, pictures or provider tokens. OAuth authorized clients
 are not retained for API access or refresh.
+Provider buttons use locally served artwork, not third-party scripts or remote
+logo requests. Asset attribution and licensing accompany the artwork.
 
 ## Configuration
 

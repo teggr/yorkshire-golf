@@ -385,6 +385,36 @@ class OidcProtocolTest {
     }
 
     @Test
+    void providerButtonsUseLocalBrandAssetsAndAccessibleProviderLabels() throws Exception {
+        var result = mvc.perform(get("/login")).andExpect(status().isOk()).andReturn();
+        var page = org.jsoup.Jsoup.parse(result.getResponse().getContentAsString());
+        for (String provider : List.of("google", "apple", "facebook")) {
+            String label = "Continue with " + FederatedProviders.label(provider);
+            var button = page.selectFirst("a[href='/oauth2/authorization/" + provider + "']");
+            assertThat(button).isNotNull();
+            assertThat(button.text()).isEqualTo(label);
+            assertThat(button.attr("aria-label")).isEqualTo(label);
+            assertThat(button.hasClass("ygl-provider-sign-in--" + provider)).isTrue();
+            assertThat(button.attr("hx-boost")).isEqualTo("false");
+            var logo = button.selectFirst("img");
+            assertThat(logo).isNotNull();
+            assertThat(logo.attr("src")).isEqualTo("/images/auth/" + provider + ".svg");
+            assertThat(logo.attr("alt")).isEmpty();
+            assertThat(logo.attr("aria-hidden")).isEqualTo("true");
+            mvc.perform(get(logo.attr("src"))).andExpect(status().isOk())
+                    .andExpect(content().contentTypeCompatibleWith("image/svg+xml"))
+                    .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("<script"))));
+        }
+        assertThat(page.select("script[src*=accounts.google.com], script[src*=connect.facebook.net], script[src*=appleid.cdn-apple.com]"))
+                .isEmpty();
+        mvc.perform(get("/css/styles.css")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in:focus-visible")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--google")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--apple")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--facebook")));
+    }
+
+    @Test
     void linkingRejectsStaleProviderAuthenticationEvenWithValidFreshAuthorizationCode() throws Exception {
         GolfUser user = local();
         var start = startAction(user, "link", "password");

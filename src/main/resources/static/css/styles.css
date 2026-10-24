@@ -632,6 +632,77 @@ img {
   box-shadow: var(--ygl-shadow-xs);
 }
 
+/* ---------- Provider sign-in branding ---------- */
+.ygl-provider-sign-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.ygl-provider-sign-in img {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.ygl-provider-sign-in--google {
+  background: #fff;
+  border-color: #747775;
+  color: #1f1f1f;
+  font-weight: 500;
+}
+
+.ygl-provider-sign-in--google img {
+  width: 18px;
+  height: 18px;
+}
+
+.ygl-provider-sign-in--google:hover {
+  background: #f8faff;
+  color: #1f1f1f;
+}
+
+.ygl-provider-sign-in--apple {
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-size: 17px;
+}
+
+.ygl-provider-sign-in--apple:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.ygl-provider-sign-in--facebook {
+  background: #0866ff;
+  color: #fff;
+  font-size: 16px;
+}
+
+.ygl-provider-sign-in--facebook:hover {
+  background: #0757d8;
+  color: #fff;
+}
+
+.ygl-provider-sign-in:focus-visible {
+  outline: 3px solid #8a6500;
+  outline-offset: 3px;
+}
+
 /* clickable card link wrapper */
 /* ---------- ygl-btn ---------- */
 .ygl-btn {
@@ -1378,4 +1449,3 @@ img {
     font-size: 2rem;
   }
 }
-

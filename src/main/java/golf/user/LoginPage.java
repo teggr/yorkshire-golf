@@ -54,9 +54,14 @@ public class LoginPage implements View {
                                                         ? div("Account created successfully! Please sign in.").withClass("alert alert-success")
                                                         : text(""),
                                                 div().with(each(providers.enabled(), provider ->
-                                                        a("Continue with " + golf.security.FederatedProviders.label(provider))
+                                                        a().with(
+                                                                       img().withSrc("/images/auth/" + provider + ".svg").withAlt("")
+                                                                               .attr("aria-hidden", "true").attr("width", "20").attr("height", "20"),
+                                                                       span("Continue with " + golf.security.FederatedProviders.label(provider)))
                                                                 .withHref("/oauth2/authorization/" + provider)
-                                                                .attr("hx-boost", "false").withClass("btn btn-outline-primary w-100 mb-3"))),
+                                                                .attr("aria-label", "Continue with " + golf.security.FederatedProviders.label(provider))
+                                                                .attr("hx-boost", "false")
+                                                                .withClass("ygl-provider-sign-in ygl-provider-sign-in--" + provider))),
                                                 form().withMethod("post").withAction("/login").with(
                                                         CsrfUtil.csrfInput(request),
                                                         div().withClass("mb-3").with(
