@@ -12,7 +12,11 @@ public class AuthenticationCookies {
             FederatedProviders providers) {
         return factory -> {
             factory.getSettings().getSession().getCookie().setHttpOnly(true);
-            if (providers.secureCookies()) factory.getSettings().getSession().getCookie().setSecure(true);
+            boolean apple = providers.enabled().contains("apple");
+            if (providers.secureCookies() || apple) factory.getSettings().getSession().getCookie().setSecure(true);
+            factory.getSettings().getSession().getCookie().setSameSite(apple
+                    ? org.springframework.boot.web.server.Cookie.SameSite.NONE
+                    : org.springframework.boot.web.server.Cookie.SameSite.LAX);
         };
     }
 }

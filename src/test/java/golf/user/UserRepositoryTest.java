@@ -75,6 +75,10 @@ class UserRepositoryTest {
         jdbcTemplate.update("INSERT INTO external_identity(provider, subject, user_id) VALUES (?, ?, ?)",
                 "google", "casesensitive", second.id());
         assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM external_identity", Integer.class)).isEqualTo(2);
+        assertThat(jdbcTemplate.queryForList("SELECT id FROM external_identity", Long.class))
+                .hasSize(2).doesNotHaveDuplicates().allMatch(id -> id > 0);
+        assertThat(jdbcTemplate.queryForList("SELECT created_at FROM external_identity", java.sql.Timestamp.class))
+                .hasSize(2).doesNotContainNull();
         assertThatThrownBy(() -> jdbcTemplate.update(
                 "INSERT INTO external_identity(provider, subject, user_id) VALUES (?, ?, ?)",
                 "google", "CaseSensitive", second.id())).isInstanceOf(DataIntegrityViolationException.class);

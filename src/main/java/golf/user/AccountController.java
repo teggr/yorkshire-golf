@@ -37,8 +37,21 @@ public class AccountController {
         GolfUser user = current(authentication);
         List<DomContent> content = new ArrayList<>();
         content.add(h1("Sign-in methods"));
-        content.add(p("Link only accounts you control. Confirm sensitive changes with your current password, or a fresh sign-in for accounts without a password."));
-        if (request.getParameter("error") != null) content.add(p("Unable to change sign-in methods. Please confirm your account and try again."));
+        content.add(p("Link only accounts you control. Confirm sensitive changes with your current password or the confirmation method shown below."));
+        if (appleOnlyConfirmation(user)) content.add(p(
+                "Confirm control of your linked Apple account to allow one change within five minutes. Apple may reuse its existing sign-in session; this does not force credential re-entry."));
+        String success = request.getParameter("success");
+        String message = success == null ? null : switch (success) {
+            case "linked" -> "Sign-in method linked successfully.";
+            case "unlinked" -> "Sign-in method unlinked successfully.";
+            case "reauthenticated" -> "Identity confirmed. You can now finish linking or unlinking a sign-in method.";
+            case "confirmed" -> "Account change confirmed for this session. You can now finish one change within five minutes.";
+            default -> null;
+        };
+        if (message != null) content.add(p(message).withClass("alert alert-success").attr("role", "status"));
+        if (request.getParameter("error") != null) content.add(
+                p("Unable to change sign-in methods. Please confirm your account and try again.")
+                        .withClass("alert alert-danger").attr("role", "alert"));
         if (user.password() != null) content.add(p("Email and password sign-in is available."));
         List<ExternalIdentityService.Identity> linked = identities.list(user.id());
         for (var identity : linked) {
@@ -46,7 +59,11 @@ public class AccountController {
             content.add(h2(FederatedProviders.label(provider)));
             content.add(p(providers.enabled().contains(provider) ? "Linked" : "Linked (provider currently disabled)"));
             if (user.password() == null && providers.enabled().contains(provider)) {
-                content.add(action(request, "reauthenticate", provider, "Confirm with " + FederatedProviders.label(provider), false));
+                if ("apple".equals(provider)) {
+                    if (appleOnlyConfirmation(user)) content.add(action(request, "reauthenticate", provider, "Confirm with Apple", false));
+                } else {
+                    content.add(action(request, "reauthenticate", provider, "Confirm with " + FederatedProviders.label(provider), false));
+                }
             }
             content.add(action(request, "unlink", provider, "Unlink " + FederatedProviders.label(provider), user.password() != null));
         }
@@ -75,13 +92,16 @@ public class AccountController {
             if ("unlink".equals(action)) {
                 guard.requireConfirmation(user, password, request.getSession());
                 identities.unlink(user.id(), provider, providers.enabled());
-                return "redirect:/account";
+                return "redirect:/account?success=unlinked";
             }
             if (!providers.enabled().contains(provider)) throw new IllegalArgumentException();
             if ("link".equals(action)) {
                 guard.requireConfirmation(user, password, request.getSession());
             } else if (identities.list(user.id()).stream().noneMatch(identity -> identity.provider().equals(provider))) {
                 throw new IllegalArgumentException();
+            }
+            if ("reauthenticate".equals(action) && "apple".equals(provider)) {
+                if (!appleOnlyConfirmation(user)) throw new IllegalArgumentException();
             }
             request.getSession().setAttribute(FederatedFlow.SESSION_KEY,
                     new FederatedFlow(action, provider, user.id(), Instant.now().plusSeconds(300)));
@@ -94,6 +114,13 @@ public class AccountController {
     private GolfUser current(Authentication authentication) {
         return users.findByPrincipal(authentication).map(user -> identities.usable(user.id()))
                 .orElseThrow(() -> new IllegalArgumentException("Account unavailable"));
+    }
+
+    private boolean appleOnlyConfirmation(GolfUser user) {
+        if (user.password() != null) return false;
+        var usable = identities.list(user.id()).stream().map(ExternalIdentityService.Identity::provider)
+                .filter(providers.enabled()::contains).toList();
+        return usable.equals(List.of("apple"));
     }
 
     private DomContent action(HttpServletRequest request, String action, String provider, String label, boolean password) {

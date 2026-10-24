@@ -146,6 +146,20 @@ class FederatedSecurityTest {
                 .andExpect(redirectedUrl("/challenge/" + owner.trackerId() + "?added=true"));
     }
 
+    @Test
+    void accountShowsClearSuccessMessagesForEachSensitiveAction() throws Exception {
+        GolfUser user = local();
+        for (var message : Map.of(
+                "linked", "Sign-in method linked successfully.",
+                "unlinked", "Sign-in method unlinked successfully.",
+                "confirmed", "Account change confirmed for this session. You can now finish one change within five minutes.",
+                "reauthenticated", "Identity confirmed. You can now finish linking or unlinking a sign-in method.").entrySet()) {
+            mvc.perform(get("/account").with(user(new LocalPrincipal(user.id()))).param("success", message.getKey()))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString(message.getValue())));
+        }
+    }
+
     private GolfUser local() {
         return users.save(new GolfUser(null, UUID.randomUUID() + "@example.com",
                 passwords.encode("correct-password"), UUID.randomUUID().toString(), "USER", false, 0));

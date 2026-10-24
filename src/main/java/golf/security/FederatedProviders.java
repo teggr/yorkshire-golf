@@ -41,6 +41,7 @@ public class FederatedProviders {
                         .issuerUri("https://accounts.google.com")
                         .userNameAttributeName("sub");
                 case "apple" -> {
+                    validateAppleOrigin(baseUrl);
                     validateAppleSecret(secret, id);
                     builder.scope("openid")
                             .authorizationUri("https://appleid.apple.com/auth/authorize")
@@ -106,9 +107,29 @@ public class FederatedProviders {
                     || claims.getExpirationTime().toInstant().isAfter(now.plusSeconds(15777000))) {
                 throw new IllegalArgumentException();
             }
+
         } catch (Exception ex) {
             // Never include the configured secret (or parser exception) in startup diagnostics.
             throw new IllegalStateException("Enabled apple requires an unexpired ES256 Apple client-secret JWT with kid, iss, sub, aud, iat and exp");
+        }
+    }
+
+    private static void validateAppleOrigin(String base) {
+        try {
+            URI uri = URI.create(base);
+            String host = uri.getHost().toLowerCase(java.util.Locale.ROOT);
+            if (!"https".equals(uri.getScheme()) || "localhost".equals(host)
+                    || host.endsWith(".localhost") || host.endsWith(".local")
+                    || !host.contains(".") && !host.contains(":")) throw new IllegalArgumentException();
+            if (host.matches("[0-9.]+") || host.contains(":")) {
+                var address = java.net.InetAddress.getByName(host);
+                if (address.isAnyLocalAddress() || address.isLoopbackAddress() || address.isLinkLocalAddress()
+                        || address.isSiteLocalAddress() || host.matches("\\[?f[cd].*")) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        } catch (Exception ex) {
+            throw new IllegalStateException("Apple authentication requires APP_BASE_URL to be a public HTTPS origin");
         }
     }
 }

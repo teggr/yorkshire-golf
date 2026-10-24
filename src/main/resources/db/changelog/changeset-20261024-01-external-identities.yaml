@@ -15,6 +15,13 @@ databaseChangeLog:
             tableName: external_identity
             columns:
               - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
                   name: provider
                   type: VARCHAR(16)
                   constraints:
@@ -27,6 +34,12 @@ databaseChangeLog:
               - column:
                   name: user_id
                   type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
         - addUniqueConstraint:

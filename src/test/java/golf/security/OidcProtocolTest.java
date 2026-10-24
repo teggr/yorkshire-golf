@@ -91,6 +91,7 @@ class OidcProtocolTest {
         @Bean @Primary
         FederatedProviders testProviders() {
             return new FederatedProviders(new MockEnvironment()
+                    .withProperty("golf.app.base-url", "https://golf.example")
                     .withProperty("golf.auth.google.enabled", "true")
                     .withProperty("golf.auth.google.client-id", "test-client")
                     .withProperty("golf.auth.google.client-secret", "test-secret")
@@ -171,13 +172,43 @@ class OidcProtocolTest {
     }
 
     @Test
-    void appleIdentityOnlyUsesQueryCallbackAndValidatesOidcToken() throws Exception {
+    void providerCancellationFailsGenericallyWithoutCreatingAnAccount() throws Exception {
+        var start = start();
+        int before = users.findAll().size();
+        mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("error", "access_denied"))
+                .andExpect(redirectedUrl("/login?error=true"));
+        assertThat(users.findAll()).hasSize(before);
+        assertThat(start.session().isInvalid()).isTrue();
+    }
+
+    @Test
+    void expiredAuthorizationRequestFailsBeforeTokenExchange() throws Exception {
+        var start = start();
+        int before = users.findAll().size();
+        var request = new org.springframework.mock.web.MockHttpServletRequest();
+        request.setSession(start.session());
+        request.setParameter("state", start.parameters().get("state"));
+        var repository = new org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository();
+        var authorization = repository.loadAuthorizationRequest(request);
+        var expired = org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest.from(authorization)
+                .attributes(attributes -> attributes.put("golf.expires", Instant.now().minusSeconds(1))).build();
+        repository.saveAuthorizationRequest(expired, request, new org.springframework.mock.web.MockHttpServletResponse());
+        mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?error=true"));
+        assertThat(users.findAll()).hasSize(before);
+        assertThat(start.session().isInvalid()).isTrue();
+    }
+
+    @Test
+    void appleIdentityOnlyUsesFormPostCallbackAndValidatesOidcToken() throws Exception {
         var result = mvc.perform(get("/oauth2/authorization/apple")).andReturn();
-        assertThat(result.getResponse().getRedirectedUrl()).contains("scope=openid", "response_mode=query")
-                .doesNotContain("scope=email", "form_post", "code_challenge", "prompt=", "max_age=");
+        assertThat(result.getResponse().getRedirectedUrl()).contains("scope=openid", "response_mode=form_post")
+                .doesNotContain("scope=email", "code_challenge", "prompt=", "max_age=");
         var start = parseStart(result);
         idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY);
-        mvc.perform(get("/login/oauth2/code/apple").session(start.session())
+        mvc.perform(post("/login/oauth2/code/apple").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
                 .andExpect(redirectedUrl("/challenge"));
     }
@@ -212,7 +243,7 @@ class OidcProtocolTest {
         idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
         mvc.perform(get("/login/oauth2/code/google").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/challenge"));
+                .andExpect(redirectedUrl("/account?success=linked"));
         assertThat(identities.find("google", subject).orElseThrow().userId()).isEqualTo(user.id());
         assertThat(users.findAll()).hasSize(before);
         assertThat(users.findById(user.id()).orElseThrow().trackerId()).isEqualTo(user.trackerId());
@@ -234,11 +265,11 @@ class OidcProtocolTest {
         idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
         var result = mvc.perform(get("/login/oauth2/code/google").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/challenge")).andReturn();
+                .andExpect(redirectedUrl("/account?success=reauthenticated")).andReturn();
         MockHttpSession session = (MockHttpSession) result.getRequest().getSession();
         identities.link(user.id(), "facebook", "facebook-" + UUID.randomUUID());
         mvc.perform(post("/account/unlink/facebook").session(session).with(csrf()).param("confirmed", "true"))
-                .andExpect(redirectedUrl("/account"));
+                .andExpect(redirectedUrl("/account?success=unlinked"));
         assertThat(identities.list(user.id())).extracting(ExternalIdentityService.Identity::provider).containsExactly("google");
         mvc.perform(post("/account/unlink/google").session(session).with(csrf()).param("confirmed", "true"))
                 .andExpect(redirectedUrl("/account?error=true"));
@@ -251,14 +282,10 @@ class OidcProtocolTest {
     }
 
     @Test
-    void appleReauthenticationAcceptsFreshNonceBoundTokenWithoutOptionalAuthTime() throws Exception {
-        String subject = "apple-reauth-" + UUID.randomUUID();
-        GolfUser user = identities.login("apple", subject);
-        mvc.perform(post("/account/link/google").with(user(new LocalPrincipal(user.id())))
-                        .with(csrf()).param("confirmed", "true"))
-                .andExpect(redirectedUrl("/account?error=true"));
-        identities.link(user.id(), "google", UUID.randomUUID().toString());
-        var start = startAction(user, "reauthenticate", null, "apple");
+    void appleLinkingUsesPriorPasswordConfirmationWithoutUnsupportedAuthTime() throws Exception {
+        String subject = "apple-link-" + UUID.randomUUID();
+        GolfUser user = local();
+        var start = startAction(user, "link", "password", "apple");
         String original = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
         var parsed = SignedJWT.parse(original);
         var claims = new JWTClaimsSet.Builder(parsed.getJWTClaimsSet()).claim("auth_time", null)
@@ -266,12 +293,95 @@ class OidcProtocolTest {
         var jwt = new SignedJWT(parsed.getHeader(), claims);
         jwt.sign(new RSASSASigner(KEY));
         idToken = jwt.serialize();
-        var result = mvc.perform(get("/login/oauth2/code/apple").session(start.session())
+        mvc.perform(post("/login/oauth2/code/apple").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/challenge")).andReturn();
-        mvc.perform(post("/account/unlink/google").session((MockHttpSession) result.getRequest().getSession())
+                .andExpect(redirectedUrl("/account?success=linked"));
+        assertThat(identities.find("apple", subject).orElseThrow().userId()).isEqualTo(user.id());
+    }
+
+    @Test
+    void appleOnlyConfirmationIsExplicitCsrfProtectedAndSingleUse() throws Exception {
+        String subject = UUID.randomUUID().toString();
+        GolfUser user = identities.login("apple", subject);
+        var session = new MockHttpSession();
+        mvc.perform(post("/account/link/google").session(session).with(user(new LocalPrincipal(user.id())))
                         .with(csrf()).param("confirmed", "true"))
-                .andExpect(redirectedUrl("/account"));
+                .andExpect(redirectedUrl("/account?error=true"));
+        mvc.perform(post("/account/reauthenticate/apple").session(session)
+                        .param("confirmed", "true"))
+                .andExpect(status().isForbidden());
+        mvc.perform(post("/account/reauthenticate/apple").session(session).with(csrf()))
+                .andExpect(redirectedUrl("/account?error=true"));
+        mvc.perform(post("/account/reauthenticate/apple").session(session).with(csrf())
+                        .param("confirmed", "true"))
+                .andExpect(redirectedUrl("/oauth2/authorization/apple"));
+        mvc.perform(post("/account/link/google").session(session).with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+        var start = parseStart(mvc.perform(get("/oauth2/authorization/apple").session(session)).andReturn());
+        var original = SignedJWT.parse(token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject));
+        var jwt = new SignedJWT(original.getHeader(), new JWTClaimsSet.Builder(original.getJWTClaimsSet())
+                .claim("auth_time", null).issueTime(Date.from(Instant.now().minusSeconds(3600))).build());
+        jwt.sign(new RSASSASigner(KEY));
+        idToken = jwt.serialize();
+        mvc.perform(post("/login/oauth2/code/apple").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/account?success=confirmed"));
+        mvc.perform(post("/account/link/google").with(user(new LocalPrincipal(user.id()))).with(csrf())
+                        .param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+        mvc.perform(post("/account/link/google").session(session).with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/oauth2/authorization/google"));
+        mvc.perform(post("/account/link/facebook").session(session).with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+    }
+
+    @Test
+    void stolenApplicationSessionCannotConfirmUsingAttackersAppleIdentity() throws Exception {
+        GolfUser owner = identities.login("apple", UUID.randomUUID().toString());
+        String attackerSubject = UUID.randomUUID().toString();
+        identities.login("apple", attackerSubject);
+        int before = users.findAll().size();
+        var start = startAction(owner, "reauthenticate", null, "apple");
+        idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, attackerSubject);
+        mvc.perform(post("/login/oauth2/code/apple").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?error=true"));
+        assertThat(start.session().isInvalid()).isTrue();
+        assertThat(users.findAll()).hasSize(before);
+        mvc.perform(post("/account/link/google").with(user(new LocalPrincipal(owner.id())))
+                        .with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+    }
+
+    @Test
+    void appleConfirmationCannotBypassAnotherSupportedReauthenticationMethod() throws Exception {
+        GolfUser user = identities.login("apple", UUID.randomUUID().toString());
+        identities.link(user.id(), "google", UUID.randomUUID().toString());
+        mvc.perform(post("/account/reauthenticate/apple").with(user(new LocalPrincipal(user.id())))
+                        .with(csrf()).param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+    }
+
+    @Test
+    void onlyAppleCallbackPostIsCsrfExemptAndStillRequiresValidState() throws Exception {
+        mvc.perform(post("/login/oauth2/code/apple").param("state", "invalid").param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?error=true"));
+        mvc.perform(post("/login/oauth2/code/google").param("state", "invalid").param("code", "test-code"))
+                .andExpect(status().isForbidden());
+        mvc.perform(post("/account/link/apple").with(user("user@example.com")).param("confirmed", "true"))
+                .andExpect(status().isForbidden());
+        mvc.perform(post("/login/oauth2/code/apple/extra").param("state", "invalid"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void appleFormPostCancellationRequiresStateAndNeverCreatesAnAccount() throws Exception {
+        var start = parseStart(mvc.perform(get("/oauth2/authorization/apple")).andReturn());
+        int before = users.findAll().size();
+        mvc.perform(post("/login/oauth2/code/apple").session(start.session())
+                        .param("state", start.parameters().get("state")).param("error", "access_denied"))
+                .andExpect(redirectedUrl("/login?error=true"));
+        assertThat(users.findAll()).hasSize(before);
     }
 
     @Test

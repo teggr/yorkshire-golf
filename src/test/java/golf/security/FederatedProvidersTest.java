@@ -54,11 +54,13 @@ class FederatedProvidersTest {
                 new FederatedProviders(environment("https://golf.example"))).customize(factory);
         assertThat(settings.getSession().getCookie().getSecure()).isTrue();
         assertThat(settings.getSession().getCookie().getHttpOnly()).isTrue();
+        assertThat(settings.getSession().getCookie().getSameSite()).isEqualTo(org.springframework.boot.web.server.Cookie.SameSite.LAX);
     }
 
     @Test
     void appleRequiresValidExpiringSecretAndOnlyRequestsIdentity() {
-        var environment = new MockEnvironment().withProperty("golf.auth.apple.enabled", "true")
+        var environment = new MockEnvironment().withProperty("golf.app.base-url", "https://golf.example")
+                .withProperty("golf.auth.apple.enabled", "true")
                 .withProperty("golf.auth.apple.client-id", "test-client")
                 .withProperty("golf.auth.apple.client-secret", "not-a-jwt");
         assertThatThrownBy(() -> new FederatedProviders(environment)).isInstanceOf(IllegalStateException.class)
@@ -68,6 +70,18 @@ class FederatedProvidersTest {
         assertThat(providers.registration("apple").getScopes()).containsExactly("openid");
         assertThat(providers.registration("apple").getProviderDetails().getIssuerUri()).isEqualTo("https://appleid.apple.com");
         assertThat(providers.registration("apple").getProviderDetails().getUserInfoEndpoint().getUri()).isNull();
+        var factory = mock(org.springframework.boot.web.server.servlet.ConfigurableServletWebServerFactory.class);
+        var settings = new org.springframework.boot.web.server.servlet.ServletWebServerSettings();
+        settings.setSession(new org.springframework.boot.web.server.servlet.Session());
+        when(factory.getSettings()).thenReturn(settings);
+        new AuthenticationCookies().authenticationCookieCustomizer(providers).customize(factory);
+        assertThat(settings.getSession().getCookie().getSameSite()).isEqualTo(org.springframework.boot.web.server.Cookie.SameSite.NONE);
+        assertThat(settings.getSession().getCookie().getSecure()).isTrue();
+        for (String origin : new String[]{"http://localhost:8080", "https://localhost", "https://127.0.0.1",
+                "https://192.168.1.1", "https://[::1]", "https://dev.local"}) {
+            assertThatThrownBy(() -> new FederatedProviders(environment.withProperty("golf.app.base-url", origin)))
+                    .isInstanceOf(IllegalStateException.class).hasMessageContaining("Apple");
+        }
     }
 
     private MockEnvironment environment(String base) {

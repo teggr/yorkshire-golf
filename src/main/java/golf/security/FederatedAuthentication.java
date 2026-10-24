@@ -64,12 +64,13 @@ public class FederatedAuthentication {
 
     public void configure(HttpSecurity http) throws Exception {
         if (providers.enabled().isEmpty()) return;
+        if (providers.enabled().contains("apple")) {
+            http.csrf(csrf -> csrf.ignoringRequestMatchers(
+                    org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.withDefaults()
+                            .matcher(org.springframework.http.HttpMethod.POST, "/login/oauth2/code/apple")));
+        }
         var registrations = federatedClientRegistrations();
         var delegate = new DefaultOAuth2AuthorizationRequestResolver(registrations, "/oauth2/authorization");
-        delegate.setAuthorizationRequestCustomizer(builder -> builder.additionalParameters(parameters -> {
-            // Explicit query mode keeps Apple's identity-only response on a Lax-cookie top-level GET.
-            parameters.put("response_mode", "query");
-        }));
         OAuth2AuthorizationRequestResolver resolver = new OAuth2AuthorizationRequestResolver() {
             @Override public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
                 return customize(request, delegate.resolve(request));
@@ -116,6 +117,7 @@ public class FederatedAuthentication {
                     if (signedIn) attributes.put("golf.flow", pending);
                 })
                 .additionalParameters(parameters -> {
+                    parameters.put("response_mode", "apple".equals(provider) ? "form_post" : "query");
                     if ("facebook".equals(provider)) parameters.put("auth_type", "reauthenticate");
                     else if ("google".equals(provider)) {
                         parameters.put("prompt", "select_account");
@@ -173,11 +175,8 @@ public class FederatedAuthentication {
                 Object pending = request.getAttribute(CALLBACK_FLOW);
                 if (pending instanceof FederatedFlow flow) {
                     if (!flow.valid() || !provider.equals(flow.provider())) throw invalid();
-                    if (principal instanceof OidcUser oidc) {
+                    if ("google".equals(provider) && principal instanceof OidcUser oidc) {
                         Instant authenticatedAt = oidc.getAuthenticatedAt();
-                        // Apple has no reliable max_age/auth_time support. Sensitive callbacks follow
-                        // explicit existing-method confirmation and require a fresh nonce-bound token.
-                        if ("apple".equals(provider) && authenticatedAt == null) authenticatedAt = oidc.getIssuedAt();
                         if (authenticatedAt == null || authenticatedAt.isBefore(flow.expiresAt().minusSeconds(360))) {
                             throw invalid();
                         }
@@ -200,7 +199,10 @@ public class FederatedAuthentication {
                 SecurityContextHolder.setContext(context);
                 new HttpSessionSecurityContextRepository().saveContext(context, request, response);
                 // No provider user, claims, ID/access/refresh token, or authorized client survives this request.
-                response.sendRedirect("/challenge");
+                response.sendRedirect(pending instanceof FederatedFlow flow
+                        ? "/account?success=" + ("link".equals(flow.action()) ? "linked"
+                                : "apple".equals(provider) ? "confirmed" : "reauthenticated")
+                        : "/challenge");
             } catch (RuntimeException ex) {
                 failure().onAuthenticationFailure(request, response, invalid());
             }
