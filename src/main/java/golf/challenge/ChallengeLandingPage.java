@@ -52,6 +52,17 @@ public class ChallengeLandingPage implements View {
                                                 div().withClass("d-flex flex-wrap gap-2").with(
                                                         a("Create an account").withHref("/register").withClass("ygl-btn ygl-btn--primary"),
                                                         a("Sign in").withHref("/login").withClass("ygl-btn ygl-btn--outline")
+                                                ),
+                                                div().withClass("alert alert-info ygl-auth-transition mt-4").attr("role", "status").with(
+                                                        text("A note from "),
+                                                        a("@yorkshiregolflife on Instagram")
+                                                                .withHref("https://www.instagram.com/yorkshiregolflife/")
+                                                                .attr("target", "_blank").attr("rel", "noopener noreferrer"),
+                                                        text(": we're moving sign-in to trusted providers to help keep your data safe. "
+                                                                + "Existing members can still sign in with email and password. After signing in, "
+                                                                + "open Sign-in methods to link Facebook, X, Apple, or Google. "),
+                                                        a("Sign in to link an account").withHref("/login"),
+                                                        text(". New accounts must use one of those providers.")
                                                 )
                                         ),
                                         div().withClass("col-12 col-lg-6").with(

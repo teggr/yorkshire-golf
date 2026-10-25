@@ -13,11 +13,15 @@ public class LoginController {
     @GetMapping
     public String loginPage(
             @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "existing", required = false) String existing,
             @RequestParam(value = "registered", required = false) String registered,
             Model model
     ) {
         if (error != null) {
             model.addAttribute("error", true);
+        }
+        if (existing != null) {
+            model.addAttribute("existing", true);
         }
         if (registered != null) {
             model.addAttribute("registered", true);

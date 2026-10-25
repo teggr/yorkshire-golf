@@ -111,6 +111,21 @@ class FederatedSecurityTest {
     }
 
     @Test
+    void googleOnlyAccountShowsLinkedProviderInSiteStyleWithoutUnsafeActions() throws Exception {
+        GolfUser user = identities.login("google", UUID.randomUUID().toString());
+        var result = mvc.perform(get("/account").with(user(new LocalPrincipal(user.id()))))
+                .andExpect(status().isOk()).andReturn();
+        var page = org.jsoup.Jsoup.parse(result.getResponse().getContentAsString());
+        assertThat(page.selectFirst(".ygl-page-header h1").text()).isEqualTo("Sign-in methods");
+        assertThat(page.select(".ygl-sign-in-method-card")).hasSize(1);
+        assertThat(page.select(".ygl-sign-in-method-card").text()).contains("Google", "Linked");
+        assertThat(page.select("form[action='/account/unlink/google'], form[action='/account/reauthenticate/google'], "
+                + "form[action='/account/link/google']")).isEmpty();
+        assertThat(page.selectFirst(".ygl-sign-in-methods__notice").text())
+                .contains("only sign-in method", "cannot be removed");
+    }
+
+    @Test
     void adminCanIdentifyExternalAccountsWithoutEmail() throws Exception {
         GolfUser external = identities.login("google", UUID.randomUUID().toString());
         mvc.perform(get("/admin").with(user("admin@example.com").roles("ADMIN")))
@@ -153,7 +168,7 @@ class FederatedSecurityTest {
                 "linked", "Sign-in method linked successfully.",
                 "unlinked", "Sign-in method unlinked successfully.",
                 "confirmed", "Account change confirmed for this session. You can now finish one change within five minutes.",
-                "reauthenticated", "Identity confirmed. You can now finish linking or unlinking a sign-in method.").entrySet()) {
+                "reauthenticated", "Identity confirmed. You can now add or remove a sign-in method.").entrySet()) {
             mvc.perform(get("/account").with(user(new LocalPrincipal(user.id()))).param("success", message.getKey()))
                     .andExpect(status().isOk())
                     .andExpect(content().string(org.hamcrest.Matchers.containsString(message.getValue())));

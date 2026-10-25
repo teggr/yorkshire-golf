@@ -35,48 +35,83 @@ public class AccountController {
     @GetMapping
     public void account(Authentication authentication, HttpServletRequest request, HttpServletResponse response) throws Exception {
         GolfUser user = current(authentication);
+        List<ExternalIdentityService.Identity> linked = identities.list(user.id());
+        boolean canAddProvider = providers.enabled().stream()
+                .anyMatch(provider -> linked.stream().noneMatch(identity -> identity.provider().equals(provider)));
         List<DomContent> content = new ArrayList<>();
-        content.add(h1("Sign-in methods"));
-        content.add(p("Link only accounts you control. Confirm sensitive changes with your current password or the confirmation method shown below."));
-        if (appleOnlyConfirmation(user)) content.add(p(
-                "Confirm control of your linked Apple account to allow one change within five minutes. Apple may reuse its existing sign-in session; this does not force credential re-entry."));
+        content.add(div().withClass("ygl-page-header").with(
+                div().withClass("container").with(
+                        h1("Sign-in methods").withClass("ygl-page-header__title"),
+                        p("Manage the ways you can securely access your Yorkshire Golf Life account.")
+                                .withClass("ygl-page-header__lead"))));
         String success = request.getParameter("success");
         String message = success == null ? null : switch (success) {
             case "linked" -> "Sign-in method linked successfully.";
             case "unlinked" -> "Sign-in method unlinked successfully.";
-            case "reauthenticated" -> "Identity confirmed. You can now finish linking or unlinking a sign-in method.";
+            case "reauthenticated" -> "Identity confirmed. You can now add or remove a sign-in method.";
             case "confirmed" -> "Account change confirmed for this session. You can now finish one change within five minutes.";
             default -> null;
         };
-        if (message != null) content.add(p(message).withClass("alert alert-success").attr("role", "status"));
-        if (request.getParameter("error") != null) content.add(
-                p("Unable to change sign-in methods. Please confirm your account and try again.")
+        List<DomContent> pageContent = new ArrayList<>();
+        if (message != null) pageContent.add(p(message).withClass("alert alert-success").attr("role", "status"));
+        if (request.getParameter("error") != null) pageContent.add(
+                p("The sign-in provider could not verify this change. No sign-in method was changed; you remain signed in. Please try again.")
                         .withClass("alert alert-danger").attr("role", "alert"));
-        if (user.password() != null) content.add(p("Email and password sign-in is available."));
-        List<ExternalIdentityService.Identity> linked = identities.list(user.id());
+        if (user.password() != null) pageContent.add(p("Email and password sign-in is also available.")
+                .withClass("ygl-sign-in-methods__notice"));
+
+        pageContent.add(h2("Your sign-in methods").withClass("ygl-section-title"));
+        pageContent.add(p("These methods all open the same account and keep your tracker and rounds together."));
         for (var identity : linked) {
             String provider = identity.provider();
-            content.add(h2(FederatedProviders.label(provider)));
-            content.add(p(providers.enabled().contains(provider) ? "Linked" : "Linked (provider currently disabled)"));
-            if (user.password() == null && providers.enabled().contains(provider)) {
-                if ("apple".equals(provider)) {
-                    if (appleOnlyConfirmation(user)) content.add(action(request, "reauthenticate", provider, "Confirm with Apple", false));
-                } else {
-                    content.add(action(request, "reauthenticate", provider, "Confirm with " + FederatedProviders.label(provider), false));
-                }
+            boolean available = providers.enabled().contains(provider);
+            boolean canUnlink = canUnlink(user, identity, linked);
+            boolean canConfirm = user.password() == null && available && (canAddProvider || canUnlink);
+            List<DomContent> actions = new ArrayList<>();
+            if (canConfirm) {
+                actions.add(action(request, "reauthenticate", provider, "Confirm with " + FederatedProviders.label(provider), false));
             }
-            content.add(action(request, "unlink", provider, "Unlink " + FederatedProviders.label(provider), user.password() != null));
+            if (canUnlink) actions.add(action(request, "unlink", provider, "Unlink " + FederatedProviders.label(provider),
+                    user.password() != null));
+            pageContent.add(div().withClass("ygl-sign-in-method-card").with(
+                    div().withClass("ygl-sign-in-method-card__identity").with(
+                            img().withSrc("/images/auth/" + provider + ".svg").withAlt("")
+                                    .attr("aria-hidden", "true").attr("width", "32").attr("height", "32"),
+                            div().with(
+                                    h3(FederatedProviders.label(provider)).withClass("ygl-sign-in-method-card__title"),
+                                    p(available ? "Linked" : "Linked, but sign-in is currently unavailable")
+                                            .withClass(available ? "ygl-sign-in-method-card__status"
+                                                    : "ygl-sign-in-method-card__status ygl-sign-in-method-card__status--muted"))),
+                    div().withClass("ygl-sign-in-method-card__actions").with(actions)));
         }
-        for (String provider : providers.enabled()) {
-            if (linked.stream().noneMatch(identity -> identity.provider().equals(provider))) {
-                content.add(action(request, "link", provider, "Link " + FederatedProviders.label(provider), user.password() != null));
+
+        List<String> unlinked = providers.enabled().stream()
+                .filter(provider -> linked.stream().noneMatch(identity -> identity.provider().equals(provider))).toList();
+        if (!unlinked.isEmpty()) {
+            pageContent.add(h2("Add another sign-in method").withClass("ygl-section-title ygl-section-title--spaced"));
+            pageContent.add(p(user.password() == null
+                    ? "Confirm one of your linked accounts first, then you can connect another provider to this account."
+                    : "Link only accounts you control. Confirm with your current password to add a provider."));
+            for (String provider : unlinked) {
+                pageContent.add(action(request, "link", provider, "Link " + FederatedProviders.label(provider),
+                        user.password() != null));
             }
+        } else if (providers.enabled().isEmpty()) {
+            pageContent.add(p("No external sign-in providers are currently available.")
+                    .withClass("ygl-sign-in-methods__notice"));
         }
-        content.add(a("Challenge Tracker").withHref("/challenge"));
+        if (linked.size() == 1 && user.password() == null && !canAddProvider) {
+            pageContent.add(p("This is your only sign-in method. It cannot be removed until you add another way to access your account.")
+                    .withClass("ygl-sign-in-methods__notice").attr("role", "status"));
+        }
+        content.add(div().withClass("container ygl-page").with(
+                div().withClass("row justify-content-center").with(
+                        div().withClass("col-lg-9 ygl-sign-in-methods").with(pageContent))));
         response.setContentType("text/html;charset=UTF-8");
         response.setHeader("Cache-Control", "no-store");
         new YorkshireGolfPageTemplate().withRequest(request).withTitle("Sign-in methods — Yorkshire Golf Life")
-                .withBody(div().withClass("container ygl-page").with(content)).render(response.getWriter());
+                .withBody(content.toArray(DomContent[]::new))
+                .render(response.getWriter());
     }
 
     @PostMapping("/{action}/{provider}")
@@ -123,13 +158,24 @@ public class AccountController {
         return usable.equals(List.of("apple"));
     }
 
+    private boolean canUnlink(GolfUser user, ExternalIdentityService.Identity target,
+                              List<ExternalIdentityService.Identity> linked) {
+        return user.password() != null || linked.stream()
+                .filter(identity -> !identity.provider().equals(target.provider()))
+                .anyMatch(identity -> providers.enabled().contains(identity.provider()));
+    }
+
     private DomContent action(HttpServletRequest request, String action, String provider, String label, boolean password) {
-        return form().withMethod("post").withAction("/account/" + action + "/" + provider).attr("hx-boost", "false").with(
-                CsrfUtil.csrfInput(request),
-                password ? label("Current password").with(input().withType("password").withName("password")
-                        .attr("autocomplete", "current-password").attr("required")) : text(""),
-                label().with(input().withType("checkbox").withName("confirmed").withValue("true").attr("required"),
-                        text(" I confirm this change")),
-                button(label).withType("submit").withClass("btn btn-primary mb-3"));
+        return form().withMethod("post").withAction("/account/" + action + "/" + provider)
+                .attr("hx-boost", "false").withClass("ygl-sign-in-action").with(
+                        CsrfUtil.csrfInput(request),
+                        password ? label("Current password").withClass("ygl-sign-in-action__password").with(
+                                input().withType("password").withName("password").withClass("form-control")
+                                        .attr("autocomplete", "current-password").attr("required")) : text(""),
+                        label().withClass("form-check ygl-sign-in-action__confirm").with(
+                                input().withType("checkbox").withName("confirmed").withValue("true")
+                                        .withClass("form-check-input").attr("required"),
+                                span("I confirm this change").withClass("form-check-label")),
+                        button(label).withType("submit").withClass("btn ygl-btn ygl-btn--outline"));
     }
 }

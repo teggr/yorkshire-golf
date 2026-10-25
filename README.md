@@ -113,6 +113,7 @@ following environment variables through the existing deployment environment:
 | Google | `AUTH_GOOGLE_ENABLED=true` | `AUTH_GOOGLE_CLIENT_ID` | `AUTH_GOOGLE_CLIENT_SECRET` |
 | Apple | `AUTH_APPLE_ENABLED=true` | `AUTH_APPLE_CLIENT_ID` | `AUTH_APPLE_CLIENT_SECRET` |
 | Facebook | `AUTH_FACEBOOK_ENABLED=true` | `AUTH_FACEBOOK_CLIENT_ID` | `AUTH_FACEBOOK_CLIENT_SECRET` |
+| X | `AUTH_X_ENABLED=true` | `AUTH_X_CLIENT_ID` | `AUTH_X_CLIENT_SECRET` |
 
 Apple's secret is the signed JWT described below, not the downloaded private key.
 An enabled provider requires both credentials; malformed configuration fails
@@ -121,6 +122,12 @@ startup without printing secret values. The underlying Spring properties are
 `APP_BASE_URL` supplies the trusted public origin used for callbacks: HTTPS in
 production, or HTTP loopback for local Google/Facebook development where accepted
 by the provider. Restart after changing credentials or enable flags.
+
+Email/password registration is disabled by default and is not available on the
+live site. To create a local test account for linking-provider tests, set
+`AUTH_LOCAL_REGISTRATION_ENABLED=true` in the same local shell as
+`APP_BASE_URL=http://localhost:8080`, then restart the app. The app rejects
+enabling this option for non-loopback origins. Turn it off after testing.
 
 Visit `/account` while signed in to manage sign-in methods. Local accounts confirm
 changes using their current password. Accounts without a password first confirm
@@ -139,6 +146,7 @@ Register the exact callback URL, including scheme, host and path:
 * Google: `https://yorkshiregolf.life/login/oauth2/code/google`
 * Apple: `https://yorkshiregolf.life/login/oauth2/code/apple`
 * Facebook: `https://yorkshiregolf.life/login/oauth2/code/facebook`
+* X: `https://yorkshiregolf.life/login/oauth2/code/x`
 
 If using `www` or a staging hostname, register that exact hostname instead and
 set `APP_BASE_URL` consistently. Do not use wildcard callbacks or derive public
@@ -147,7 +155,11 @@ callbacks from an untrusted Host header.
 **Google:** In [Google Auth Platform](https://console.cloud.google.com/auth/overview),
 configure the consent screen, audience/test users and a Web application OAuth
 client. Add the callback as an authorized redirect URI. Authentication needs only
-`openid`, not Gmail, Contacts or other Google APIs.
+the `openid` and `email` scopes, not Gmail, Contacts or other Google APIs. The
+verified email claim is checked transiently to prevent a first-time Google sign-in
+from creating a second account when that email already belongs to an existing
+account; it is not stored from the Google profile. The member must sign in using
+their existing method and link Google from Sign-in methods.
 
 **Apple:** Follow Apple's
 [web configuration guide](https://developer.apple.com/help/account/capabilities/configure-sign-in-with-apple-for-the-web/).
@@ -176,6 +188,11 @@ obtain the App ID and App Secret. Use development-mode test users before publish
 Only the application-scoped user ID is needed; do not request email or retrieve
 names/photos. Check Meta's current publishing, privacy-policy and data-deletion
 requirements before enabling public login.
+
+**X:** In the [X Developer Portal](https://developer.x.com/en/portal/dashboard),
+enable OAuth 2.0 for a Web App, configure the exact callback URL above, and set
+the Client ID and Client Secret. Request only `users.read`; authorization uses
+PKCE and the profile lookup stores only the X account ID.
 
 Never place credentials, authorization codes, access/ID tokens, raw provider
 responses or provider email addresses into logs, screenshots, support tickets or

@@ -47,7 +47,11 @@ class OidcProtocolTest {
     private static volatile String facebookSubject;
     private static volatile String facebookAuthorization;
     private static volatile String facebookQuery;
+    private static volatile String xSubject;
+    private static volatile String xAuthorization;
+    private static volatile String xQuery;
     private static volatile String tokenRequestBody;
+    private static volatile String tokenAuthorization;
     static {
         try {
             KEY = new RSAKeyGenerator(2048).keyID("test-key").generate();
@@ -61,6 +65,7 @@ class OidcProtocolTest {
                 exchange.close();
             });
             SERVER.createContext("/token", exchange -> {
+                tokenAuthorization = exchange.getRequestHeaders().getFirst("Authorization");
                 tokenRequestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 byte[] bytes = ("{\"access_token\":\"test-access-token-do-not-save\",\"token_type\":\"Bearer\","
                         + "\"expires_in\":3600,\"id_token\":\"" + idToken + "\"}").getBytes(StandardCharsets.UTF_8);
@@ -74,6 +79,17 @@ class OidcProtocolTest {
                 facebookQuery = exchange.getRequestURI().getRawQuery();
                 byte[] bytes = ("{\"id\":\"" + facebookSubject
                         + "\",\"email\":\"ignored-provider-email@example.com\",\"name\":\"Ignored name\"}")
+                        .getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, bytes.length);
+                exchange.getResponseBody().write(bytes);
+                exchange.close();
+            });
+            SERVER.createContext("/x-me", exchange -> {
+                xAuthorization = exchange.getRequestHeaders().getFirst("Authorization");
+                xQuery = exchange.getRequestURI().getRawQuery();
+                byte[] bytes = ("{\"data\":{\"id\":\"" + xSubject
+                        + "\",\"name\":\"Ignored X name\",\"username\":\"ignored_x_username\"}}")
                         .getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders().set("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, bytes.length);
@@ -100,7 +116,10 @@ class OidcProtocolTest {
                     .withProperty("golf.auth.apple.client-secret", FederatedProvidersTest.appleSecret())
                     .withProperty("golf.auth.facebook.enabled", "true")
                     .withProperty("golf.auth.facebook.client-id", "test-client")
-                    .withProperty("golf.auth.facebook.client-secret", "test-secret")) {
+                    .withProperty("golf.auth.facebook.client-secret", "test-secret")
+                    .withProperty("golf.auth.x.enabled", "true")
+                    .withProperty("golf.auth.x.client-id", "test-client")
+                    .withProperty("golf.auth.x.client-secret", "test-secret")) {
                 @Override public ClientRegistration registration(String provider) {
                     ClientRegistration original = super.registration(provider);
                     if (original == null) return null;
@@ -108,7 +127,13 @@ class OidcProtocolTest {
                             .authorizationUri(ISSUER + "/authorize")
                             .tokenUri(ISSUER + "/token")
                             .jwkSetUri(ISSUER + "/jwks")
-                            .userInfoUri("facebook".equals(provider) ? ISSUER + "/me?fields=id" : null)
+                            .userInfoUri(switch (provider) {
+                                case "facebook" -> ISSUER + "/me?fields=id";
+                                case "x" -> ISSUER + "/x-me?user.fields=id";
+                                default -> null;
+                            })
+                            .userNameAttributeName("x".equals(provider) ? "data" : original.getProviderDetails()
+                                    .getUserInfoEndpoint().getUserNameAttributeName())
                             .issuerUri(ISSUER).build();
                 }
             };
@@ -147,6 +172,31 @@ class OidcProtocolTest {
     }
 
     @Test
+    void googleSignInWithVerifiedEmailForExistingPasswordAccountDoesNotCreateAnotherAccount() throws Exception {
+        GolfUser existing = local();
+        int before = users.findAll().size();
+        var start = start();
+        assertThat(start.parameters().get("scope")).isEqualTo("openid email");
+        String subject = "google-" + UUID.randomUUID();
+        var original = SignedJWT.parse(token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject));
+        var jwt = new SignedJWT(original.getHeader(), new JWTClaimsSet.Builder(original.getJWTClaimsSet())
+                .claim("email", existing.email()).claim("email_verified", true).build());
+        jwt.sign(new RSASSASigner(KEY));
+        idToken = jwt.serialize();
+
+        mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?existing=true"));
+
+        assertThat(users.findAll()).hasSize(before);
+        assertThat(identities.find("google", subject)).isEmpty();
+        mvc.perform(get("/login").param("existing", "true"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "Sign in with your existing method first, then go to Sign-in methods and link Google")));
+    }
+
+    @Test
     void rejectsWrongNonceIssuerAudienceExpiredAndInvalidSignatureWithoutCreatingAccounts() throws Exception {
         for (String invalid : List.of("nonce", "issuer", "audience", "expired", "signature")) {
             int before = users.findAll().size();
@@ -180,6 +230,21 @@ class OidcProtocolTest {
                 .andExpect(redirectedUrl("/login?error=true"));
         assertThat(users.findAll()).hasSize(before);
         assertThat(start.session().isInvalid()).isTrue();
+    }
+
+    @Test
+    void providerCancellationDuringLinkingKeepsTheExistingAccountSession() throws Exception {
+        GolfUser user = local();
+        var start = startAction(user, "link", "password");
+        var result = mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("error", "access_denied"))
+                .andExpect(redirectedUrl("/account?error=true")).andReturn();
+        assertThat(start.session().isInvalid()).isFalse();
+        assertThat(identities.list(user.id())).isEmpty();
+        assertThat(result.getRequest().getSession().getAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)).isNotNull();
+        mvc.perform(get("/account").session(start.session()))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -235,6 +300,33 @@ class OidcProtocolTest {
     }
 
     @Test
+    void xOAuthUsesPkceAndOnlyPersistsTheReturnedAccountId() throws Exception {
+        xSubject = "x-" + UUID.randomUUID();
+        var result = mvc.perform(get("/oauth2/authorization/x")).andReturn();
+        assertThat(result.getResponse().getRedirectedUrl())
+                .contains("scope=users.read", "code_challenge=", "code_challenge_method=S256")
+                .doesNotContain("email", "tweet.read");
+        var start = parseStart(result);
+        var callback = mvc.perform(get("/login/oauth2/code/x").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andReturn();
+        assertThat(xAuthorization).as("X user-info authorization").isEqualTo("Bearer test-access-token-do-not-save");
+        assertThat(xQuery).as("X user-info fields").isEqualTo("user.fields=id");
+        assertThat(callback.getResponse().getRedirectedUrl()).isEqualTo("/challenge");
+        assertThat(tokenAuthorization).isEqualTo("Basic " + Base64.getEncoder()
+                .encodeToString("test-client:test-secret".getBytes(StandardCharsets.UTF_8)));
+        assertThat(tokenRequestBody).contains("code_verifier=");
+        GolfUser user = users.findById(identities.find("x", xSubject).orElseThrow().userId()).orElseThrow();
+        assertThat(tokenRequestBody).contains("code_verifier=");
+        assertThat(user.email()).isNull();
+        assertThat(user.password()).isNull();
+        for (String name : Collections.list(callback.getRequest().getSession().getAttributeNames())) {
+            assertThat(callback.getRequest().getSession().getAttribute(name).toString())
+                    .doesNotContain("Ignored X name", "ignored_x_username", "test-access-token");
+        }
+    }
+
+    @Test
     void explicitLinkUsesExistingLocalAccountAndRejectsProviderIdentityOwnedElsewhere() throws Exception {
         GolfUser user = local();
         int before = users.findAll().size();
@@ -253,7 +345,7 @@ class OidcProtocolTest {
         idToken = token(otherStart.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject);
         mvc.perform(get("/login/oauth2/code/google").session(otherStart.session())
                         .param("state", otherStart.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/login?error=true"));
+                .andExpect(redirectedUrl("/account?error=true"));
         assertThat(identities.find("google", subject).orElseThrow().userId()).isEqualTo(user.id());
     }
 
@@ -278,7 +370,7 @@ class OidcProtocolTest {
         idToken = token(wrong.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, "different-provider-account");
         mvc.perform(get("/login/oauth2/code/google").session(wrong.session())
                         .param("state", wrong.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/login?error=true"));
+                .andExpect(redirectedUrl("/account?error=true"));
     }
 
     @Test
@@ -345,11 +437,11 @@ class OidcProtocolTest {
         idToken = token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, attackerSubject);
         mvc.perform(post("/login/oauth2/code/apple").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/login?error=true"));
-        assertThat(start.session().isInvalid()).isTrue();
+                .andExpect(redirectedUrl("/account?error=true"));
+        assertThat(start.session().isInvalid()).isFalse();
         assertThat(users.findAll()).hasSize(before);
-        mvc.perform(post("/account/link/google").with(user(new LocalPrincipal(owner.id())))
-                        .with(csrf()).param("confirmed", "true"))
+        mvc.perform(post("/account/link/google").session(start.session()).with(csrf())
+                        .param("confirmed", "true"))
                 .andExpect(redirectedUrl("/account?error=true"));
     }
 
@@ -388,7 +480,12 @@ class OidcProtocolTest {
     void providerButtonsUseLocalBrandAssetsAndAccessibleProviderLabels() throws Exception {
         var result = mvc.perform(get("/login")).andExpect(status().isOk()).andReturn();
         var page = org.jsoup.Jsoup.parse(result.getResponse().getContentAsString());
-        for (String provider : List.of("google", "apple", "facebook")) {
+        assertThat(page.selectFirst(".ygl-auth-transition").text())
+                .contains("A note from", "@yorkshiregolflife", "keep your data safe",
+                        "existing members", "Sign-in methods", "New accounts must use");
+        assertThat(page.selectFirst(".ygl-auth-transition a[href='https://www.instagram.com/yorkshiregolflife/']"))
+                .isNotNull();
+        for (String provider : List.of("google", "apple", "facebook", "x")) {
             String label = "Continue with " + FederatedProviders.label(provider);
             var button = page.selectFirst("a[href='/oauth2/authorization/" + provider + "']");
             assertThat(button).isNotNull();
@@ -411,11 +508,22 @@ class OidcProtocolTest {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in:focus-visible")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--google")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--apple")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--facebook")));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--facebook")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".ygl-provider-sign-in--x")));
     }
 
     @Test
-    void linkingRejectsStaleProviderAuthenticationEvenWithValidFreshAuthorizationCode() throws Exception {
+    void registrationRequiresAnEnabledFederatedProvider() throws Exception {
+        var result = mvc.perform(get("/register")).andExpect(status().isOk()).andReturn();
+        var page = org.jsoup.Jsoup.parse(result.getResponse().getContentAsString());
+        assertThat(page.text()).contains("New accounts must be created using one of these sign-in providers");
+        assertThat(page.select("a[href='/oauth2/authorization/x']")).hasSize(1);
+        assertThat(page.select("form[action='/register']")).isEmpty();
+        assertThat(page.select("input[type=email]")).isEmpty();
+    }
+
+    @Test
+    void linkingAcceptsFreshGoogleAuthorizationWhenAuthTimeIsStale() throws Exception {
         GolfUser user = local();
         var start = startAction(user, "link", "password");
         var original = SignedJWT.parse(token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY));
@@ -423,10 +531,33 @@ class OidcProtocolTest {
                 .claim("auth_time", Instant.now().minusSeconds(600).getEpochSecond()).build());
         jwt.sign(new RSASSASigner(KEY));
         idToken = jwt.serialize();
+        var result = mvc.perform(get("/login/oauth2/code/google").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/account?success=linked")).andReturn();
+        assertThat(identities.find("google", SignedJWT.parse(idToken).getJWTClaimsSet().getSubject())
+                .orElseThrow().userId()).isEqualTo(user.id());
+        assertThat(start.session().isInvalid()).isFalse();
+        assertThat(result.getRequest().getSession().getAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)).isNotNull();
+        mvc.perform(get("/account").session(start.session()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void googleReauthenticationStillRequiresRecentAuthenticationTime() throws Exception {
+        GolfUser user = local();
+        String subject = "reauth-" + UUID.randomUUID();
+        identities.link(user.id(), "google", subject);
+        var start = startAction(user, "reauthenticate", null);
+        var original = SignedJWT.parse(token(start.parameters().get("nonce"), ISSUER, "test-client", 600, KEY, subject));
+        var jwt = new SignedJWT(original.getHeader(), new JWTClaimsSet.Builder(original.getJWTClaimsSet())
+                .claim("auth_time", Instant.now().minusSeconds(600).getEpochSecond()).build());
+        jwt.sign(new RSASSASigner(KEY));
+        idToken = jwt.serialize();
         mvc.perform(get("/login/oauth2/code/google").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/login?error=true"));
-        assertThat(identities.list(user.id())).isEmpty();
+                .andExpect(redirectedUrl("/account?error=true"));
+        assertThat(identities.find("google", subject).orElseThrow().userId()).isEqualTo(user.id());
     }
 
     @Test

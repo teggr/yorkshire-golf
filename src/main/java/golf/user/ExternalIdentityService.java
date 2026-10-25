@@ -93,7 +93,7 @@ public class ExternalIdentityService {
     }
 
     private void validate(String provider, String subject) {
-        if (!List.of("google", "apple", "facebook").contains(provider)
+        if (!List.of("google", "apple", "facebook", "x").contains(provider)
                 || subject == null || subject.isBlank() || subject.length() > 255) {
             throw new IllegalArgumentException("Invalid identity");
         }

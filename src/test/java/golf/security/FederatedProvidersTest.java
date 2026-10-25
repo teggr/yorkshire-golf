@@ -40,8 +40,28 @@ class FederatedProvidersTest {
         FederatedProviders providers = new FederatedProviders(environment("https://golf.example"));
         var google = providers.registration("google");
         assertThat(google.getRedirectUri()).isEqualTo("https://golf.example/login/oauth2/code/google");
-        assertThat(google.getScopes()).containsExactly("openid");
+        assertThat(google.getScopes()).containsExactly("openid", "email");
         assertThat(google.getProviderDetails().getIssuerUri()).isEqualTo("https://accounts.google.com");
+    }
+
+    @Test
+    void xUsesOAuth2WithOnlyTheIdentityScope() {
+        var providers = new FederatedProviders(environment("https://golf.example")
+                .withProperty("golf.auth.x.enabled", "true")
+                .withProperty("golf.auth.x.client-id", "x-client")
+                .withProperty("golf.auth.x.client-secret", "x-secret"));
+        var x = providers.registration("x");
+        assertThat(x.getRedirectUri()).isEqualTo("https://golf.example/login/oauth2/code/x");
+        assertThat(x.getProviderDetails().getAuthorizationUri()).isEqualTo("https://twitter.com/i/oauth2/authorize");
+        assertThat(x.getProviderDetails().getTokenUri()).isEqualTo("https://api.twitter.com/2/oauth2/token");
+        assertThat(x.getScopes()).containsExactly("users.read");
+        assertThat(x.getClientAuthenticationMethod()).isEqualTo(
+                org.springframework.security.oauth2.core.ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        assertThat(x.getProviderDetails().getUserInfoEndpoint().getUri())
+                .isEqualTo("https://api.twitter.com/2/users/me?user.fields=id");
+        assertThat(x.getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName()).isEqualTo("data");
+        assertThat(providers.enabled()).contains("x");
+        assertThat(FederatedProviders.label("x")).isEqualTo("X");
     }
 
     @Test

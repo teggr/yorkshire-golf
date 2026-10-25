@@ -2,44 +2,56 @@ package golf.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class RegisterControllerTest {
+    private final UserService userService = mock(UserService.class);
 
     @Test
-    void duplicateEmailShowsErrorAndDoesNotRegister() {
-        UserService userService = mock(UserService.class);
-        RegisterController controller = new RegisterController(userService);
-        Model model = new ExtendedModelMap();
-
-        when(userService.emailExists("user@example.com")).thenReturn(true);
-
-        String view = controller.register("user@example.com", "GolfClub99", "GolfClub99", model);
-
-        assertThat(view).isEqualTo("registerPage");
-        assertThat(model.getAttribute("error")).isEqualTo("An account with that email address already exists.");
-        verify(userService, never()).register("user@example.com", "GolfClub99");
+    void localRegistrationIsDisabledByDefault() {
+        var controller = new RegisterController(userService, new LocalRegistration(false, "http://localhost:8080"));
+        assertThat(controller.register("new@example.com", "GolfClub99", "GolfClub99", new ExtendedModelMap()))
+                .isEqualTo("redirect:/register?providerRequired=true");
+        verifyNoInteractions(userService);
     }
 
     @Test
-    void duplicateEmailRaisedDuringRegisterShowsSameError() {
-        UserService userService = mock(UserService.class);
-        RegisterController controller = new RegisterController(userService);
-        Model model = new ExtendedModelMap();
+    void localRegistrationCreatesEmailPasswordAccount() {
+        var controller = new RegisterController(userService, new LocalRegistration(true, "http://localhost:8080"));
+        when(userService.emailExists("new@example.com")).thenReturn(false);
 
-        when(userService.emailExists("user@example.com")).thenReturn(false);
-        org.mockito.Mockito.when(userService.register("user@example.com", "GolfClub99"))
-                .thenThrow(new DuplicateEmailException("user@example.com"));
+        assertThat(controller.register("new@example.com", "GolfClub99", "GolfClub99", new ExtendedModelMap()))
+                .isEqualTo("redirect:/login?registered=true");
+        verify(userService).register("new@example.com", "GolfClub99");
+    }
 
-        String view = controller.register("user@example.com", "GolfClub99", "GolfClub99", model);
+    @Test
+    void localRegistrationValidatesPasswordConfirmationAndPolicy() {
+        var controller = new RegisterController(userService, new LocalRegistration(true, "http://localhost:8080"));
+        var model = new ExtendedModelMap();
 
-        assertThat(view).isEqualTo("registerPage");
+        assertThat(controller.register("new@example.com", "GolfClub99", "does-not-match", model))
+                .isEqualTo("registerPage");
+        assertThat(model.getAttribute("error")).isEqualTo("Passwords do not match.");
+        verifyNoInteractions(userService);
+    }
+
+    @Test
+    void localRegistrationHandlesDuplicateEmails() {
+        var controller = new RegisterController(userService, new LocalRegistration(true, "http://localhost:8080"));
+        when(userService.emailExists("new@example.com")).thenReturn(true);
+        var model = new ExtendedModelMap();
+
+        assertThat(controller.register("new@example.com", "GolfClub99", "GolfClub99", model))
+                .isEqualTo("registerPage");
         assertThat(model.getAttribute("error")).isEqualTo("An account with that email address already exists.");
+    }
+
+    @Test
+    void localRegistrationRejectsNonLoopbackOrigin() {
+        assertThatThrownBy(() -> new LocalRegistration(true, "https://yorkshiregolf.life"))
+                .isInstanceOf(IllegalStateException.class).hasMessageContaining("APP_BASE_URL");
     }
 }

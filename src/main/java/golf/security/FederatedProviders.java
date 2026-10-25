@@ -20,7 +20,7 @@ public class FederatedProviders {
 
     public FederatedProviders(Environment environment) {
         baseUrl = environment.getProperty("golf.app.base-url", "http://localhost:8080").replaceAll("/$", "");
-        for (String provider : List.of("google", "apple", "facebook")) {
+        for (String provider : List.of("google", "apple", "facebook", "x")) {
             if (!environment.getProperty("golf.auth." + provider + ".enabled", Boolean.class, false)) continue;
             validateOrigin(baseUrl);
             String prefix = "golf.auth." + provider;
@@ -29,12 +29,13 @@ public class FederatedProviders {
             ClientRegistration.Builder builder = ClientRegistration.withRegistrationId(provider)
                     .clientId(id).clientSecret(secret).clientName(label(provider))
                     .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                    .clientAuthenticationMethod("x".equals(provider)
+                            ? ClientAuthenticationMethod.CLIENT_SECRET_BASIC : ClientAuthenticationMethod.CLIENT_SECRET_POST)
                     .clientSettings(ClientRegistration.ClientSettings.builder()
-                            .requireProofKey("google".equals(provider)).build())
+                            .requireProofKey("google".equals(provider) || "x".equals(provider)).build())
                     .redirectUri(baseUrl + "/login/oauth2/code/" + provider);
             switch (provider) {
-                case "google" -> builder.scope("openid")
+                case "google" -> builder.scope("openid", "email")
                         .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
                         .tokenUri("https://oauth2.googleapis.com/token")
                         .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
@@ -56,6 +57,12 @@ public class FederatedProviders {
                         .userInfoUri("https://graph.facebook.com/v23.0/me?fields=id")
                         .userInfoAuthenticationMethod(org.springframework.security.oauth2.core.AuthenticationMethod.HEADER)
                         .userNameAttributeName("id");
+                case "x" -> builder.scope("users.read")
+                        .authorizationUri("https://twitter.com/i/oauth2/authorize")
+                        .tokenUri("https://api.twitter.com/2/oauth2/token")
+                        .userInfoUri("https://api.twitter.com/2/users/me?user.fields=id")
+                        .userInfoAuthenticationMethod(org.springframework.security.oauth2.core.AuthenticationMethod.HEADER)
+                        .userNameAttributeName("data");
                 default -> throw new IllegalStateException();
             }
             registrations.put(provider, builder.build());
@@ -70,6 +77,7 @@ public class FederatedProviders {
             case "google" -> "Google";
             case "apple" -> "Apple";
             case "facebook" -> "Facebook";
+            case "x" -> "X";
             default -> throw new IllegalArgumentException("Unknown provider");
         };
     }

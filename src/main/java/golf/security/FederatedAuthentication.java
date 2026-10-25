@@ -14,17 +14,21 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.web.*;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.List;
@@ -32,6 +36,7 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 public class FederatedAuthentication {
     private static final String CALLBACK_FLOW = FederatedAuthentication.class.getName();
+    private static final Logger log = LoggerFactory.getLogger(FederatedAuthentication.class);
     private final FederatedProviders providers;
     private final ExternalIdentityService identities;
     private final UserService users;
@@ -79,6 +84,7 @@ public class FederatedAuthentication {
                 return customize(request, delegate.resolve(request, id));
             }
         };
+        var oauth2UserService = new DefaultOAuth2UserService();
         http.oauth2Login(oauth -> oauth
                 .loginPage("/login")
                 .withObjectPostProcessor(new org.springframework.security.config.ObjectPostProcessor<OAuth2AuthorizationRequestRedirectFilter>() {
@@ -92,6 +98,16 @@ public class FederatedAuthentication {
                 .authorizationEndpoint(endpoint -> endpoint
                         .authorizationRequestResolver(resolver)
                         .authorizationRequestRepository(authorizationRequests()))
+                .userInfoEndpoint(endpoint -> endpoint.userService(request -> {
+                    OAuth2User remote = oauth2UserService.loadUser(request);
+                    if (!"x".equals(request.getClientRegistration().getRegistrationId())) return remote;
+                    Object profile = remote.getAttribute("data");
+                    if (!(profile instanceof java.util.Map<?, ?> attributes)
+                            || !(attributes.get("id") instanceof String subject) || subject.isBlank()) {
+                        throw invalid();
+                    }
+                    return new DefaultOAuth2User(remote.getAuthorities(), java.util.Map.of("id", subject), "id");
+                }))
                 .successHandler(success())
                 .failureHandler(failure()));
     }
@@ -124,7 +140,9 @@ public class FederatedAuthentication {
                         parameters.put("max_age", "0");
                     }
                 });
-        if ("google".equals(provider)) OAuth2AuthorizationRequestCustomizers.withPkce().accept(builder);
+        if ("google".equals(provider) || "x".equals(provider)) {
+            OAuth2AuthorizationRequestCustomizers.withPkce().accept(builder);
+        }
         return builder.build();
     }
 
@@ -175,7 +193,8 @@ public class FederatedAuthentication {
                 Object pending = request.getAttribute(CALLBACK_FLOW);
                 if (pending instanceof FederatedFlow flow) {
                     if (!flow.valid() || !provider.equals(flow.provider())) throw invalid();
-                    if ("google".equals(provider) && principal instanceof OidcUser oidc) {
+                    if ("reauthenticate".equals(flow.action()) && "google".equals(provider)
+                            && principal instanceof OidcUser oidc) {
                         Instant authenticatedAt = oidc.getAuthenticatedAt();
                         if (authenticatedAt == null || authenticatedAt.isBefore(flow.expiresAt().minusSeconds(360))) {
                             throw invalid();
@@ -190,6 +209,19 @@ public class FederatedAuthentication {
                         guard.confirmed(user.id(), request.getSession());
                     }
                 } else {
+                    if ("google".equals(provider) && principal instanceof OidcUser oidc
+                            && Boolean.TRUE.equals(oidc.getClaims().get("email_verified"))) {
+                        String email = oidc.getClaimAsString("email");
+                        if (email != null && identities.find(provider, subject).isEmpty()
+                                && users.findByEmail(email).isPresent()) {
+                            log.info("Blocked a new Google identity because its verified email is already registered");
+                            SecurityContextHolder.clearContext();
+                            var session = request.getSession(false);
+                            if (session != null) session.invalidate();
+                            response.sendRedirect("/login?existing=true");
+                            return;
+                        }
+                    }
                     user = identities.login(provider, subject);
                 }
                 var local = UsernamePasswordAuthenticationToken.authenticated(new LocalPrincipal(user.id()), null,
@@ -204,6 +236,7 @@ public class FederatedAuthentication {
                                 : "apple".equals(provider) ? "confirmed" : "reauthenticated")
                         : "/challenge");
             } catch (RuntimeException ex) {
+                log.warn("Federated authentication callback processing failed", ex);
                 failure().onAuthenticationFailure(request, response, invalid());
             }
         };
@@ -211,11 +244,30 @@ public class FederatedAuthentication {
 
     AuthenticationFailureHandler failure() {
         return (request, response, exception) -> {
+            if (restoreAccountAfterFailedFlow(request, response)) return;
             SecurityContextHolder.clearContext();
             var session = request.getSession(false);
             if (session != null) session.invalidate();
             response.sendRedirect("/login?error=true");
         };
+    }
+
+    private boolean restoreAccountAfterFailedFlow(HttpServletRequest request, HttpServletResponse response)
+            throws java.io.IOException {
+        if (!(request.getAttribute(CALLBACK_FLOW) instanceof FederatedFlow flow) || !flow.valid()) return false;
+        var session = request.getSession(false);
+        var user = users.findById(flow.userId()).filter(account -> !account.accountLocked()).orElse(null);
+        if (session == null || user == null) return false;
+
+        session.removeAttribute(FederatedFlow.SESSION_KEY);
+        var local = UsernamePasswordAuthenticationToken.authenticated(new LocalPrincipal(user.id()), null,
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.role())));
+        var context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(local);
+        SecurityContextHolder.setContext(context);
+        new HttpSessionSecurityContextRepository().saveContext(context, request, response);
+        response.sendRedirect("/account?error=true");
+        return true;
     }
 
     private static OAuth2AuthenticationException invalid() {

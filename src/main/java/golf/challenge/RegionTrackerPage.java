@@ -107,6 +107,24 @@ public class RegionTrackerPage implements View {
             )
           )
         ),
+        iff(canAddRound,
+          div().withClass("container ygl-page").with(
+            div().withClass("row").with(
+            div().withClass("col-12").with(
+              div().withClass("alert alert-info ygl-auth-transition").attr("role", "status").with(
+                text("A note from "),
+                a("@yorkshiregolflife on Instagram")
+                  .withHref("https://www.instagram.com/yorkshiregolflife/")
+                  .attr("target", "_blank").attr("rel", "noopener noreferrer"),
+                text(": we're moving sign-in to trusted providers to help keep your data safe. "
+                  + "You can keep using your current sign-in and link another provider to this account. "),
+                a("Manage sign-in methods").withHref("/account"),
+                text(" to connect Facebook, X, Apple, or Google. New accounts must use one of those providers.")
+              )
+            )
+            )
+          )
+        ),
         // Chart
         div().withClass("container ygl-page").with(
           div().withClass("row g-4 ygl-infographics-row").with(
