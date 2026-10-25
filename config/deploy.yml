@@ -17,12 +17,15 @@ env:
     MAIL_USERNAME: resend
     MAIL_FROM: noreply@email.yorkshiregolf.life
     APP_BASE_URL: https://yorkshiregolf.life
+    AUTH_GOOGLE_ENABLED: true
     MAIL_SMTP_AUTH: true
     MAIL_SMTP_STARTTLS_ENABLE: true
     MAIL_SMTP_STARTTLS_REQUIRED: true
   secret:
     - GOOGLE_MAPS_API_KEY
     - MAIL_PASSWORD
+    - AUTH_GOOGLE_CLIENT_ID
+    - AUTH_GOOGLE_CLIENT_SECRET
 registry:
   username:
     - DOCKER_USERNAME

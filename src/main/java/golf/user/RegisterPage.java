@@ -16,6 +16,13 @@ import static j2html.TagCreator.*;
 
 @Component
 public class RegisterPage implements View {
+    private final golf.security.FederatedProviders providers;
+    private final LocalRegistration localRegistration;
+
+    public RegisterPage(golf.security.FederatedProviders providers, LocalRegistration localRegistration) {
+        this.providers = providers;
+        this.localRegistration = localRegistration;
+    }
 
     @Override
     public @Nullable String getContentType() {
@@ -24,10 +31,13 @@ public class RegisterPage implements View {
 
     @Override
     public void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        boolean providerRequired = Boolean.TRUE.equals(model.get("providerRequired"));
+        boolean localRegistrationEnabled = localRegistration.enabled()
+                && Boolean.TRUE.equals(model.get("localRegistrationEnabled"));
         String errorMessage = (String) model.get("error");
-        String emailValue = model.get("email") != null ? (String) model.get("email") : "";
-                response.setContentType(MediaType.TEXT_HTML_VALUE);
-                response.setCharacterEncoding("UTF-8");
+        String emailValue = model.get("email") instanceof String email ? email : "";
+        response.setContentType(MediaType.TEXT_HTML_VALUE);
+        response.setCharacterEncoding("UTF-8");
 
         new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Register — Yorkshire Golf Life")
@@ -42,32 +52,59 @@ public class RegisterPage implements View {
                                 div().withClass("row justify-content-center").with(
                                         div().withClass("col-md-8 col-lg-6").with(
                                                 errorMessage != null
-                                                        ? div(errorMessage).withClass("alert alert-danger")
+                                                        ? div(errorMessage).withClass("alert alert-danger").attr("role", "alert")
                                                         : text(""),
-                                                form().withMethod("post").withAction("/register").with(
-                                                        CsrfUtil.csrfInput(request),
-                                                        div().withClass("mb-3").with(
-                                                                label("Email address").withFor("email").withClass("form-label"),
-                                                                input().withType("email").withId("email").withName("email")
-                                                                        .withValue(emailValue)
-                                                                        .withClass("form-control").attr("required", "")
-                                                        ),
-                                                        div().withClass("mb-3").with(
-                                                                label("Password").withFor("password").withClass("form-label"),
-                                                                input().withType("password").withId("password").withName("password")
-                                                                        .withClass("form-control").attr("required", "")
-                                                                        .attr("minlength", "8")
-                                                                        .attr("pattern", "[A-Za-z0-9]+")
-                                                                        .attr("title", "Letters and numbers only, at least 8 characters"),
-                                                                div("Must be at least 8 characters, using letters and numbers only.").withClass("form-text")
-                                                        ),
-                                                        div().withClass("mb-3").with(
-                                                                label("Confirm Password").withFor("confirmPassword").withClass("form-label"),
-                                                                input().withType("password").withId("confirmPassword").withName("confirmPassword")
-                                                                        .withClass("form-control").attr("required", "")
-                                                        ),
-                                                        button("Create Account").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100 mb-3")
-                                                ),
+                                                providerRequired
+                                                        ? div("New accounts must be created using one of these sign-in providers.")
+                                                                .withClass("alert alert-info").attr("role", "status")
+                                                        : text(""),
+                                                localRegistrationEnabled
+                                                        ? div("Local testing only: email and password registration is enabled. "
+                                                                + "This option is restricted to localhost and is not available on the live site.")
+                                                                .withClass("alert alert-warning").attr("role", "status")
+                                                        : p("New accounts must be created using one of these sign-in providers to help keep your data safe. "
+                                                                + "Choose an available provider below; your account will be created when you sign in."),
+                                                div().with(each(providers.enabled(), provider ->
+                                                        a().with(
+                                                                        img().withSrc("/images/auth/" + provider + ".svg").withAlt("")
+                                                                                .attr("aria-hidden", "true").attr("width", "20").attr("height", "20"),
+                                                                        span("Continue with " + golf.security.FederatedProviders.label(provider)))
+                                                                .withHref("/oauth2/authorization/" + provider)
+                                                                .attr("aria-label", "Continue with " + golf.security.FederatedProviders.label(provider))
+                                                                .attr("hx-boost", "false")
+                                                                .withClass("ygl-provider-sign-in ygl-provider-sign-in--" + provider))),
+                                                providers.enabled().isEmpty()
+                                                        && !localRegistrationEnabled
+                                                        ? p("No sign-in providers are available right now. Please check back soon.")
+                                                        : text(""),
+                                                localRegistrationEnabled
+                                                        ? form().withMethod("post").withAction("/register").with(
+                                                                CsrfUtil.csrfInput(request),
+                                                                div().withClass("mb-3").with(
+                                                                        label("Email address").withFor("email").withClass("form-label"),
+                                                                        input().withType("email").withId("email").withName("email")
+                                                                                .withValue(emailValue).withClass("form-control")
+                                                                                .attr("autocomplete", "email").attr("required", "")
+                                                                ),
+                                                                div().withClass("mb-3").with(
+                                                                        label("Password").withFor("password").withClass("form-label"),
+                                                                        input().withType("password").withId("password").withName("password")
+                                                                                .withClass("form-control").attr("required", "")
+                                                                                .attr("minlength", "8").attr("pattern", "[A-Za-z0-9]+")
+                                                                                .attr("title", "Letters and numbers only, at least 8 characters"),
+                                                                        div("Must be at least 8 characters, using letters and numbers only.")
+                                                                                .withClass("form-text")
+                                                                ),
+                                                                div().withClass("mb-3").with(
+                                                                        label("Confirm Password").withFor("confirmPassword").withClass("form-label"),
+                                                                        input().withType("password").withId("confirmPassword")
+                                                                                .withName("confirmPassword").withClass("form-control")
+                                                                                .attr("autocomplete", "new-password").attr("required", "")
+                                                                ),
+                                                                button("Create Account").withType("submit")
+                                                                        .withClass("btn ygl-btn ygl-btn--primary w-100 mb-3")
+                                                        )
+                                                        : text(""),
                                                 div().withClass("text-center").with(
                                                         p().with(
                                                                 text("Already have an account? "),

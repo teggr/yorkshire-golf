@@ -94,6 +94,11 @@ class RegionTrackerPageTest {
         assertTrue(html.contains("ygl-share-banner"));
         assertTrue(html.contains("courseName,date"));
         assertTrue(html.contains("bulk-import"));
+        assertTrue(html.contains("ygl-auth-transition"));
+        assertTrue(html.contains("A note from"));
+        assertTrue(html.contains("href=\"/account\""));
+        assertTrue(html.contains("Manage sign-in methods"));
+        assertTrue(html.contains("class=\"ygl-btn ygl-btn--primary ygl-btn--sm\""));
     }
 
     @Test
