@@ -98,6 +98,7 @@ class RegionTrackerPageTest {
         assertTrue(html.contains("A note from"));
         assertTrue(html.contains("href=\"/account\""));
         assertTrue(html.contains("Manage sign-in methods"));
+        assertTrue(html.contains("class=\"ygl-btn ygl-btn--primary ygl-btn--sm\""));
     }
 
     @Test
