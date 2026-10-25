@@ -632,6 +632,192 @@ img {
   box-shadow: var(--ygl-shadow-xs);
 }
 
+/* ---------- Provider sign-in branding ---------- */
+.ygl-provider-sign-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.ygl-provider-sign-in img {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.ygl-provider-sign-in--google {
+  background: #fff;
+  border-color: #747775;
+  color: #1f1f1f;
+  font-weight: 500;
+}
+
+.ygl-provider-sign-in--google img {
+  width: 18px;
+  height: 18px;
+}
+
+.ygl-provider-sign-in--google:hover {
+  background: #f8faff;
+  color: #1f1f1f;
+}
+
+.ygl-provider-sign-in--apple {
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-size: 17px;
+}
+
+.ygl-provider-sign-in--apple:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.ygl-provider-sign-in--facebook {
+  background: #0866ff;
+  color: #fff;
+  font-size: 16px;
+}
+
+.ygl-provider-sign-in--facebook:hover {
+  background: #0757d8;
+  color: #fff;
+}
+
+.ygl-provider-sign-in--x {
+  background: #000;
+  color: #fff;
+}
+
+.ygl-provider-sign-in--x:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.ygl-provider-sign-in:focus-visible {
+  outline: 3px solid #8a6500;
+  outline-offset: 3px;
+}
+
+.ygl-sign-in-methods {
+  max-width: 900px;
+}
+
+.ygl-sign-in-methods .ygl-section-title {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+}
+
+.ygl-sign-in-methods .ygl-section-title--spaced {
+  margin-top: 36px;
+}
+
+.ygl-sign-in-methods__notice {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border: 1px solid var(--ygl-color-border);
+  border-radius: var(--ygl-radius-md);
+  background: var(--ygl-color-bg-alt);
+}
+
+.ygl-sign-in-method-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 12px;
+  padding: 20px 24px;
+  border: 1px solid var(--ygl-color-border);
+  border-radius: var(--ygl-radius-md);
+  background: var(--ygl-color-bg-white);
+  box-shadow: var(--ygl-shadow-xs);
+}
+
+.ygl-sign-in-method-card__identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ygl-sign-in-method-card__identity img {
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.ygl-sign-in-method-card__title {
+  margin: 0 0 4px;
+  font-family: var(--ygl-font-body);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.ygl-sign-in-method-card__status {
+  margin: 0;
+  color: var(--ygl-color-green-soft);
+  font-size: 0.875rem;
+}
+
+.ygl-sign-in-method-card__status--muted {
+  color: var(--ygl-color-text-muted);
+}
+
+.ygl-sign-in-method-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.ygl-sign-in-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ygl-sign-in-action__password {
+  width: min(100%, 260px);
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.ygl-sign-in-action__confirm {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.ygl-sign-in-action .ygl-btn {
+  margin: 0;
+}
+
+@media (max-width: 767.98px) {
+  .ygl-sign-in-method-card {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .ygl-sign-in-method-card__actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
 /* clickable card link wrapper */
 /* ---------- ygl-btn ---------- */
 .ygl-btn {
@@ -1378,4 +1564,3 @@ img {
     font-size: 2rem;
   }
 }
-

@@ -1,6 +1,9 @@
 package golf.user;
 
 import golf.email.EmailService;
+import golf.security.LocalPrincipal;
+import java.security.Principal;
+import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,6 +62,14 @@ public class UserService {
 
     public Optional<GolfUser> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Optional<GolfUser> findByPrincipal(Principal principal) {
+        if (principal instanceof Authentication authentication
+                && authentication.getPrincipal() instanceof LocalPrincipal local) {
+            return findById(local.userId());
+        }
+        return principal == null ? Optional.empty() : findByEmail(principal.getName());
     }
 
     /**

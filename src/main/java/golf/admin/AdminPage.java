@@ -55,7 +55,7 @@ public class AdminPage implements View {
                                                 tbody().with(
                                                         each(users, user ->
                                                                 tr().with(
-                                                                        td(user.email()),
+                                                                        td(user.email() != null ? user.email() : "External account #" + user.id()),
                                                                         td(user.role()),
                                                                         td(user.accountLocked() ? "LOCKED" : "Active"),
                                                                         td().with(
