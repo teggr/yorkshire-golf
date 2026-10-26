@@ -115,6 +115,11 @@ following environment variables through the existing deployment environment:
 | Facebook | `AUTH_FACEBOOK_ENABLED=true` | `AUTH_FACEBOOK_CLIENT_ID` | `AUTH_FACEBOOK_CLIENT_SECRET` |
 | X | `AUTH_X_ENABLED=true` | `AUTH_X_CLIENT_ID` | `AUTH_X_CLIENT_SECRET` |
 
+Facebook and Apple sign-in are currently disabled in the production deployment.
+Facebook is not enabled because Yorkshire Golf Life does not have a registered
+business, and Apple is not enabled because Apple Developer Program membership
+costs £80 per year.
+
 Apple's secret is the signed JWT described below, not the downloaded private key.
 An enabled provider requires both credentials; malformed configuration fails
 startup without printing secret values. The underlying Spring properties are

@@ -96,8 +96,6 @@ jobs:
         GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY
         AUTH_GOOGLE_CLIENT_ID=$AUTH_GOOGLE_CLIENT_ID
         AUTH_GOOGLE_CLIENT_SECRET=$AUTH_GOOGLE_CLIENT_SECRET
-        AUTH_FACEBOOK_CLIENT_ID=$AUTH_FACEBOOK_CLIENT_ID
-        AUTH_FACEBOOK_CLIENT_SECRET=$AUTH_FACEBOOK_CLIENT_SECRET
         EOF
 
     # deploy application using deploy4j
@@ -111,8 +109,6 @@ jobs:
         GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
         AUTH_GOOGLE_CLIENT_ID: ${{ secrets.AUTH_GOOGLE_CLIENT_ID }}
         AUTH_GOOGLE_CLIENT_SECRET: ${{ secrets.AUTH_GOOGLE_CLIENT_SECRET }}
-        AUTH_FACEBOOK_CLIENT_ID: ${{ secrets.AUTH_FACEBOOK_CLIENT_ID }}
-        AUTH_FACEBOOK_CLIENT_SECRET: ${{ secrets.AUTH_FACEBOOK_CLIENT_SECRET }}
       run: jbang --java 21 dev.deploy4j:deploy4j-cli:0.0.6 deploy --version ${{ steps.set_release_version.outputs.release_version }}
 
     # tag release

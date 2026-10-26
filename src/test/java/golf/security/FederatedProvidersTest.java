@@ -20,6 +20,17 @@ class FederatedProvidersTest {
     }
 
     @Test
+    void explicitlyDisabledProviderIsNotRegisteredEvenWithCredentials() {
+        var providers = new FederatedProviders(new MockEnvironment()
+                .withProperty("golf.auth.facebook.enabled", "false")
+                .withProperty("golf.auth.facebook.client-id", "client")
+                .withProperty("golf.auth.facebook.client-secret", "secret"));
+
+        assertThat(providers.enabled()).doesNotContain("facebook");
+        assertThat(providers.registration("facebook")).isNull();
+    }
+
+    @Test
     void enablingProviderWithoutCredentialsFailsClearly() {
         assertThatThrownBy(() -> new FederatedProviders(new MockEnvironment()
                 .withProperty("golf.auth.google.enabled", "true")))
