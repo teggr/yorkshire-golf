@@ -137,11 +137,16 @@ Linking starts a new provider authorization
 flow; it does not replace another link or match accounts by email. Removing the
 last usable sign-in method is rejected, including when other linked providers
 are disabled. Sensitive operations are rate-limited.
+Users can permanently delete their account and all recorded rounds from
+Sign-in methods after confirming with their password or a linked provider.
+Deletion removes the account data from the live database; backup copies, if any,
+may remain under infrastructure retention processes.
 
 ## Provider console setup
 
-Use separate applications and credentials for development/staging and production.
-Register the exact callback URL, including scheme, host and path:
+Prefer separate applications and credentials for development/staging and production
+where the provider supports them. Register the exact callback URL, including scheme,
+host and path:
 
 * Google: `https://yorkshiregolf.life/login/oauth2/code/google`
 * Apple: `https://yorkshiregolf.life/login/oauth2/code/apple`
@@ -183,11 +188,22 @@ callback can recover its original session; otherwise cookies use `SameSite=Lax`.
 
 **Facebook:** Create a suitable application in
 [Meta for Developers](https://developers.facebook.com/apps/), enable Facebook
-Login for the web, configure the site domain and Valid OAuth Redirect URI, and
-obtain the App ID and App Secret. Use development-mode test users before publishing.
-Only the application-scoped user ID is needed; do not request email or retrieve
-names/photos. Check Meta's current publishing, privacy-policy and data-deletion
-requirements before enabling public login.
+Login for the web, configure the site domain and production Valid OAuth Redirect
+URI, and obtain the App ID and App Secret. Use the `AUTH_FACEBOOK_*` environment
+variables for local testing and production secrets; never commit the credentials.
+The same Meta app can serve local testing and production. In Development mode,
+Meta automatically allows the localhost callback; the app uses
+`http://localhost:8080/login/oauth2/code/facebook` locally.
+Request `public_profile` and `email`. The Facebook email, when supplied, is
+checked transiently to prevent accidental duplicate accounts; it is not stored
+and never links accounts automatically. Only the application-scoped Facebook
+user ID is stored. No name or profile photo is requested or stored. The public
+privacy and data-deletion URLs are
+`https://yorkshiregolf.life/privacy` and
+`https://yorkshiregolf.life/data-deletion`. Keep Meta's app in Development mode
+while testing. Before public login, make sure the deployed site is accessible to
+reviewers, complete Meta's App Review requirements for public users, and switch
+the app to Live only after approval.
 
 **X:** In the [X Developer Portal](https://developer.x.com/en/portal/dashboard),
 enable OAuth 2.0 for a Web App, configure the exact callback URL above, and set

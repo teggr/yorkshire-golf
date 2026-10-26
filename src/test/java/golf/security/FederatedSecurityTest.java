@@ -37,6 +37,10 @@ class FederatedSecurityTest {
     @Autowired ExternalIdentityService identities;
     @Autowired FederatedAuthentication federated;
     @Autowired PasswordEncoder passwords;
+    @Autowired UserRoundRepository rounds;
+    @Autowired PasswordResetTokenRepository resetTokens;
+    @Autowired AccountActionGuard accountActionGuard;
+    @Autowired ForgotPasswordRateLimiter forgotPasswordRateLimiter;
 
     @Test
     void loginListsOnlyEnabledProvidersAndUsesFixedCallbackDespiteHostHeader() throws Exception {
@@ -52,6 +56,8 @@ class FederatedSecurityTest {
     @Test
     void csrfProtectsManagementAndApplePostCallback() throws Exception {
         mvc.perform(post("/account/link/google").with(user("user@example.com")))
+                .andExpect(status().isForbidden());
+        mvc.perform(post("/account/delete").with(user("user@example.com")))
                 .andExpect(status().isForbidden());
         mvc.perform(post("/login/oauth2/code/apple").param("code", "unsolicited").param("state", "bad"))
                 .andExpect(status().isForbidden());
@@ -119,10 +125,11 @@ class FederatedSecurityTest {
         assertThat(page.selectFirst(".ygl-page-header h1").text()).isEqualTo("Sign-in methods");
         assertThat(page.select(".ygl-sign-in-method-card")).hasSize(1);
         assertThat(page.select(".ygl-sign-in-method-card").text()).contains("Google", "Linked");
-        assertThat(page.select("form[action='/account/unlink/google'], form[action='/account/reauthenticate/google'], "
-                + "form[action='/account/link/google']")).isEmpty();
+        assertThat(page.select("form[action='/account/unlink/google'], form[action='/account/link/google']")).isEmpty();
+        assertThat(page.select("form[action='/account/reauthenticate/google']")).hasSize(1);
+        assertThat(page.select("form[action='/account/delete']")).hasSize(1);
         assertThat(page.selectFirst(".ygl-sign-in-methods__notice").text())
-                .contains("only sign-in method", "cannot be removed");
+                .contains("only sign-in method", "cannot be unlinked");
     }
 
     @Test
@@ -168,11 +175,80 @@ class FederatedSecurityTest {
                 "linked", "Sign-in method linked successfully.",
                 "unlinked", "Sign-in method unlinked successfully.",
                 "confirmed", "Account change confirmed for this session. You can now finish one change within five minutes.",
-                "reauthenticated", "Identity confirmed. You can now add or remove a sign-in method.").entrySet()) {
+                "reauthenticated", "Identity confirmed. You can now change a sign-in method or delete your account.").entrySet()) {
             mvc.perform(get("/account").with(user(new LocalPrincipal(user.id()))).param("success", message.getKey()))
                     .andExpect(status().isOk())
                     .andExpect(content().string(org.hamcrest.Matchers.containsString(message.getValue())));
         }
+    }
+
+    @Test
+    void accountPageExplainsDeletionAndRequiresRecentProviderConfirmation() throws Exception {
+        GolfUser user = identities.login("google", "google-" + UUID.randomUUID());
+        var result = mvc.perform(get("/account").with(user(new LocalPrincipal(user.id()))))
+                .andExpect(status().isOk()).andReturn();
+        var page = org.jsoup.Jsoup.parse(result.getResponse().getContentAsString());
+
+        assertThat(page.select("form[action='/account/delete']")).hasSize(1);
+        assertThat(page.select("form[action='/account/delete']").text())
+                .contains("I understand this permanently deletes my account and all golf rounds");
+        assertThat(page.select("form[action='/account/reauthenticate/google']")).hasSize(1);
+        assertThat(page.text()).contains("Confirm your identity with one of your linked sign-in providers");
+    }
+
+    @Test
+    void accountDeletionRequiresPasswordConfirmationAndDeletesAccountData() throws Exception {
+        GolfUser user = local();
+        identities.link(user.id(), "facebook", "facebook-" + UUID.randomUUID());
+        rounds.save(user.id(), "Alwoodley", "2026-10-24");
+        resetTokens.save(user.id(), "reset-token-for-deletion");
+        for (int i = 0; i < 3; i++) {
+            assertThat(forgotPasswordRateLimiter.allow(user.email())).isTrue();
+        }
+        assertThat(forgotPasswordRateLimiter.allow(user.email())).isFalse();
+
+        mvc.perform(post("/account/delete").with(user(new LocalPrincipal(user.id()))).with(csrf())
+                        .param("confirmed", "true").param("password", "wrong-password"))
+                .andExpect(redirectedUrl("/account?error=true"));
+        assertThat(users.findById(user.id())).isPresent();
+        assertThat(identities.list(user.id())).hasSize(1);
+        assertThat(rounds.findByUserId(user.id())).hasSize(1);
+        assertThat(resetTokens.findByToken("reset-token-for-deletion")).isPresent();
+
+        var result = mvc.perform(post("/account/delete").with(user(new LocalPrincipal(user.id()))).with(csrf())
+                        .param("confirmed", "true").param("password", "correct-password"))
+                .andExpect(redirectedUrl("/login?deleted=true")).andReturn();
+
+        assertThat(users.findById(user.id())).isEmpty();
+        assertThat(identities.list(user.id())).isEmpty();
+        assertThat(rounds.findByUserId(user.id())).isEmpty();
+        assertThat(resetTokens.findByToken("reset-token-for-deletion")).isEmpty();
+        assertThat(forgotPasswordRateLimiter.allow(user.email())).isTrue();
+        assertThat(result.getRequest().getSession(false)).isNull();
+    }
+
+    @Test
+    void passwordlessAccountDeletionRequiresRecentProviderConfirmation() throws Exception {
+        GolfUser user = identities.login("google", "google-" + UUID.randomUUID());
+        MockHttpSession session = new MockHttpSession();
+
+        mvc.perform(post("/account/delete").session(session).with(user(new LocalPrincipal(user.id()))).with(csrf())
+                        .param("confirmed", "true"))
+                .andExpect(redirectedUrl("/account?error=true"));
+        assertThat(users.findById(user.id())).isPresent();
+
+        accountActionGuard.confirmed(user.id(), session);
+        mvc.perform(post("/account/delete").session(session).with(user(new LocalPrincipal(user.id()))).with(csrf())
+                        .param("confirmed", "true"))
+                .andExpect(redirectedUrl("/login?deleted=true"));
+        assertThat(users.findById(user.id())).isEmpty();
+    }
+
+    @Test
+    void loginConfirmsWhenAccountWasDeleted() throws Exception {
+        mvc.perform(get("/login").param("deleted", "true"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Your account and golf rounds have been deleted.")));
     }
 
     private GolfUser local() {

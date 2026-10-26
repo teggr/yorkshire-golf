@@ -18,6 +18,7 @@ env:
     MAIL_FROM: noreply@email.yorkshiregolf.life
     APP_BASE_URL: https://yorkshiregolf.life
     AUTH_GOOGLE_ENABLED: true
+    AUTH_FACEBOOK_ENABLED: true
     MAIL_SMTP_AUTH: true
     MAIL_SMTP_STARTTLS_ENABLE: true
     MAIL_SMTP_STARTTLS_REQUIRED: true
@@ -26,6 +27,8 @@ env:
     - MAIL_PASSWORD
     - AUTH_GOOGLE_CLIENT_ID
     - AUTH_GOOGLE_CLIENT_SECRET
+    - AUTH_FACEBOOK_CLIENT_ID
+    - AUTH_FACEBOOK_CLIENT_SECRET
 registry:
   username:
     - DOCKER_USERNAME

@@ -188,11 +188,11 @@ public class YorkshireGolfPageTemplate {
                         div().withClass("ygl-footer__top").with(
                                 div().withClass("container").with(
                                         div().withClass("row g-4").with(
-                                                div().withClass("col-lg-4").with(
+                                                div().withClass("col-lg-3").with(
                                                         div().withClass("ygl-footer__brand").with(text("Yorkshire Golf Life")),
                                                         p("Celebrating Yorkshire's exceptional golfing heritage").withClass("ygl-footer__tagline")
                                                 ),
-                                                div().withClass("col-6 col-lg-2").with(
+                                                div().withClass("col-6 col-lg-3").with(
                                                         div().withClass("ygl-footer__heading").with(text("Explore")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(a("Home").withHref("/")),
@@ -204,13 +204,13 @@ public class YorkshireGolfPageTemplate {
                                                                 
                                                         )
                                                 ),
-                                                div().withClass("col-6 col-lg-3").with(
+                                                div().withClass("col-6 col-lg-2").with(
                                                         div().withClass("ygl-footer__heading").with(text("Challenge")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(a("#yorkshiregolfchallenge").withHref("/challenge"))
                                                         )
                                                 ),
-                                                div().withClass("col-6 col-lg-3").with(
+                                                div().withClass("col-6 col-lg-2").with(
                                                         div().withClass("ygl-footer__heading").with(text("Socials")),
                                                         ul().withClass("ygl-footer__link-list").with(
                                                                 li().with(
@@ -222,6 +222,13 @@ public class YorkshireGolfPageTemplate {
                                                                                         text("@yorkshiregolflife")
                                                                                 )
                                                                 )
+                                                        )
+                                                ),
+                                                div().withClass("col-6 col-lg-2").with(
+                                                        div().withClass("ygl-footer__heading").with(text("Legal")),
+                                                        ul().withClass("ygl-footer__link-list").with(
+                                                                li().with(a("Privacy").withHref("/privacy")),
+                                                                li().with(a("Data deletion").withHref("/data-deletion"))
                                                         )
                                                 )
                                         )

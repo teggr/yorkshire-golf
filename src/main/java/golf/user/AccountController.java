@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import j2html.tags.DomContent;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +24,19 @@ public class AccountController {
     private final ExternalIdentityService identities;
     private final FederatedProviders providers;
     private final AccountActionGuard guard;
+    private final AccountDeletionService accountDeletion;
+    private final ForgotPasswordRateLimiter forgotPasswordRateLimiter;
 
     public AccountController(UserService users, ExternalIdentityService identities,
-                             FederatedProviders providers, AccountActionGuard guard) {
+                             FederatedProviders providers, AccountActionGuard guard,
+                             AccountDeletionService accountDeletion,
+                             ForgotPasswordRateLimiter forgotPasswordRateLimiter) {
         this.users = users;
         this.identities = identities;
         this.providers = providers;
         this.guard = guard;
+        this.accountDeletion = accountDeletion;
+        this.forgotPasswordRateLimiter = forgotPasswordRateLimiter;
     }
 
     @GetMapping
@@ -48,14 +55,14 @@ public class AccountController {
         String message = success == null ? null : switch (success) {
             case "linked" -> "Sign-in method linked successfully.";
             case "unlinked" -> "Sign-in method unlinked successfully.";
-            case "reauthenticated" -> "Identity confirmed. You can now add or remove a sign-in method.";
+            case "reauthenticated" -> "Identity confirmed. You can now change a sign-in method or delete your account.";
             case "confirmed" -> "Account change confirmed for this session. You can now finish one change within five minutes.";
             default -> null;
         };
         List<DomContent> pageContent = new ArrayList<>();
         if (message != null) pageContent.add(p(message).withClass("alert alert-success").attr("role", "status"));
         if (request.getParameter("error") != null) pageContent.add(
-                p("The sign-in provider could not verify this change. No sign-in method was changed; you remain signed in. Please try again.")
+                p("This account change could not be confirmed. No change was made; please try again.")
                         .withClass("alert alert-danger").attr("role", "alert"));
         if (user.password() != null) pageContent.add(p("Email and password sign-in is also available.")
                 .withClass("ygl-sign-in-methods__notice"));
@@ -66,7 +73,7 @@ public class AccountController {
             String provider = identity.provider();
             boolean available = providers.enabled().contains(provider);
             boolean canUnlink = canUnlink(user, identity, linked);
-            boolean canConfirm = user.password() == null && available && (canAddProvider || canUnlink);
+            boolean canConfirm = user.password() == null && available;
             List<DomContent> actions = new ArrayList<>();
             if (canConfirm) {
                 actions.add(action(request, "reauthenticate", provider, "Confirm with " + FederatedProviders.label(provider), false));
@@ -101,9 +108,31 @@ public class AccountController {
                     .withClass("ygl-sign-in-methods__notice"));
         }
         if (linked.size() == 1 && user.password() == null && !canAddProvider) {
-            pageContent.add(p("This is your only sign-in method. It cannot be removed until you add another way to access your account.")
+            pageContent.add(p("This is your only sign-in method, so it cannot be unlinked while keeping your account. You can still delete the full account below.")
                     .withClass("ygl-sign-in-methods__notice").attr("role", "status"));
         }
+        pageContent.add(h2("Delete account").withClass("ygl-section-title ygl-section-title--spaced"));
+        pageContent.add(p("Permanently delete your account, linked sign-in methods, tracker, and all recorded golf rounds. This cannot be undone.")
+                .withClass("ygl-sign-in-methods__notice"));
+        if (user.password() == null) {
+            pageContent.add(p("Confirm your identity with one of your linked sign-in providers before deleting your account.")
+                    .withClass("ygl-sign-in-methods__notice"));
+        }
+        pageContent.add(form().withMethod("post").withAction("/account/delete")
+                .attr("hx-boost", "false").withClass("ygl-sign-in-action").with(
+                        CsrfUtil.csrfInput(request),
+                        user.password() != null
+                                ? label("Current password").withClass("ygl-sign-in-action__password").with(
+                                        input().withType("password").withName("password").withClass("form-control")
+                                                .attr("autocomplete", "current-password").attr("required"))
+                                : text(""),
+                        label().withClass("form-check ygl-sign-in-action__confirm").with(
+                                input().withType("checkbox").withName("confirmed").withValue("true")
+                                        .withClass("form-check-input").attr("required"),
+                                span("I understand this permanently deletes my account and all golf rounds.")
+                                        .withClass("form-check-label")),
+                        button("Delete my account").withType("submit").withClass("btn btn-danger")
+                ));
         content.add(div().withClass("container ygl-page").with(
                 div().withClass("row justify-content-center").with(
                         div().withClass("col-lg-9 ygl-sign-in-methods").with(pageContent))));
@@ -144,6 +173,27 @@ public class AccountController {
         } catch (RuntimeException ex) {
             return "redirect:/account?error=true";
         }
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam(defaultValue = "false") boolean confirmed,
+                         @RequestParam(required = false) String password,
+                         Authentication authentication, HttpServletRequest request) {
+        try {
+            GolfUser user = current(authentication);
+            guard.rateLimit(user.id());
+            if (!confirmed) throw new IllegalArgumentException();
+            guard.requireConfirmation(user, password, request.getSession());
+            accountDeletion.delete(user.id());
+            guard.forget(user.id());
+            forgotPasswordRateLimiter.forget(user.email());
+        } catch (IllegalArgumentException ex) {
+            return "redirect:/account?error=true";
+        }
+        SecurityContextHolder.clearContext();
+        var session = request.getSession(false);
+        if (session != null) session.invalidate();
+        return "redirect:/login?deleted=true";
     }
 
     private GolfUser current(Authentication authentication) {

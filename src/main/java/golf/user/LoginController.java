@@ -15,6 +15,7 @@ public class LoginController {
             @RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "existing", required = false) String existing,
             @RequestParam(value = "registered", required = false) String registered,
+            @RequestParam(value = "deleted", required = false) String deleted,
             Model model
     ) {
         if (error != null) {
@@ -22,9 +23,17 @@ public class LoginController {
         }
         if (existing != null) {
             model.addAttribute("existing", true);
+            model.addAttribute("existingProvider", switch (existing) {
+                case "facebook" -> "Facebook";
+                case "google", "true" -> "Google";
+                default -> "your provider";
+            });
         }
         if (registered != null) {
             model.addAttribute("registered", true);
+        }
+        if (deleted != null) {
+            model.addAttribute("deleted", true);
         }
         return "loginPage";
     }

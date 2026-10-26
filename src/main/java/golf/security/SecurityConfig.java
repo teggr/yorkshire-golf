@@ -49,6 +49,7 @@ public class SecurityConfig {
                     "/challenge/**",
                         "/register/**", "/login/**", "/forgot-password/**",
                         "/oauth2/authorization/**", "/login/oauth2/code/**",
+                        "/privacy", "/data-deletion",
                         "/css/**", "/images/**", "/js/**",
                         "/actuator/**",
                         "/sitemap.xml", "/robots.txt"

@@ -60,6 +60,31 @@ class PublicPagesSecurityTest {
     }
 
     @Test
+    void privacyPolicyIsPubliclyAccessible() throws Exception {
+        mockMvc.perform(get("/privacy"))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                        .string(org.hamcrest.Matchers.allOf(
+                                org.hamcrest.Matchers.containsString("Privacy at Yorkshire Golf Life"),
+                                org.hamcrest.Matchers.containsString("Facebook, Google, Apple or X"),
+                                org.hamcrest.Matchers.containsString("We are actively moving away from email-and-password accounts"),
+                                org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("public_profile")),
+                                org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("one-way password hash")),
+                                org.hamcrest.Matchers.containsString("robin@tegg.me.uk"))));
+    }
+
+    @Test
+    void dataDeletionInstructionsArePubliclyAccessible() throws Exception {
+        mockMvc.perform(get("/data-deletion"))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                        .string(org.hamcrest.Matchers.allOf(
+                                org.hamcrest.Matchers.containsString("Delete your Yorkshire Golf Life account"),
+                                org.hamcrest.Matchers.containsString("Backup copies, if any"),
+                                org.hamcrest.Matchers.containsString("robin@tegg.me.uk"))));
+    }
+
+    @Test
     void teeTimesNearMeIsPubliclyAccessible() throws Exception {
         mockMvc.perform(get("/tee-times-near-me"))
                 .andExpect(status().is3xxRedirection());
