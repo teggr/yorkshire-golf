@@ -45,6 +45,7 @@ class OidcProtocolTest {
     private static final String ISSUER;
     private static volatile String idToken;
     private static volatile String facebookSubject;
+    private static volatile String facebookEmail;
     private static volatile String facebookAuthorization;
     private static volatile String facebookQuery;
     private static volatile String xSubject;
@@ -77,9 +78,10 @@ class OidcProtocolTest {
             SERVER.createContext("/me", exchange -> {
                 facebookAuthorization = exchange.getRequestHeaders().getFirst("Authorization");
                 facebookQuery = exchange.getRequestURI().getRawQuery();
-                byte[] bytes = ("{\"id\":\"" + facebookSubject
-                        + "\",\"email\":\"ignored-provider-email@example.com\",\"name\":\"Ignored name\"}")
-                        .getBytes(StandardCharsets.UTF_8);
+                String profile = "{\"id\":\"" + facebookSubject + "\""
+                        + (facebookEmail == null ? "" : ",\"email\":\"" + facebookEmail + "\"")
+                        + ",\"name\":\"Ignored name\"}";
+                byte[] bytes = profile.getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders().set("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, bytes.length);
                 exchange.getResponseBody().write(bytes);
@@ -128,7 +130,7 @@ class OidcProtocolTest {
                             .tokenUri(ISSUER + "/token")
                             .jwkSetUri(ISSUER + "/jwks")
                             .userInfoUri(switch (provider) {
-                                case "facebook" -> ISSUER + "/me?fields=id";
+                                case "facebook" -> ISSUER + "/me?fields=id,email";
                                 case "x" -> ISSUER + "/x-me?user.fields=id";
                                 default -> null;
                             })
@@ -186,11 +188,11 @@ class OidcProtocolTest {
 
         mvc.perform(get("/login/oauth2/code/google").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
-                .andExpect(redirectedUrl("/login?existing=true"));
+                .andExpect(redirectedUrl("/login?existing=google"));
 
         assertThat(users.findAll()).hasSize(before);
         assertThat(identities.find("google", subject)).isEmpty();
-        mvc.perform(get("/login").param("existing", "true"))
+        mvc.perform(get("/login").param("existing", "google"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString(
                         "Sign in with your existing method first, then go to Sign-in methods and link Google")));
@@ -279,24 +281,61 @@ class OidcProtocolTest {
     }
 
     @Test
-    void facebookOAuthUsesOnlyAppScopedIdAndNeverPersistsReturnedEmailOrName() throws Exception {
+    void facebookOAuthRequestsEmailButNeverPersistsItOrTheProfileName() throws Exception {
         facebookSubject = "facebook-" + UUID.randomUUID();
+        facebookEmail = "ignored-provider-email@example.com";
         var result = mvc.perform(get("/oauth2/authorization/facebook")).andReturn();
-        assertThat(result.getResponse().getRedirectedUrl()).contains("scope=public_profile", "auth_type=reauthenticate")
-                .doesNotContain("email", "code_challenge");
+        assertThat(parseStart(result).parameters().get("scope")).isEqualTo("public_profile email");
+        assertThat(result.getResponse().getRedirectedUrl()).contains("auth_type=reauthenticate")
+                .doesNotContain("code_challenge");
         var start = parseStart(result);
         var callback = mvc.perform(get("/login/oauth2/code/facebook").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
                 .andExpect(redirectedUrl("/challenge")).andReturn();
         GolfUser user = users.findById(identities.find("facebook", facebookSubject).orElseThrow().userId()).orElseThrow();
         assertThat(facebookAuthorization).isEqualTo("Bearer " + "test-access-token-do-not-save");
-        assertThat(facebookQuery).isEqualTo("fields=id");
+        assertThat(facebookQuery).isEqualTo("fields=id,email");
         assertThat(user.email()).isNull();
         assertThat(user.password()).isNull();
         for (String name : Collections.list(callback.getRequest().getSession().getAttributeNames())) {
             assertThat(callback.getRequest().getSession().getAttribute(name).toString())
                     .doesNotContain("ignored-provider-email", "Ignored name", "test-access-token");
         }
+    }
+
+    @Test
+    void facebookSignInWithEmailForExistingAccountDoesNotCreateAnotherAccount() throws Exception {
+        GolfUser existing = local();
+        int before = users.findAll().size();
+        facebookSubject = "facebook-" + UUID.randomUUID();
+        facebookEmail = existing.email();
+
+        var result = mvc.perform(get("/oauth2/authorization/facebook")).andReturn();
+        var start = parseStart(result);
+        mvc.perform(get("/login/oauth2/code/facebook").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/login?existing=facebook"));
+
+        assertThat(users.findAll()).hasSize(before);
+        assertThat(identities.find("facebook", facebookSubject)).isEmpty();
+        mvc.perform(get("/login").param("existing", "facebook"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "Sign in with your existing method first, then go to Sign-in methods and link Facebook")));
+    }
+
+    @Test
+    void facebookSignInWithoutAnEmailCanStillCreateAnAccount() throws Exception {
+        facebookSubject = "facebook-" + UUID.randomUUID();
+        facebookEmail = null;
+        var result = mvc.perform(get("/oauth2/authorization/facebook")).andReturn();
+        var start = parseStart(result);
+        mvc.perform(get("/login/oauth2/code/facebook").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/challenge"));
+        GolfUser user = users.findById(identities.find("facebook", facebookSubject).orElseThrow().userId())
+                .orElseThrow();
+        assertThat(user.email()).isNull();
     }
 
     @Test

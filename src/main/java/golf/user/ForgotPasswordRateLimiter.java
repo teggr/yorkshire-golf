@@ -52,6 +52,13 @@ public class ForgotPasswordRateLimiter {
         }
     }
 
+    public void forget(String email) {
+        String normalizedEmail = normalize(email);
+        if (normalizedEmail != null) {
+            requestsByEmail.remove(normalizedEmail);
+        }
+    }
+
     private String normalize(String email) {
         if (email == null) {
             return null;

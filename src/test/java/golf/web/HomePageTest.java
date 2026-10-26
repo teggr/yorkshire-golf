@@ -14,6 +14,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HomePageTest {
 
     @Test
+    void footerTopIncludesPrivacyAndDataDeletionLinks() throws Exception {
+        var request = new org.springframework.mock.web.MockHttpServletRequest();
+        var response = new org.springframework.mock.web.MockHttpServletResponse();
+        new YorkshireGolfPageTemplate().withRequest(request).withTitle("Test").render(response.getWriter());
+
+        var page = org.jsoup.Jsoup.parse(response.getContentAsString());
+        assertTrue(page.select(".ygl-footer__top a[href='/privacy']").text().contains("Privacy"));
+        assertTrue(page.select(".ygl-footer__top a[href='/data-deletion']").text().contains("Data deletion"));
+    }
+
+    @Test
     void renderShowsRegionCardsWithRandomCourseDetailsAndAnchoredBrowseLinks() throws Exception {
         HomePage homePage = new HomePage();
 

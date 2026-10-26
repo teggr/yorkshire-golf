@@ -49,4 +49,8 @@ public class AccountActionGuard {
     public void confirmed(Long userId, HttpSession session) {
         session.setAttribute(RECENT, new Recent(userId, Instant.now().plusSeconds(300)));
     }
+
+    public void forget(Long userId) {
+        attempts.remove(userId);
+    }
 }

@@ -209,18 +209,21 @@ public class FederatedAuthentication {
                         guard.confirmed(user.id(), request.getSession());
                     }
                 } else {
+                    String email = null;
                     if ("google".equals(provider) && principal instanceof OidcUser oidc
                             && Boolean.TRUE.equals(oidc.getClaims().get("email_verified"))) {
-                        String email = oidc.getClaimAsString("email");
-                        if (email != null && identities.find(provider, subject).isEmpty()
-                                && users.findByEmail(email).isPresent()) {
-                            log.info("Blocked a new Google identity because its verified email is already registered");
-                            SecurityContextHolder.clearContext();
-                            var session = request.getSession(false);
-                            if (session != null) session.invalidate();
-                            response.sendRedirect("/login?existing=true");
-                            return;
-                        }
+                        email = oidc.getClaimAsString("email");
+                    } else if ("facebook".equals(provider)) {
+                        email = principal.getAttribute("email");
+                    }
+                    if (email != null && identities.find(provider, subject).isEmpty()
+                            && users.findByEmail(email).isPresent()) {
+                        log.info("Blocked a new {} identity because its provider email is already registered", provider);
+                        SecurityContextHolder.clearContext();
+                        var session = request.getSession(false);
+                        if (session != null) session.invalidate();
+                        response.sendRedirect("/login?existing=" + provider);
+                        return;
                     }
                     user = identities.login(provider, subject);
                 }

@@ -51,10 +51,10 @@ public class FederatedProviders {
                             .issuerUri("https://appleid.apple.com")
                             .userNameAttributeName("sub");
                 }
-                case "facebook" -> builder.scope("public_profile")
+                case "facebook" -> builder.scope("public_profile", "email")
                         .authorizationUri("https://www.facebook.com/v23.0/dialog/oauth")
                         .tokenUri("https://graph.facebook.com/v23.0/oauth/access_token")
-                        .userInfoUri("https://graph.facebook.com/v23.0/me?fields=id")
+                        .userInfoUri("https://graph.facebook.com/v23.0/me?fields=id,email")
                         .userInfoAuthenticationMethod(org.springframework.security.oauth2.core.AuthenticationMethod.HEADER)
                         .userNameAttributeName("id");
                 case "x" -> builder.scope("users.read")

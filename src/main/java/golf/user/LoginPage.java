@@ -34,7 +34,10 @@ public class LoginPage implements View {
 
         boolean hasError = Boolean.TRUE.equals(model.get("error"));
         boolean existing = Boolean.TRUE.equals(model.get("existing"));
+        String existingProvider = model.get("existingProvider") instanceof String provider
+                ? provider : "your provider";
         boolean registered = Boolean.TRUE.equals(model.get("registered"));
+        boolean deleted = Boolean.TRUE.equals(model.get("deleted"));
 
         new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Login — Yorkshire Golf Life")
@@ -49,13 +52,16 @@ public class LoginPage implements View {
                                 div().withClass("row justify-content-center").with(
                                         div().withClass("col-md-6 col-lg-4").with(
                                                 existing
-                                                        ? div("This Google account uses an email already registered here. Sign in with your existing method first, then go to Sign-in methods and link Google. No new account was created.")
+                                                        ? div("This " + existingProvider + " account uses an email already registered here. Sign in with your existing method first, then go to Sign-in methods and link " + existingProvider + ". No new account was created.")
                                                                 .withClass("alert alert-info").attr("role", "status")
                                                         : hasError
                                                         ? div("Unable to sign in. Please try again or use another sign-in method.").withClass("alert alert-danger")
                                                         : text(""),
                                                 registered
                                                         ? div("Account created successfully! Please sign in.").withClass("alert alert-success")
+                                                        : text(""),
+                                                deleted
+                                                        ? div("Your account and golf rounds have been deleted.").withClass("alert alert-success").attr("role", "status")
                                                         : text(""),
                                                 div().withClass("alert alert-info ygl-auth-transition").attr("role", "status").with(
                                                         text("A note from "),
