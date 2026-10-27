@@ -27,15 +27,20 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.web.client.RestClientResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Configuration(proxyBeanMethods = false)
 public class FederatedAuthentication {
     private static final String CALLBACK_FLOW = FederatedAuthentication.class.getName();
+    private static final Pattern X_API_PROBLEM_TYPE = Pattern.compile(
+            "\"type\"\\s*:\\s*\"https://api\\.(?:x|twitter)\\.com/2/problems/([a-z-]+)\"");
     private static final Logger log = LoggerFactory.getLogger(FederatedAuthentication.class);
     private final FederatedProviders providers;
     private final ExternalIdentityService identities;
@@ -247,12 +252,34 @@ public class FederatedAuthentication {
 
     AuthenticationFailureHandler failure() {
         return (request, response, exception) -> {
+            String path = request.getRequestURI();
+            String candidate = path == null ? "" : path.substring(path.lastIndexOf('/') + 1);
+            String provider = providers.enabled().contains(candidate) ? candidate : "unknown";
+            String errorCode = exception instanceof OAuth2AuthenticationException oauth
+                    ? oauth.getError().getErrorCode() : exception.getClass().getSimpleName();
+            log.warn("Federated authentication failed for provider {} ({}, {})",
+                    provider, errorCode, failureDetail(exception));
             if (restoreAccountAfterFailedFlow(request, response)) return;
             SecurityContextHolder.clearContext();
             var session = request.getSession(false);
             if (session != null) session.invalidate();
             response.sendRedirect("/login?error=true");
         };
+    }
+
+    static String failureDetail(Throwable exception) {
+        Throwable cause = exception.getCause();
+        while (cause != null) {
+            if (cause instanceof RestClientResponseException response) {
+                Matcher problemType = X_API_PROBLEM_TYPE.matcher(response.getResponseBodyAsString());
+                return "HTTP " + response.getStatusCode().value()
+                        + (problemType.find() ? " " + problemType.group(1) : "");
+            }
+            cause = cause.getCause();
+        }
+        return "cause " + (exception.getCause() == null
+                ? exception.getClass().getSimpleName()
+                : exception.getCause().getClass().getSimpleName());
     }
 
     private boolean restoreAccountAfterFailedFlow(HttpServletRequest request, HttpServletResponse response)

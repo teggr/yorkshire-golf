@@ -119,6 +119,8 @@ Facebook and Apple sign-in are currently disabled in the production deployment.
 Facebook is not enabled because Yorkshire Golf Life does not have a registered
 business, and Apple is not enabled because Apple Developer Program membership
 costs £80 per year.
+X sign-in is enabled in the production deployment; configure the corresponding
+GitHub Actions secrets so the release workflow can inject its OAuth credentials.
 
 Apple's secret is the signed JWT described below, not the downloaded private key.
 An enabled provider requires both credentials; malformed configuration fails
@@ -212,8 +214,9 @@ the app to Live only after approval.
 
 **X:** In the [X Developer Portal](https://developer.x.com/en/portal/dashboard),
 enable OAuth 2.0 for a Web App, configure the exact callback URL above, and set
-the Client ID and Client Secret. Request only `users.read`; authorization uses
-PKCE and the profile lookup stores only the X account ID.
+the Client ID and Client Secret. The app requests `tweet.read` and `users.read`
+for X's authenticated-user lookup; authorization uses PKCE and the profile
+lookup stores only the X account ID.
 
 Never place credentials, authorization codes, access/ID tokens, raw provider
 responses or provider email addresses into logs, screenshots, support tickets or

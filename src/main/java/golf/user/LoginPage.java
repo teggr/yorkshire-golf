@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
 
+import java.util.List;
 import java.util.Map;
 
 import golf.utils.security.CsrfUtil;
@@ -38,6 +39,8 @@ public class LoginPage implements View {
                 ? provider : "your provider";
         boolean registered = Boolean.TRUE.equals(model.get("registered"));
         boolean deleted = Boolean.TRUE.equals(model.get("deleted"));
+        List<String> enabledProviders = providers.enabled();
+        String enabledProviderNames = formatProviderNames(enabledProviders);
 
         new YorkshireGolfPageTemplate().withRequest(request)
                 .withTitle("Login — Yorkshire Golf Life")
@@ -63,40 +66,53 @@ public class LoginPage implements View {
                                                 deleted
                                                         ? div("Your account and golf rounds have been deleted.").withClass("alert alert-success").attr("role", "status")
                                                         : text(""),
-                                                div().withClass("alert alert-info ygl-auth-transition").attr("role", "status").with(
-                                                        text("A note from "),
-                                                        a("@yorkshiregolflife on Instagram")
-                                                                .withHref("https://www.instagram.com/yorkshiregolflife/")
-                                                                .attr("target", "_blank").attr("rel", "noopener noreferrer"),
-                                                        text(": we're moving sign-in to trusted providers to help keep your data safe. "
-                                                                + "For now, existing members can still sign in with email and password, then visit "
-                                                                + "Sign-in methods in their account to link Facebook, X, Apple, or Google. "
-                                                                + "New accounts must use one of those providers.")
-                                                ),
-                                                div().with(each(providers.enabled(), provider ->
-                                                        a().with(
-                                                                       img().withSrc("/images/auth/" + provider + ".svg").withAlt("")
-                                                                               .attr("aria-hidden", "true").attr("width", "20").attr("height", "20"),
-                                                                       span("Continue with " + golf.security.FederatedProviders.label(provider)))
-                                                                .withHref("/oauth2/authorization/" + provider)
-                                                                .attr("aria-label", "Continue with " + golf.security.FederatedProviders.label(provider))
-                                                                .attr("hx-boost", "false")
-                                                                .withClass("ygl-provider-sign-in ygl-provider-sign-in--" + provider))),
-                                                form().withMethod("post").withAction("/login").with(
-                                                        CsrfUtil.csrfInput(request),
-                                                        div().withClass("mb-3").with(
-                                                                label("Email address").withFor("email").withClass("form-label"),
-                                                                input().withType("email").withId("email").withName("username")
-                                                                        .withClass("form-control").attr("required", "")
+                                                enabledProviders.isEmpty()
+                                                        ? text("")
+                                                        : div().withClass("alert alert-info ygl-auth-transition").attr("role", "status").with(
+                                                                text("A note from "),
+                                                                a("@yorkshiregolflife on Instagram")
+                                                                        .withHref("https://www.instagram.com/yorkshiregolflife/")
+                                                                        .attr("target", "_blank").attr("rel", "noopener noreferrer"),
+                                                                text(": we're moving sign-in to trusted providers to help keep your data safe. "
+                                                                        + "For now, existing members can still sign in with email and password, then visit "
+                                                                        + "Sign-in methods in their account to link " + enabledProviderNames + ". "
+                                                                        + "New accounts must use one of these providers.")
                                                         ),
-                                                        div().withClass("mb-3").with(
-                                                                label("Password").withFor("password").withClass("form-label"),
-                                                                input().withType("password").withId("password").withName("password")
-                                                                        .withClass("form-control").attr("required", "")
+                                                enabledProviders.isEmpty()
+                                                        ? text("")
+                                                        : div().withClass("ygl-login-panel ygl-login-panel--social").with(
+                                                                h2("Continue with a social account").withClass("ygl-login-panel__title"),
+                                                                div().with(each(enabledProviders, provider ->
+                                                                        a().with(
+                                                                                        img().withSrc("/images/auth/" + provider + ".svg").withAlt("")
+                                                                                                .attr("aria-hidden", "true").attr("width", "20").attr("height", "20"),
+                                                                                        span("Continue with " + golf.security.FederatedProviders.label(provider)))
+                                                                                .withHref("/oauth2/authorization/" + provider)
+                                                                                .attr("aria-label", "Continue with " + golf.security.FederatedProviders.label(provider))
+                                                                                .attr("hx-boost", "false")
+                                                                                .withClass("ygl-provider-sign-in ygl-provider-sign-in--" + provider))),
+                                                                p("Already have an account? Sign in with your existing method first, then link "
+                                                                        + enabledProviderNames + " from Sign-in methods to avoid creating a separate account.")
+                                                                        .withClass("ygl-provider-sign-in__hint ygl-existing-account-hint")
                                                         ),
-                                                        button("Sign In").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100 mb-3")
+                                                div().withClass("ygl-login-panel ygl-login-panel--email").with(
+                                                        h2("Sign in with email").withClass("ygl-login-panel__title"),
+                                                        form().withMethod("post").withAction("/login").with(
+                                                                CsrfUtil.csrfInput(request),
+                                                                div().withClass("mb-3").with(
+                                                                        label("Email address").withFor("email").withClass("form-label"),
+                                                                        input().withType("email").withId("email").withName("username")
+                                                                                .withClass("form-control").attr("required", "")
+                                                                ),
+                                                                div().withClass("mb-3").with(
+                                                                        label("Password").withFor("password").withClass("form-label"),
+                                                                        input().withType("password").withId("password").withName("password")
+                                                                                .withClass("form-control").attr("required", "")
+                                                                ),
+                                                                button("Sign In").withType("submit").withClass("btn ygl-btn ygl-btn--primary w-100")
+                                                        )
                                                 ),
-                                                div().withClass("text-center").with(
+                                                div().withClass("ygl-login-footer text-center").with(
                                                         p().with(
                                                                 text("Don't have an account? "),
                                                                 a("Register here").withHref("/register")
@@ -110,6 +126,13 @@ public class LoginPage implements View {
                         )
                 )
                 .render(response.getWriter());
+    }
+
+    private static String formatProviderNames(List<String> providers) {
+        List<String> names = providers.stream().map(golf.security.FederatedProviders::label).toList();
+        if (names.size() < 2) return String.join("", names);
+        if (names.size() == 2) return names.get(0) + " and " + names.get(1);
+        return String.join(", ", names.subList(0, names.size() - 1)) + ", or " + names.get(names.size() - 1);
     }
 
 }

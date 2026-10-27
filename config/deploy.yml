@@ -19,6 +19,7 @@ env:
     APP_BASE_URL: https://yorkshiregolf.life
     AUTH_GOOGLE_ENABLED: true
     AUTH_FACEBOOK_ENABLED: false
+    AUTH_X_ENABLED: true
     MAIL_SMTP_AUTH: true
     MAIL_SMTP_STARTTLS_ENABLE: true
     MAIL_SMTP_STARTTLS_REQUIRED: true
@@ -27,6 +28,8 @@ env:
     - MAIL_PASSWORD
     - AUTH_GOOGLE_CLIENT_ID
     - AUTH_GOOGLE_CLIENT_SECRET
+    - AUTH_X_CLIENT_ID
+    - AUTH_X_CLIENT_SECRET
 registry:
   username:
     - DOCKER_USERNAME

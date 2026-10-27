@@ -57,7 +57,7 @@ public class FederatedProviders {
                         .userInfoUri("https://graph.facebook.com/v23.0/me?fields=id,email")
                         .userInfoAuthenticationMethod(org.springframework.security.oauth2.core.AuthenticationMethod.HEADER)
                         .userNameAttributeName("id");
-                case "x" -> builder.scope("users.read")
+                case "x" -> builder.scope("tweet.read", "users.read")
                         .authorizationUri("https://twitter.com/i/oauth2/authorize")
                         .tokenUri("https://api.twitter.com/2/oauth2/token")
                         .userInfoUri("https://api.twitter.com/2/users/me?user.fields=id")

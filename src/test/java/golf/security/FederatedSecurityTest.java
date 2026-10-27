@@ -54,6 +54,35 @@ class FederatedSecurityTest {
     }
 
     @Test
+    void xSignInExplainsHowExistingUsersShouldAvoidCreatingADuplicateAccount() throws Exception {
+        var providers = new FederatedProviders(new org.springframework.mock.env.MockEnvironment()
+                .withProperty("golf.app.base-url", "https://golf.example")
+                .withProperty("golf.auth.x.enabled", "true")
+                .withProperty("golf.auth.x.client-id", "test-client")
+                .withProperty("golf.auth.x.client-secret", "test-secret"));
+        var response = new org.springframework.mock.web.MockHttpServletResponse();
+        new LoginPage(providers).render(Map.of(), new org.springframework.mock.web.MockHttpServletRequest("GET", "/login"),
+                response);
+        var page = org.jsoup.Jsoup.parse(response.getContentAsString());
+        var xButton = page.selectFirst("a.ygl-provider-sign-in--x");
+
+        assertThat(xButton).isNotNull();
+        assertThat(xButton.text()).isEqualTo("Continue with X");
+        assertThat(page.selectFirst(".ygl-auth-transition").text()).contains("X")
+                .doesNotContain("Google", "Facebook", "Apple");
+        assertThat(page.selectFirst(".ygl-existing-account-hint").text())
+                .contains("link X from Sign-in methods to avoid creating a separate account");
+        assertThat(page.select(".ygl-login-panel")).hasSize(2);
+        assertThat(page.selectFirst(".ygl-login-panel--social").select("a.ygl-provider-sign-in"))
+                .hasSize(1);
+        assertThat(page.selectFirst(".ygl-login-panel--email").select("form[action='/login']"))
+                .hasSize(1);
+        assertThat(page.selectFirst(".ygl-login-footer a[href='/register']")).isNotNull();
+        assertThat(page.selectFirst(".ygl-login-footer").elementSiblingIndex())
+                .isGreaterThan(page.selectFirst(".ygl-login-panel--email").elementSiblingIndex());
+    }
+
+    @Test
     void csrfProtectsManagementAndApplePostCallback() throws Exception {
         mvc.perform(post("/account/link/google").with(user("user@example.com")))
                 .andExpect(status().isForbidden());
@@ -62,6 +91,29 @@ class FederatedSecurityTest {
         mvc.perform(post("/login/oauth2/code/apple").param("code", "unsolicited").param("state", "bad"))
                 .andExpect(status().isForbidden());
         mvc.perform(get("/account")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @org.junit.jupiter.api.extension.ExtendWith(org.springframework.boot.test.system.OutputCaptureExtension.class)
+    void federatedFailureLogsProviderAndCodeWithoutExceptionDetails(
+            org.springframework.boot.test.system.CapturedOutput output) throws Exception {
+            var request = new org.springframework.mock.web.MockHttpServletRequest("GET", "/login/oauth2/code/google");
+            request.setRequestURI("/login/oauth2/code/google");
+            var response = new org.springframework.mock.web.MockHttpServletResponse();
+            String responseBody = "{\"type\":\"https://api.x.com/2/problems/client-forbidden\","
+                    + "\"detail\":\"sensitive-response-body\"}";
+            var responseException = org.springframework.web.client.HttpClientErrorException.create(
+                    org.springframework.http.HttpStatus.FORBIDDEN, "forbidden",
+                    org.springframework.http.HttpHeaders.EMPTY, responseBody.getBytes(), null);
+        var exception = new org.springframework.security.oauth2.core.OAuth2AuthenticationException(
+                new org.springframework.security.oauth2.core.OAuth2Error("invalid_user_info_response"),
+                "sensitive-detail", responseException);
+
+        federated.failure().onAuthenticationFailure(request, response, exception);
+
+        assertThat(response.getRedirectedUrl()).isEqualTo("/login?error=true");
+        assertThat(output).contains("provider google", "invalid_user_info_response", "HTTP 403", "client-forbidden")
+                .doesNotContain("sensitive-detail", "sensitive-response-body");
     }
 
     @Test
@@ -130,6 +182,24 @@ class FederatedSecurityTest {
         assertThat(page.select("form[action='/account/delete']")).hasSize(1);
         assertThat(page.selectFirst(".ygl-sign-in-methods__notice").text())
                 .contains("only sign-in method", "cannot be unlinked");
+    }
+
+    @Test
+    void accountActionsAreGroupedIntoProviderAndDeletionSections() throws Exception {
+        GolfUser user = local();
+        var result = mvc.perform(get("/account").with(user(new LocalPrincipal(user.id()))))
+                .andExpect(status().isOk()).andReturn();
+        var page = org.jsoup.Jsoup.parse(result.getResponse().getContentAsString());
+
+        var linkForm = page.selectFirst(".ygl-sign-in-methods__available form.ygl-sign-in-action");
+        assertThat(page.select(".ygl-sign-in-methods__available form.ygl-sign-in-action"))
+                .extracting(form -> form.attr("action")).containsExactly("/account/link/google");
+        assertThat(linkForm.selectFirst("button.ygl-provider-sign-in--google").text()).isEqualTo("Link Google");
+        assertThat(linkForm.selectFirst("button.ygl-provider-sign-in--google img").attr("src"))
+                .isEqualTo("/images/auth/google.svg");
+        assertThat(page.selectFirst(".ygl-sign-in-methods__danger form[action='/account/delete']"))
+                .isNotNull();
+        assertThat(page.select(".ygl-sign-in-methods__danger h2").text()).isEqualTo("Delete account");
     }
 
     @Test
