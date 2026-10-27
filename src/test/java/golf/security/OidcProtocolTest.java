@@ -343,8 +343,8 @@ class OidcProtocolTest {
         xSubject = "x-" + UUID.randomUUID();
         var result = mvc.perform(get("/oauth2/authorization/x")).andReturn();
         assertThat(result.getResponse().getRedirectedUrl())
-                .contains("scope=users.read", "code_challenge=", "code_challenge_method=S256")
-                .doesNotContain("email", "tweet.read");
+                .contains("scope=tweet.read%20users.read", "code_challenge=", "code_challenge_method=S256")
+                .doesNotContain("email");
         var start = parseStart(result);
         var callback = mvc.perform(get("/login/oauth2/code/x").session(start.session())
                         .param("state", start.parameters().get("state")).param("code", "test-code"))
@@ -363,6 +363,21 @@ class OidcProtocolTest {
             assertThat(callback.getRequest().getSession().getAttribute(name).toString())
                     .doesNotContain("Ignored X name", "ignored_x_username", "test-access-token");
         }
+    }
+
+    @Test
+    void xOAuthCanLinkTheReturnedAccountIdToAnExistingAccount() throws Exception {
+        GolfUser user = local();
+        xSubject = "x-link-" + UUID.randomUUID();
+        var start = startAction(user, "link", "password", "x");
+
+        var callback = mvc.perform(get("/login/oauth2/code/x").session(start.session())
+                        .param("state", start.parameters().get("state")).param("code", "test-code"))
+                .andExpect(redirectedUrl("/account?success=linked")).andReturn();
+
+        assertThat(identities.find("x", xSubject).orElseThrow().userId()).isEqualTo(user.id());
+        assertThat(users.findById(user.id()).orElseThrow().trackerId()).isEqualTo(user.trackerId());
+        assertThat(callback.getRequest().getSession(false)).isNotNull();
     }
 
     @Test

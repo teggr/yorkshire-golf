@@ -99,10 +99,12 @@ public class AccountController {
             pageContent.add(p(user.password() == null
                     ? "Confirm one of your linked accounts first, then you can connect another provider to this account."
                     : "Link only accounts you control. Confirm with your current password to add a provider."));
+            List<DomContent> availableActions = new ArrayList<>();
             for (String provider : unlinked) {
-                pageContent.add(action(request, "link", provider, "Link " + FederatedProviders.label(provider),
+                availableActions.add(action(request, "link", provider, "Link " + FederatedProviders.label(provider),
                         user.password() != null));
             }
+            pageContent.add(div().withClass("ygl-sign-in-methods__available").with(availableActions));
         } else if (providers.enabled().isEmpty()) {
             pageContent.add(p("No external sign-in providers are currently available.")
                     .withClass("ygl-sign-in-methods__notice"));
@@ -111,14 +113,15 @@ public class AccountController {
             pageContent.add(p("This is your only sign-in method, so it cannot be unlinked while keeping your account. You can still delete the full account below.")
                     .withClass("ygl-sign-in-methods__notice").attr("role", "status"));
         }
-        pageContent.add(h2("Delete account").withClass("ygl-section-title ygl-section-title--spaced"));
-        pageContent.add(p("Permanently delete your account, linked sign-in methods, tracker, and all recorded golf rounds. This cannot be undone.")
+        List<DomContent> deletionContent = new ArrayList<>();
+        deletionContent.add(h2("Delete account").withClass("ygl-section-title"));
+        deletionContent.add(p("Permanently delete your account, linked sign-in methods, tracker, and all recorded golf rounds. This cannot be undone.")
                 .withClass("ygl-sign-in-methods__notice"));
         if (user.password() == null) {
-            pageContent.add(p("Confirm your identity with one of your linked sign-in providers before deleting your account.")
+            deletionContent.add(p("Confirm your identity with one of your linked sign-in providers before deleting your account.")
                     .withClass("ygl-sign-in-methods__notice"));
         }
-        pageContent.add(form().withMethod("post").withAction("/account/delete")
+        deletionContent.add(form().withMethod("post").withAction("/account/delete")
                 .attr("hx-boost", "false").withClass("ygl-sign-in-action").with(
                         CsrfUtil.csrfInput(request),
                         user.password() != null
@@ -133,6 +136,7 @@ public class AccountController {
                                         .withClass("form-check-label")),
                         button("Delete my account").withType("submit").withClass("btn btn-danger")
                 ));
+        pageContent.add(div().withClass("ygl-sign-in-methods__danger").with(deletionContent));
         content.add(div().withClass("container ygl-page").with(
                 div().withClass("row justify-content-center").with(
                         div().withClass("col-lg-9 ygl-sign-in-methods").with(pageContent))));
@@ -216,6 +220,14 @@ public class AccountController {
     }
 
     private DomContent action(HttpServletRequest request, String action, String provider, String label, boolean password) {
+        DomContent submit = "link".equals(action)
+                ? button().with(
+                        img().withSrc("/images/auth/" + provider + ".svg").withAlt("")
+                                .attr("aria-hidden", "true").attr("width", "20").attr("height", "20"),
+                        span(label))
+                        .withType("submit")
+                        .withClass("btn ygl-btn ygl-provider-sign-in ygl-provider-sign-in--" + provider)
+                : button(label).withType("submit").withClass("btn ygl-btn ygl-btn--outline");
         return form().withMethod("post").withAction("/account/" + action + "/" + provider)
                 .attr("hx-boost", "false").withClass("ygl-sign-in-action").with(
                         CsrfUtil.csrfInput(request),
@@ -226,6 +238,6 @@ public class AccountController {
                                 input().withType("checkbox").withName("confirmed").withValue("true")
                                         .withClass("form-check-input").attr("required"),
                                 span("I confirm this change").withClass("form-check-label")),
-                        button(label).withType("submit").withClass("btn ygl-btn ygl-btn--outline"));
+                        submit);
     }
 }
