@@ -56,7 +56,7 @@ class FederatedProvidersTest {
     }
 
     @Test
-    void xUsesOAuth2WithOnlyTheIdentityScope() {
+    void xUsesOAuth2WithTheRequiredReadScopes() {
         var providers = new FederatedProviders(environment("https://golf.example")
                 .withProperty("golf.auth.x.enabled", "true")
                 .withProperty("golf.auth.x.client-id", "x-client")
@@ -65,7 +65,7 @@ class FederatedProvidersTest {
         assertThat(x.getRedirectUri()).isEqualTo("https://golf.example/login/oauth2/code/x");
         assertThat(x.getProviderDetails().getAuthorizationUri()).isEqualTo("https://twitter.com/i/oauth2/authorize");
         assertThat(x.getProviderDetails().getTokenUri()).isEqualTo("https://api.twitter.com/2/oauth2/token");
-        assertThat(x.getScopes()).containsExactly("users.read");
+        assertThat(x.getScopes()).containsExactly("tweet.read", "users.read");
         assertThat(x.getClientAuthenticationMethod()).isEqualTo(
                 org.springframework.security.oauth2.core.ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         assertThat(x.getProviderDetails().getUserInfoEndpoint().getUri())
