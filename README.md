@@ -56,15 +56,16 @@ Go to https://www.yorkshiregolf.life
 
 The shared page template loads Simple Analytics and the PostHog JavaScript
 snippet side by side. PostHog sends page views to the EU cloud using the public
-project token (not a personal API key). It runs in `cookieless_mode: 'always'`
-without analytics cookies or browser storage. Person profiles, automatic click
-capture, page-leave events, heatmaps, performance capture, surveys and session
-recording are disabled.
+project token (not a personal API key). Its configuration uses
+`defaults: '2026-05-30'` and `person_profiles: 'identified_only'`, with automatic
+click capture and session recording disabled. Other options use the SDK defaults.
+PostHog uses cookies and browser storage; the site does not call `identify()` or
+send account identifiers to PostHog. This is not a cookieless configuration and
+does not add an analytics consent banner; assess applicable consent requirements
+before enabling it in production.
 
-In PostHog, go to **Settings > Project > Web analytics**, turn on
-**Enable cookieless tracking**, and save. This project-side setting is required
-for cookieless events to be processed. After deployment, visit a page and check
-for its `$pageview` event in the project's activity feed.
+After deployment, visit a page and check for its `$pageview` event in the project's
+activity feed. The previous cookieless-tracking setup step is no longer required.
 
 # Course Audit
 
