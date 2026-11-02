@@ -52,6 +52,20 @@ deploy4j deploy --version=0.0.15
 
 Go to https://www.yorkshiregolf.life
 
+# Analytics
+
+The shared page template loads Simple Analytics and the PostHog JavaScript
+snippet side by side. PostHog sends page views to the EU cloud using the public
+project token (not a personal API key). It runs in `cookieless_mode: 'always'`
+without analytics cookies or browser storage. Person profiles, automatic click
+capture, page-leave events, heatmaps, performance capture, surveys and session
+recording are disabled.
+
+In PostHog, go to **Settings > Project > Web analytics**, turn on
+**Enable cookieless tracking**, and save. This project-side setting is required
+for cookieless events to be processed. After deployment, visit a page and check
+for its `$pageview` event in the project's activity feed.
+
 # Course Audit
 
 Run from repo root:
