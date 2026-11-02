@@ -8,6 +8,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AnalyticsTest {
@@ -28,20 +29,20 @@ class AnalyticsTest {
         assertTrue(snippet.contains("api_host: 'https://eu.i.posthog.com'"));
         assertTrue(snippet.contains("/static/array.js"));
         assertTrue(snippet.contains("p.async=!0"));
-        assertTrue(snippet.contains("defaults: '2026-08-30'"));
-        assertTrue(snippet.contains("cookieless_mode: 'always'"));
-        assertTrue(snippet.contains("person_profiles: 'never'"));
-        assertTrue(snippet.contains("autocapture: false"));
-        assertTrue(snippet.contains("capture_pageview: true"));
-        assertTrue(snippet.contains("capture_pageleave: false"));
-        assertTrue(snippet.contains("capture_heatmaps: false"));
-        assertTrue(snippet.contains("capture_performance: false"));
-        assertTrue(snippet.contains("disable_session_recording: true"));
-        assertTrue(snippet.contains("disable_surveys: true"));
+        assertTrue(snippet.replaceAll("\\s+", " ").contains("""
+                posthog.init('phc_z2WcTcL5FgWEDgnSsJ3W7jKuv9XZnypq7FJKwYGRBtnv', {
+                    api_host: 'https://eu.i.posthog.com',
+                    defaults: '2026-05-30',
+                    person_profiles: 'identified_only',
+                    autocapture: false,
+                    disable_session_recording: true,
+                });
+                """.strip().replaceAll("\\s+", " ")));
+        assertFalse(snippet.contains("cookieless_mode"));
     }
 
     @Test
-    void privacyPageDisclosesBothAnalyticsProvidersAndCookielessSettings() throws Exception {
+    void privacyPageDisclosesBothAnalyticsProvidersAndBrowserStorage() throws Exception {
         var response = new MockHttpServletResponse();
         new PrivacyPage().render(Map.of(), new MockHttpServletRequest(), response);
         String text = Jsoup.parse(response.getContentAsString()).text();
@@ -49,7 +50,8 @@ class AnalyticsTest {
         assertTrue(text.contains("Simple Analytics"));
         assertTrue(text.contains("PostHog"));
         assertTrue(text.contains("EU cloud"));
-        assertTrue(text.contains("without analytics cookies or browser storage"));
+        assertTrue(text.contains("uses cookies and browser storage"));
+        assertFalse(text.contains("cookieless"));
         assertTrue(text.contains("Session recording and automatic click capture are disabled"));
     }
 }
