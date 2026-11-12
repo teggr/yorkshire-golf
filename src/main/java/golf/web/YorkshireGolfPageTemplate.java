@@ -354,10 +354,6 @@ public class YorkshireGolfPageTemplate {
                                         popperMinJsScriptTag(),
                                         bootstrapMinJsScriptTag()
                                 )
-                          .with(rawHtml("""
-                            <!-- 100% privacy-first analytics -->
-                            <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-                            """))
                 );
     }
 

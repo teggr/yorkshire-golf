@@ -14,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AnalyticsTest {
 
     @Test
-    void sharedTemplateLoadsPostHogAlongsideSimpleAnalytics() throws Exception {
+    void sharedTemplateLoadsPostHogWithoutSimpleAnalytics() throws Exception {
         var response = new MockHttpServletResponse();
         new YorkshireGolfPageTemplate().withTitle("Test").render(response.getWriter());
         var page = Jsoup.parse(response.getContentAsString());
 
-        assertEquals(1, page.select("script[src='https://scripts.simpleanalyticscdn.com/latest.js'][async]").size());
+        assertEquals(0, page.select("script[src='https://scripts.simpleanalyticscdn.com/latest.js']").size());
         var snippets = page.select("head script").stream()
                 .filter(script -> script.data().contains("posthog.init("))
                 .toList();
@@ -47,7 +47,7 @@ class AnalyticsTest {
         new PrivacyPage().render(Map.of(), new MockHttpServletRequest(), response);
         String text = Jsoup.parse(response.getContentAsString()).text();
 
-        assertTrue(text.contains("Simple Analytics"));
+        assertFalse(text.contains("Simple Analytics"));
         assertTrue(text.contains("PostHog"));
         assertTrue(text.contains("EU cloud"));
         assertTrue(text.contains("uses cookies and browser storage"));

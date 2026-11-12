@@ -54,9 +54,9 @@ Go to https://www.yorkshiregolf.life
 
 # Analytics
 
-The shared page template loads Simple Analytics and the PostHog JavaScript
-snippet side by side. PostHog sends page views to the EU cloud using the public
-project token (not a personal API key). Its configuration uses
+The shared page template loads the PostHog JavaScript snippet. PostHog sends page
+views to the EU cloud using the public project token (not a personal API key).
+Its configuration uses
 `defaults: '2026-05-30'` and `person_profiles: 'identified_only'`, with automatic
 click capture and session recording disabled. Other options use the SDK defaults.
 PostHog uses cookies and browser storage; the site does not call `identify()` or
